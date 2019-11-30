@@ -1,0 +1,13 @@
+http://localhost:3000/databases/mongo_gui/collections/test/documents
+###
+PATCH http://localhost:3000/databases/mongo_gui/collections/test/documents
+Content-Type: application/json
+
+{
+    "a": 7
+}
+
+###
+DELETE http://localhost:3000/databases/mongo_gui/collections/test/documents/5de2a8587c25d87b9f007b43
+
+###
