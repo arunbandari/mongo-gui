@@ -1,9 +1,18 @@
-const app = require('express')();
+const express = require('express');
 const mongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const databasesRoute = require('./src/database');
 const config = require('./config.json');
 const port = 3000;
+
+const app = express();
+
+app.use(express.static('client'))
+app.get('/', (req, res) => res.sendFile(__dirname + '../client/index.html'));
+
+// enables cors
+app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
