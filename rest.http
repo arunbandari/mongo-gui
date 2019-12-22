@@ -1,4 +1,9 @@
-http://localhost:3000/databases/mongo_gui/collections/test/documents
+POST http://localhost:3000/databases/580a07b8d5be18c823242213/collections/580a07b8d5be18c823242213-Reqre/documents/filter
+Content-Type: application/json
+
+{
+ "_id": "8"
+}
 ###
 PATCH http://localhost:3000/databases/mongo_gui/collections/test/documents
 Content-Type: application/json

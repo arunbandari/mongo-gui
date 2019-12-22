@@ -5,10 +5,9 @@ const router = express.Router({ mergeParams: true });
 router.use('/(:documentId)?', (req, res, next) => {
     const body = req.body;
     const params = req.params;
-    const id = body._id || params.documentId;
-    if (id) {
-        if (!ObjectID.isValid(id)) return next(new Error('Error: invalid object id'));
-        const documentId = ObjectID(id);
+    let documentId = body._id || params.documentId;
+    if (documentId) {
+        if (ObjectID.isValid(documentId)) documentId = ObjectID(documentId);
         req.documentId = documentId;
         delete body._id;
     }
@@ -26,7 +25,7 @@ router.post('/', (req, res, next) => {
 
 // findAll
 router.get('/', (req, res, next) => {
-    req.collection.find({}).toArray((err, docs) => {
+    req.collection.find().toArray((err, docs) => {
         if (err) return next(err);
         res.send(docs);
     });
@@ -66,6 +65,16 @@ router.delete('/(:documentId)?', (req, res, next) => {
     req.collection.deleteOne({ _id: documentId }, (err, response) => {
         if (err) return next(err);
         res.send(response);
+    });
+});
+
+// filter
+router.post('/filter', (req, res, next) => {
+    const query = req.body;
+    if (req.documentId && req.documentId !== 'filter') query._id = req.documentId;
+    req.collection.find(query).toArray((err, docs) => {
+        if (err) return next(err);
+        res.send(docs);
     });
 });
 
