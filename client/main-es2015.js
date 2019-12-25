@@ -32,7 +32,7 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n  <div class=\"sidenav\">\n    <app-sidenav></app-sidenav>\n  </div>\n  <div class=\"content\">\n    <div>\n        <ul><li *ngFor = \"let tab of tabs; let index = index\" class=\"tablink\" (click)=\"openTab(index)\"><span class=\"fa-li\"><i class=\"fas fa-times\"></i></span> {{tab.database}} > {{tab.collection}}</li></ul>\n    </div>\n    <div>\n      <div *ngFor = \"let tab of tabs; let index = index\" [ngClass]=\"index === activeTabIndex ? 'show' : 'hide'\">\n          <app-collection-renderer [database]=\"tab.database\" [collection]=\"tab.collection\"></app-collection-renderer>\n      </div>\n    </div>\n  </div>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n  <div class=\"sidenav\">\n    <app-sidenav (opened)=\"open($event)\"></app-sidenav>\n  </div>\n  <div class=\"content\">\n    <div class=\"tab_area\">\n        <ul class=\"tab_ui\"><li *ngFor = \"let tab of tabs; let index = index\" class=\"tablink\" (click)=\"openTab(index)\"><span class=\"fa-li\"><i class=\"fas fa-times\"></i></span> {{tab.database}}.{{tab.collection}}</li></ul>\n    </div>\n    <div>\n      <div *ngFor = \"let tab of tabs; let index = index\" [ngClass]=\"index === activeTabIndex ? 'show' : 'hide'\">\n          <app-collection-renderer [database]=\"tab.database\" [collection]=\"tab.collection\"></app-collection-renderer>\n      </div>\n    </div>\n  </div>\n</div>");
 
 /***/ }),
 
@@ -71,7 +71,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"d60\">\n</div>\n<div class=\"nav\">\n    <ul class=\"fa-ul\" role=\"parent_listing\">\n        <li><span class=\"fa-li\"><i class=\"fas fa-search\"></i></span><input class=\"search\" type=\"text\" placeholder=\"Search dbs & collections...\" [(ngModel)]=\"searchText\" (keyup)=\"filter()\"></li>\n        <li *ngFor=\"let db of displayData\"><a href=\"#\" (click)=\"toggleDB($event)\" class=\"nav_link\"><span class=\"fa-li\"><i class=\"fas fa-server\"></i></span>{{db.name}}</a>\n            <ul class=\"col\" *ngIf=\"db.collections.length\">\n                <li *ngFor=\"let collection of db.collections\"><a href=\"#\" class=\"nav_link\">{{collection}}</a></li>\n            </ul>\n        </li>\n    </ul>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"d60\">\n</div>\n<div class=\"nav\">\n    <ul class=\"fa-ul\" role=\"parent_listing\">\n        <li><span class=\"fa-li\"><i class=\"fas fa-search\"></i></span><input class=\"search\" type=\"text\" placeholder=\"Search dbs & collections...\" [(ngModel)]=\"searchText\" (keyup)=\"filter()\"></li>\n        <li *ngFor=\"let db of displayData\"><a href=\"#\" (click)=\"toggleDB($event)\" class=\"nav_link\"><span class=\"fa-li\"><i class=\"fas fa-server\"></i></span>{{db.name}}</a>\n            <ul class=\"col\" *ngIf=\"db.collections.length\">\n                <li *ngFor=\"let collection of db.collections\"><a href=\"#\" (click)=\"openCollection($event)\" class=\"nav_link\" [attr.data-database]=\"db.name\">{{collection}}</a></li>\n            </ul>\n        </li>\n    </ul>\n</div>");
 
 /***/ }),
 
@@ -383,7 +383,7 @@ AppRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".fas {\n    color: grey;\n    position: relative;\n    top: 3px;\n    left: 3px;\n}\n.container {\n    display: grid;\n    grid-template-columns: 2fr 8fr;\n}\n.sidenav {\n    height: 100vh;\n    background: #fff;\n    box-shadow: 6px 0 6px rgba(0,0,0,.1);\n}\n.show {\n    display: block;\n}\n.hide {\n    display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxXQUFXO0lBQ1gsa0JBQWtCO0lBQ2xCLFFBQVE7SUFDUixTQUFTO0FBQ2I7QUFDQTtJQUNJLGFBQWE7SUFDYiw4QkFBOEI7QUFDbEM7QUFDQTtJQUNJLGFBQWE7SUFDYixnQkFBZ0I7SUFDaEIsb0NBQW9DO0FBQ3hDO0FBQ0E7SUFDSSxjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxhQUFhO0FBQ2pCIiwiZmlsZSI6InNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuZmFzIHtcbiAgICBjb2xvcjogZ3JleTtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgdG9wOiAzcHg7XG4gICAgbGVmdDogM3B4O1xufVxuLmNvbnRhaW5lciB7XG4gICAgZGlzcGxheTogZ3JpZDtcbiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IDJmciA4ZnI7XG59XG4uc2lkZW5hdiB7XG4gICAgaGVpZ2h0OiAxMDB2aDtcbiAgICBiYWNrZ3JvdW5kOiAjZmZmO1xuICAgIGJveC1zaGFkb3c6IDZweCAwIDZweCByZ2JhKDAsMCwwLC4xKTtcbn1cbi5zaG93IHtcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cbi5oaWRlIHtcbiAgICBkaXNwbGF5OiBub25lO1xufSJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".fas {\n    color: grey;\n    position: relative;\n    top: 3px;\n    left: 3px;\n}\n.container {\n    display: grid;\n    grid-template-columns: 2fr 8fr;\n}\n.sidenav {\n    height: 100vh;\n    background: #fff;\n    /* box-shadow: 6px 0 6px rgba(0,0,0,.1); */\n    border: 1px solid #ddd;\n    -webkit-padding-start: 20px;\n            padding-inline-start: 20px;\n}\n.show {\n    display: block;\n}\n.hide {\n    display: none;\n}\n.tab_area {\n    border-bottom: 1px solid #ddd;\n    margin-bottom: 30px;\n}\n.tab_ui {\n    padding: 0px 10px;\n    margin: 0;\n    list-style-type: none;\n    display: inline-flex;\n}\nli.tablink {\n    padding:  8px 10px;\n    border: 1px solid transparent;\n    cursor: pointer;\n}\nli.tablink:hover {\n    border: 1px solid #ddd;\n    border-radius: 10px 10px 0px 0px;\n    border-bottom: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxXQUFXO0lBQ1gsa0JBQWtCO0lBQ2xCLFFBQVE7SUFDUixTQUFTO0FBQ2I7QUFDQTtJQUNJLGFBQWE7SUFDYiw4QkFBOEI7QUFDbEM7QUFDQTtJQUNJLGFBQWE7SUFDYixnQkFBZ0I7SUFDaEIsMENBQTBDO0lBQzFDLHNCQUFzQjtJQUN0QiwyQkFBMEI7WUFBMUIsMEJBQTBCO0FBQzlCO0FBQ0E7SUFDSSxjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxhQUFhO0FBQ2pCO0FBQ0E7SUFDSSw2QkFBNkI7SUFDN0IsbUJBQW1CO0FBQ3ZCO0FBQ0E7SUFDSSxpQkFBaUI7SUFDakIsU0FBUztJQUNULHFCQUFxQjtJQUNyQixvQkFBb0I7QUFDeEI7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQiw2QkFBNkI7SUFDN0IsZUFBZTtBQUNuQjtBQUNBO0lBQ0ksc0JBQXNCO0lBQ3RCLGdDQUFnQztJQUNoQyxtQkFBbUI7QUFDdkIiLCJmaWxlIjoic3JjL2FwcC9hcHAuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5mYXMge1xuICAgIGNvbG9yOiBncmV5O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICB0b3A6IDNweDtcbiAgICBsZWZ0OiAzcHg7XG59XG4uY29udGFpbmVyIHtcbiAgICBkaXNwbGF5OiBncmlkO1xuICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMmZyIDhmcjtcbn1cbi5zaWRlbmF2IHtcbiAgICBoZWlnaHQ6IDEwMHZoO1xuICAgIGJhY2tncm91bmQ6ICNmZmY7XG4gICAgLyogYm94LXNoYWRvdzogNnB4IDAgNnB4IHJnYmEoMCwwLDAsLjEpOyAqL1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNkZGQ7XG4gICAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDIwcHg7XG59XG4uc2hvdyB7XG4gICAgZGlzcGxheTogYmxvY2s7XG59XG4uaGlkZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbn1cbi50YWJfYXJlYSB7XG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNkZGQ7XG4gICAgbWFyZ2luLWJvdHRvbTogMzBweDtcbn1cbi50YWJfdWkge1xuICAgIHBhZGRpbmc6IDBweCAxMHB4O1xuICAgIG1hcmdpbjogMDtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG59XG5saS50YWJsaW5rIHtcbiAgICBwYWRkaW5nOiAgOHB4IDEwcHg7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdHJhbnNwYXJlbnQ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufVxubGkudGFibGluazpob3ZlciB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2RkZDtcbiAgICBib3JkZXItcmFkaXVzOiAxMHB4IDEwcHggMHB4IDBweDtcbiAgICBib3JkZXItYm90dG9tOiBub25lO1xufSJdfQ== */");
 
 /***/ }),
 
@@ -435,6 +435,13 @@ let AppComponent = class AppComponent {
     }
     openTab(index) {
         this.activeTabIndex = index;
+    }
+    open(obj) {
+        this.tabs.push({
+            id: 7,
+            database: obj.dbName,
+            collection: obj.collectionName,
+        });
     }
 };
 AppComponent.ctorParameters = () => [
@@ -548,7 +555,6 @@ let CollectionRendererComponent = class CollectionRendererComponent {
     ngOnInit() {
         this.API.getDocumentsByCollection(this.database, this.collection)
             .subscribe((documents) => {
-            console.log(documents);
             this.documents = documents;
         });
     }
@@ -652,7 +658,7 @@ Type = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".search {\n    border: none;\n    border-bottom: 2px solid #f5f5f5;\n}\n.search:focus {\n    border: none;\n    outline: none;\n    border-bottom: 2px solid orange;\n}\n.d60 {\n    height: 60px;\n}\n.nav ul {\n    list-style-type: none;\n    font-size: 14px;\n}\n.nav .nav_link {\n    text-decoration: none;\n    color: #000000;\n}\n.nav ul[role=\"parent_listing\"] li ul {\n    display: none;\n    -webkit-padding-start: 0;\n            padding-inline-start: 0;\n}\n.nav ul[role=\"parent_listing\"] li a.open + ul{\n    display: block;\n}\n.nav ul li {\n    padding-top: 5px;\n    box-sizing: border-box;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvc2lkZW5hdi9zaWRlbmF2LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxZQUFZO0lBQ1osZ0NBQWdDO0FBQ3BDO0FBQ0E7SUFDSSxZQUFZO0lBQ1osYUFBYTtJQUNiLCtCQUErQjtBQUNuQztBQUNBO0lBQ0ksWUFBWTtBQUNoQjtBQUNBO0lBQ0kscUJBQXFCO0lBQ3JCLGVBQWU7QUFDbkI7QUFDQTtJQUNJLHFCQUFxQjtJQUNyQixjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxhQUFhO0lBQ2Isd0JBQXVCO1lBQXZCLHVCQUF1QjtBQUMzQjtBQUNBO0lBQ0ksY0FBYztBQUNsQjtBQUNBO0lBQ0ksZ0JBQWdCO0lBQ2hCLHNCQUFzQjtBQUMxQiIsImZpbGUiOiJzcmMvYXBwL3NpZGVuYXYvc2lkZW5hdi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNlYXJjaCB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGJvcmRlci1ib3R0b206IDJweCBzb2xpZCAjZjVmNWY1O1xufVxuLnNlYXJjaDpmb2N1cyB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIG91dGxpbmU6IG5vbmU7XG4gICAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkIG9yYW5nZTtcbn1cbi5kNjAge1xuICAgIGhlaWdodDogNjBweDtcbn1cbi5uYXYgdWwge1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBmb250LXNpemU6IDE0cHg7XG59XG4ubmF2IC5uYXZfbGluayB7XG4gICAgdGV4dC1kZWNvcmF0aW9uOiBub25lO1xuICAgIGNvbG9yOiAjMDAwMDAwO1xufVxuLm5hdiB1bFtyb2xlPVwicGFyZW50X2xpc3RpbmdcIl0gbGkgdWwge1xuICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDA7XG59XG4ubmF2IHVsW3JvbGU9XCJwYXJlbnRfbGlzdGluZ1wiXSBsaSBhLm9wZW4gKyB1bHtcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cbi5uYXYgdWwgbGkge1xuICAgIHBhZGRpbmctdG9wOiA1cHg7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbn0iXX0= */");
+/* harmony default export */ __webpack_exports__["default"] = (".search {\n    border: none;\n    border-bottom: 2px solid #f5f5f5;\n}\n.search:focus {\n    border: none;\n    outline: none;\n    border-bottom: 2px solid orange;\n}\n.nav ul {\n    list-style-type: none;\n    font-size: 14px;\n}\n.nav .nav_link {\n    text-decoration: none;\n    color: #000000;\n}\n.nav ul[role=\"parent_listing\"] li ul {\n    display: none;\n    -webkit-padding-start: 0;\n            padding-inline-start: 0;\n}\n.nav ul[role=\"parent_listing\"] li a.open + ul{\n    display: block;\n}\n.nav ul li {\n    padding-top: 5px;\n    box-sizing: border-box;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvc2lkZW5hdi9zaWRlbmF2LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxZQUFZO0lBQ1osZ0NBQWdDO0FBQ3BDO0FBQ0E7SUFDSSxZQUFZO0lBQ1osYUFBYTtJQUNiLCtCQUErQjtBQUNuQztBQUNBO0lBQ0kscUJBQXFCO0lBQ3JCLGVBQWU7QUFDbkI7QUFDQTtJQUNJLHFCQUFxQjtJQUNyQixjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxhQUFhO0lBQ2Isd0JBQXVCO1lBQXZCLHVCQUF1QjtBQUMzQjtBQUNBO0lBQ0ksY0FBYztBQUNsQjtBQUNBO0lBQ0ksZ0JBQWdCO0lBQ2hCLHNCQUFzQjtBQUMxQiIsImZpbGUiOiJzcmMvYXBwL3NpZGVuYXYvc2lkZW5hdi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNlYXJjaCB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGJvcmRlci1ib3R0b206IDJweCBzb2xpZCAjZjVmNWY1O1xufVxuLnNlYXJjaDpmb2N1cyB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIG91dGxpbmU6IG5vbmU7XG4gICAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkIG9yYW5nZTtcbn1cbi5uYXYgdWwge1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBmb250LXNpemU6IDE0cHg7XG59XG4ubmF2IC5uYXZfbGluayB7XG4gICAgdGV4dC1kZWNvcmF0aW9uOiBub25lO1xuICAgIGNvbG9yOiAjMDAwMDAwO1xufVxuLm5hdiB1bFtyb2xlPVwicGFyZW50X2xpc3RpbmdcIl0gbGkgdWwge1xuICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDA7XG59XG4ubmF2IHVsW3JvbGU9XCJwYXJlbnRfbGlzdGluZ1wiXSBsaSBhLm9wZW4gKyB1bHtcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cbi5uYXYgdWwgbGkge1xuICAgIHBhZGRpbmctdG9wOiA1cHg7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbn0iXX0= */");
 
 /***/ }),
 
@@ -678,6 +684,7 @@ __webpack_require__.r(__webpack_exports__);
 let SidenavComponent = class SidenavComponent {
     constructor(Api) {
         this.Api = Api;
+        this.opened = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
         this.searchText = '';
     }
     ngOnInit() {
@@ -705,10 +712,23 @@ let SidenavComponent = class SidenavComponent {
         else
             event.target.classList.add('open');
     }
+    openCollection(event) {
+        event.preventDefault();
+        const dbName = event.target.attributes['data-database'].value;
+        const collectionName = event.target.innerText;
+        if (dbName && collectionName)
+            this.opened.emit({
+                dbName,
+                collectionName
+            });
+    }
 };
 SidenavComponent.ctorParameters = () => [
     { type: _api_service__WEBPACK_IMPORTED_MODULE_3__["ApiService"] }
 ];
+tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])()
+], SidenavComponent.prototype, "opened", void 0);
 SidenavComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
         selector: 'app-sidenav',
@@ -786,7 +806,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/arun/Desktop/mongo-ui-latest/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /home/arun/Desktop/mongo-ui/src/main.ts */"./src/main.ts");
 
 
 /***/ })
