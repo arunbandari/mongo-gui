@@ -32,7 +32,7 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n  <div class=\"sidenav\">\n    <app-sidenav (opened)=\"open($event)\"></app-sidenav>\n  </div>\n  <div class=\"content\">\n    <div class=\"tab_area\">\n        <ul class=\"tab_ui\"><li *ngFor = \"let tab of tabs; let index = index\" class=\"tablink\" (click)=\"openTab(index)\"><span class=\"fa-li\"><i class=\"fas fa-times\"></i></span> {{tab.database}}.{{tab.collection}}</li></ul>\n    </div>\n    <div>\n      <div *ngFor = \"let tab of tabs; let index = index\" [ngClass]=\"index === activeTabIndex ? 'show' : 'hide'\">\n          <app-collection-renderer [database]=\"tab.database\" [collection]=\"tab.collection\"></app-collection-renderer>\n      </div>\n    </div>\n  </div>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n  <div class=\"sidenav\">\n    <app-sidenav (opened)=\"open($event)\"></app-sidenav>\n  </div>\n  <div class=\"content\">\n    <div class=\"tab_area\">\n      <ul class=\"tab_ui\">\n        <li\n          *ngFor=\"let tab of tabs; let index = index\"\n          class=\"tablink\"\n          (click)=\"openTab(index)\"\n          [ngClass]=\"index === activeTabIndex ? 'active' : ''\"\n        >\n          <span class=\"fa-li\"><i class=\"fas fa-times\"></i></span>\n          <strong>{{ tab.database }}</strong\n          >.{{ tab.collection }}\n          <i class=\"fas fa-times\" (click)=\"closeTab(tab.id)\"></i>\n        </li>\n      </ul>\n    </div>\n    <div>\n      <div\n        *ngFor=\"let tab of tabs; let index = index\"\n        [ngClass]=\"index === activeTabIndex ? 'show' : 'hide'\"\n      >\n        <app-collection-renderer\n          [database]=\"tab.database\"\n          [collection]=\"tab.collection\"\n        ></app-collection-renderer>\n      </div>\n    </div>\n  </div>\n</div>\n");
 
 /***/ }),
 
@@ -45,7 +45,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ng-container *ngFor=\"let doc of documents\"><div class=\"doc\"><app-json-viewer [data]=\"doc\"></app-json-viewer></div></ng-container>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n  <div *ngFor=\"let doc of documents\" class=\"document\">\n    <app-json-viewer [data]=\"doc\"></app-json-viewer>\n  </div>\n</div>\n");
 
 /***/ }),
 
@@ -58,7 +58,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ul>\n    <li *ngFor=\"let row of data | keyvalue\" (click) = \"clicked($event)\">\n        <div class=\"hoverable\">\n            <ng-container [ngSwitch]=\"row.value | type\">\n                <ng-container *ngSwitchCase=\"'string'\"><span class=\"key\">{{row.key}}</span>: <span class=\"string value\">\"{{row.value}}\"</span></ng-container>\n                <ng-container *ngSwitchCase=\"'number'\"><span class=\"key\">{{row.key}}</span>: <span class=\"number value\">{{row.value}}</span></ng-container>\n                <ng-container *ngSwitchCase=\"'boolean'\"><span class=\"key\">{{row.key}}</span>: <span class=\"boolean value\">{{row.value}}</span></ng-container>\n                <ng-container *ngSwitchCase=\"'object'\">\n                    <span class=\"key\">{{row.key}}</span>: <span class=\"notation\">{{ '{ }' }}</span><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n                </ng-container>\n                <ng-container *ngSwitchCase=\"'array'\">\n                        <span class=\"key\">{{row.key}}</span>: <span class=\"notation\">{{ '[ ]' }}</span><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n                    </ng-container>\n        </ng-container>\n        </div>\n    </li>\n</ul>");
+/* harmony default export */ __webpack_exports__["default"] = ("<ul>\n  <li *ngFor=\"let row of data | keyvalue\" (click)=\"clicked($event, row)\">\n    <div class=\"hoverable\">\n      <ng-container [ngSwitch]=\"row.value | type\">\n        <ng-container *ngSwitchCase=\"'string'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"string value\">\"{{ row.value }}\"</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'number'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"number value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'boolean'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"boolean value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'object'\">\n          <span class=\"key\"\n            ><i\n              class=\"fas fa-server\"\n              *ngIf=\"row.value && !isEmptyObject(row.value)\"\n            ></i>\n            {{ row.key }}</span\n          >: <span class=\"notation\">{{ '{ }' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n        <ng-container *ngSwitchCase=\"'array'\">\n          <span class=\"key\"\n            ><i class=\"fas fa-server\" *ngIf=\"row.value && row.value.length\"></i>\n            {{ row.key }}</span\n          >: <span class=\"notation\">{{ '[ ]' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n      </ng-container>\n    </div>\n  </li>\n</ul>\n");
 
 /***/ }),
 
@@ -71,7 +71,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"d60\">\n</div>\n<div class=\"nav\">\n    <ul class=\"fa-ul\" role=\"parent_listing\">\n        <li><span class=\"fa-li\"><i class=\"fas fa-search\"></i></span><input class=\"search\" type=\"text\" placeholder=\"Search dbs & collections...\" [(ngModel)]=\"searchText\" (keyup)=\"filter()\"></li>\n        <li *ngFor=\"let db of displayData\"><a href=\"#\" (click)=\"toggleDB($event)\" class=\"nav_link\"><span class=\"fa-li\"><i class=\"fas fa-server\"></i></span>{{db.name}}</a>\n            <ul class=\"col\" *ngIf=\"db.collections.length\">\n                <li *ngFor=\"let collection of db.collections\"><a href=\"#\" (click)=\"openCollection($event)\" class=\"nav_link\" [attr.data-database]=\"db.name\">{{collection}}</a></li>\n            </ul>\n        </li>\n    </ul>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"d60\"></div>\n<div class=\"nav\">\n  <ul class=\"fa-ul\" role=\"parent_listing\">\n    <li>\n      <span class=\"fa-li\"><i class=\"fas fa-search\"></i></span\n      ><input\n        class=\"search\"\n        type=\"text\"\n        placeholder=\"Search dbs & collections...\"\n        [(ngModel)]=\"searchText\"\n        (keyup)=\"filter()\"\n      />\n    </li>\n    <li *ngFor=\"let db of displayData\">\n      <a\n        href=\"#\"\n        (click)=\"toggleDB($event)\"\n        class=\"nav_link\"\n        [ngClass]=\"{ open: this.searchText && db.collections && db.collections.length }\"\n        ><span class=\"fa-li\"><i class=\"fas fa-server\"></i></span\n        >{{ db.name }}</a\n      >\n      <ul class=\"col\" *ngIf=\"db.collections.length\">\n        <li *ngFor=\"let collection of db.collections\">\n          <a\n            href=\"#\"\n            (click)=\"openCollection($event)\"\n            class=\"nav_link\"\n            [attr.data-database]=\"db.name\"\n            >{{ collection }}</a\n          >\n        </li>\n      </ul>\n    </li>\n  </ul>\n</div>\n");
 
 /***/ }),
 
@@ -328,7 +328,7 @@ let ApiService = class ApiService {
         return this.http.get('http://localhost:3000/databases?includeCollections=true');
     }
     getDocumentsByCollection(dbName, collectionName) {
-        return this.http.get(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents`);
+        return this.http.get(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents?limit=100`);
     }
 };
 ApiService.ctorParameters = () => [
@@ -383,7 +383,7 @@ AppRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".fas {\n    color: grey;\n    position: relative;\n    top: 3px;\n    left: 3px;\n}\n.container {\n    display: grid;\n    grid-template-columns: 2fr 8fr;\n}\n.sidenav {\n    height: 100vh;\n    background: #fff;\n    /* box-shadow: 6px 0 6px rgba(0,0,0,.1); */\n    border: 1px solid #ddd;\n    -webkit-padding-start: 20px;\n            padding-inline-start: 20px;\n}\n.show {\n    display: block;\n}\n.hide {\n    display: none;\n}\n.tab_area {\n    border-bottom: 1px solid #ddd;\n    margin-bottom: 30px;\n}\n.tab_ui {\n    padding: 0px 10px;\n    margin: 0;\n    list-style-type: none;\n    display: inline-flex;\n}\nli.tablink {\n    padding:  8px 10px;\n    border: 1px solid transparent;\n    cursor: pointer;\n}\nli.tablink:hover {\n    border: 1px solid #ddd;\n    border-radius: 10px 10px 0px 0px;\n    border-bottom: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxXQUFXO0lBQ1gsa0JBQWtCO0lBQ2xCLFFBQVE7SUFDUixTQUFTO0FBQ2I7QUFDQTtJQUNJLGFBQWE7SUFDYiw4QkFBOEI7QUFDbEM7QUFDQTtJQUNJLGFBQWE7SUFDYixnQkFBZ0I7SUFDaEIsMENBQTBDO0lBQzFDLHNCQUFzQjtJQUN0QiwyQkFBMEI7WUFBMUIsMEJBQTBCO0FBQzlCO0FBQ0E7SUFDSSxjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxhQUFhO0FBQ2pCO0FBQ0E7SUFDSSw2QkFBNkI7SUFDN0IsbUJBQW1CO0FBQ3ZCO0FBQ0E7SUFDSSxpQkFBaUI7SUFDakIsU0FBUztJQUNULHFCQUFxQjtJQUNyQixvQkFBb0I7QUFDeEI7QUFDQTtJQUNJLGtCQUFrQjtJQUNsQiw2QkFBNkI7SUFDN0IsZUFBZTtBQUNuQjtBQUNBO0lBQ0ksc0JBQXNCO0lBQ3RCLGdDQUFnQztJQUNoQyxtQkFBbUI7QUFDdkIiLCJmaWxlIjoic3JjL2FwcC9hcHAuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5mYXMge1xuICAgIGNvbG9yOiBncmV5O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICB0b3A6IDNweDtcbiAgICBsZWZ0OiAzcHg7XG59XG4uY29udGFpbmVyIHtcbiAgICBkaXNwbGF5OiBncmlkO1xuICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMmZyIDhmcjtcbn1cbi5zaWRlbmF2IHtcbiAgICBoZWlnaHQ6IDEwMHZoO1xuICAgIGJhY2tncm91bmQ6ICNmZmY7XG4gICAgLyogYm94LXNoYWRvdzogNnB4IDAgNnB4IHJnYmEoMCwwLDAsLjEpOyAqL1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNkZGQ7XG4gICAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDIwcHg7XG59XG4uc2hvdyB7XG4gICAgZGlzcGxheTogYmxvY2s7XG59XG4uaGlkZSB7XG4gICAgZGlzcGxheTogbm9uZTtcbn1cbi50YWJfYXJlYSB7XG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNkZGQ7XG4gICAgbWFyZ2luLWJvdHRvbTogMzBweDtcbn1cbi50YWJfdWkge1xuICAgIHBhZGRpbmc6IDBweCAxMHB4O1xuICAgIG1hcmdpbjogMDtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG59XG5saS50YWJsaW5rIHtcbiAgICBwYWRkaW5nOiAgOHB4IDEwcHg7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdHJhbnNwYXJlbnQ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufVxubGkudGFibGluazpob3ZlciB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2RkZDtcbiAgICBib3JkZXItcmFkaXVzOiAxMHB4IDEwcHggMHB4IDBweDtcbiAgICBib3JkZXItYm90dG9tOiBub25lO1xufSJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".fas {\n  color: grey;\n  position: relative;\n  top: 3px;\n  left: 3px;\n}\n.container {\n  display: grid;\n  grid-template-columns: 2fr 8fr;\n}\n.sidenav {\n  min-height: 100vh;\n  background: #fff;\n  /* box-shadow: 6px 0 6px rgba(0,0,0,.1); */\n  border-right: 1px solid #ddd;\n  padding: 20px;\n}\n.show {\n  display: block;\n}\n.hide {\n  display: none;\n}\n.tab_area {\n  border-bottom: 1px solid #ddd;\n  margin-bottom: 16px;\n}\n.tab_ui {\n  padding: 0px 10px;\n  margin: 0;\n  list-style-type: none;\n  display: inline-flex;\n}\nli.tablink {\n  padding: 8px 10px;\n  border: 1px solid transparent;\n  cursor: pointer;\n}\nli.tablink:hover,\nli.tablink.active {\n  border: 1px solid #ddd;\n  border-radius: 10px 10px 0px 0px;\n  border-bottom: none;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxXQUFXO0VBQ1gsa0JBQWtCO0VBQ2xCLFFBQVE7RUFDUixTQUFTO0FBQ1g7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7QUFDaEM7QUFDQTtFQUNFLGlCQUFpQjtFQUNqQixnQkFBZ0I7RUFDaEIsMENBQTBDO0VBQzFDLDRCQUE0QjtFQUM1QixhQUFhO0FBQ2Y7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGFBQWE7QUFDZjtBQUNBO0VBQ0UsNkJBQTZCO0VBQzdCLG1CQUFtQjtBQUNyQjtBQUNBO0VBQ0UsaUJBQWlCO0VBQ2pCLFNBQVM7RUFDVCxxQkFBcUI7RUFDckIsb0JBQW9CO0FBQ3RCO0FBQ0E7RUFDRSxpQkFBaUI7RUFDakIsNkJBQTZCO0VBQzdCLGVBQWU7QUFDakI7QUFDQTs7RUFFRSxzQkFBc0I7RUFDdEIsZ0NBQWdDO0VBQ2hDLG1CQUFtQjtBQUNyQiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmZhcyB7XG4gIGNvbG9yOiBncmV5O1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIHRvcDogM3B4O1xuICBsZWZ0OiAzcHg7XG59XG4uY29udGFpbmVyIHtcbiAgZGlzcGxheTogZ3JpZDtcbiAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiAyZnIgOGZyO1xufVxuLnNpZGVuYXYge1xuICBtaW4taGVpZ2h0OiAxMDB2aDtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgLyogYm94LXNoYWRvdzogNnB4IDAgNnB4IHJnYmEoMCwwLDAsLjEpOyAqL1xuICBib3JkZXItcmlnaHQ6IDFweCBzb2xpZCAjZGRkO1xuICBwYWRkaW5nOiAyMHB4O1xufVxuLnNob3cge1xuICBkaXNwbGF5OiBibG9jaztcbn1cbi5oaWRlIHtcbiAgZGlzcGxheTogbm9uZTtcbn1cbi50YWJfYXJlYSB7XG4gIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjZGRkO1xuICBtYXJnaW4tYm90dG9tOiAxNnB4O1xufVxuLnRhYl91aSB7XG4gIHBhZGRpbmc6IDBweCAxMHB4O1xuICBtYXJnaW46IDA7XG4gIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgZGlzcGxheTogaW5saW5lLWZsZXg7XG59XG5saS50YWJsaW5rIHtcbiAgcGFkZGluZzogOHB4IDEwcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkIHRyYW5zcGFyZW50O1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5saS50YWJsaW5rOmhvdmVyLFxubGkudGFibGluay5hY3RpdmUge1xuICBib3JkZXI6IDFweCBzb2xpZCAjZGRkO1xuICBib3JkZXItcmFkaXVzOiAxMHB4IDEwcHggMHB4IDBweDtcbiAgYm9yZGVyLWJvdHRvbTogbm9uZTtcbn1cbiJdfQ== */");
 
 /***/ }),
 
@@ -407,29 +407,11 @@ let AppComponent = class AppComponent {
     constructor(Api) {
         this.Api = Api;
         this.title = 'mongo-ui-latest';
-        this.tabs = [
-            {
-                id: 1,
-                database: 'mongo_gui',
-                collection: 'test'
-            },
-            {
-                id: 2,
-                database: 'AutoTrigger',
-                collection: 'Components'
-            },
-            {
-                id: 3,
-                database: 'local',
-                collection: 'startup_log'
-            }
-        ];
+        this.tabs = [];
         this.activeTabIndex = 0;
     }
-    ;
     ngOnInit() {
-        this.Api.getDocumentsByCollection('local', 'startup_log')
-            .subscribe((documents) => {
+        this.Api.getDocumentsByCollection('local', 'startup_log').subscribe((documents) => {
             this.docs = documents;
         });
     }
@@ -437,11 +419,24 @@ let AppComponent = class AppComponent {
         this.activeTabIndex = index;
     }
     open(obj) {
+        const tabIndex = this.tabs.findIndex(tab => tab.collection === obj.collectionName);
+        if (tabIndex > -1) {
+            this.activeTabIndex = tabIndex;
+            return;
+        }
         this.tabs.push({
-            id: 7,
+            id: Date.now(),
             database: obj.dbName,
-            collection: obj.collectionName,
+            collection: obj.collectionName
         });
+        this.activeTabIndex = this.tabs.length - 1;
+    }
+    closeTab(id) {
+        const idx = this.tabs.findIndex(tab => tab.id === id);
+        this.tabs.splice(idx, 1);
+        if (this.tabs.length) {
+            this.activeTabIndex = this.tabs.length - 1;
+        }
     }
 };
 AppComponent.ctorParameters = () => [
@@ -528,7 +523,7 @@ AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2NvbGxlY3Rpb24tcmVuZGVyZXIvY29sbGVjdGlvbi1yZW5kZXJlci5jb21wb25lbnQuY3NzIn0= */");
+/* harmony default export */ __webpack_exports__["default"] = (".container {\n  padding: 8px 16px;\n}\n.document {\n  background-color: #ffffff;\n  padding: 8px;\n  margin-bottom: 8px;\n  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHlCQUF5QjtFQUN6QixZQUFZO0VBQ1osa0JBQWtCO0VBQ2xCO3VGQUNxRjtBQUN2RiIsImZpbGUiOiJzcmMvYXBwL2NvbGxlY3Rpb24tcmVuZGVyZXIvY29sbGVjdGlvbi1yZW5kZXJlci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmNvbnRhaW5lciB7XG4gIHBhZGRpbmc6IDhweCAxNnB4O1xufVxuLmRvY3VtZW50IHtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZmZmZjtcbiAgcGFkZGluZzogOHB4O1xuICBtYXJnaW4tYm90dG9tOiA4cHg7XG4gIGJveC1zaGFkb3c6IDBweCAycHggMXB4IC0xcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgIDBweCAxcHggMXB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTQpLCAwcHggMXB4IDNweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEyKSAhaW1wb3J0YW50O1xufVxuIl19 */");
 
 /***/ }),
 
@@ -553,8 +548,7 @@ let CollectionRendererComponent = class CollectionRendererComponent {
         this.API = API;
     }
     ngOnInit() {
-        this.API.getDocumentsByCollection(this.database, this.collection)
-            .subscribe((documents) => {
+        this.API.getDocumentsByCollection(this.database, this.collection).subscribe((documents) => {
             this.documents = documents;
         });
     }
@@ -589,7 +583,7 @@ CollectionRendererComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("ul {\n    list-style-type: none;\n}\nul li {\n    cursor: pointer;\n}\nli ul {\n    display: none;\n}\n.open {\n    display: block !important;\n}\n.string {\n    color: green;\n}\n.number {\n    color: blue;\n}\n.boolean {\n    color: firebrick;\n}\n.notation {\n    font-style: italic;\n    color: #999;\n    font-size: 80%;\n}\n.key {\n    font-weight: bold;\n}\n.hoverable {\n    padding-top: 1px;\n    padding-bottom: 1px;\n    padding-left: 2px;\n    padding-right: 2px;\n    border-radius: 2px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLHFCQUFxQjtBQUN6QjtBQUNBO0lBQ0ksZUFBZTtBQUNuQjtBQUNBO0lBQ0ksYUFBYTtBQUNqQjtBQUNBO0lBQ0kseUJBQXlCO0FBQzdCO0FBQ0E7SUFDSSxZQUFZO0FBQ2hCO0FBQ0E7SUFDSSxXQUFXO0FBQ2Y7QUFDQTtJQUNJLGdCQUFnQjtBQUNwQjtBQUNBO0lBQ0ksa0JBQWtCO0lBQ2xCLFdBQVc7SUFDWCxjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxpQkFBaUI7QUFDckI7QUFDQTtJQUNJLGdCQUFnQjtJQUNoQixtQkFBbUI7SUFDbkIsaUJBQWlCO0lBQ2pCLGtCQUFrQjtJQUNsQixrQkFBa0I7QUFDdEIiLCJmaWxlIjoic3JjL2FwcC9qc29uLXZpZXdlci9qc29uLXZpZXdlci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsidWwge1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbn1cbnVsIGxpIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG5saSB1bCB7XG4gICAgZGlzcGxheTogbm9uZTtcbn1cbi5vcGVuIHtcbiAgICBkaXNwbGF5OiBibG9jayAhaW1wb3J0YW50O1xufVxuLnN0cmluZyB7XG4gICAgY29sb3I6IGdyZWVuO1xufVxuLm51bWJlciB7XG4gICAgY29sb3I6IGJsdWU7XG59XG4uYm9vbGVhbiB7XG4gICAgY29sb3I6IGZpcmVicmljaztcbn1cbi5ub3RhdGlvbiB7XG4gICAgZm9udC1zdHlsZTogaXRhbGljO1xuICAgIGNvbG9yOiAjOTk5O1xuICAgIGZvbnQtc2l6ZTogODAlO1xufVxuLmtleSB7XG4gICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG59XG4uaG92ZXJhYmxlIHtcbiAgICBwYWRkaW5nLXRvcDogMXB4O1xuICAgIHBhZGRpbmctYm90dG9tOiAxcHg7XG4gICAgcGFkZGluZy1sZWZ0OiAycHg7XG4gICAgcGFkZGluZy1yaWdodDogMnB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDJweDtcbn0iXX0= */");
+/* harmony default export */ __webpack_exports__["default"] = ("ul {\n  list-style-type: none;\n}\nul li {\n  cursor: pointer;\n}\nli ul {\n  display: none;\n}\n.open {\n  display: block !important;\n}\n.string {\n  color: green;\n}\n.number {\n  color: blue;\n}\n.boolean {\n  color: firebrick;\n}\n.notation {\n  font-style: italic;\n  color: #999;\n  font-size: 80%;\n}\n.key {\n  font-weight: bold;\n}\n.hoverable {\n  padding: 1px 2px;\n  border-radius: 2px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtBQUN2QjtBQUNBO0VBQ0UsZUFBZTtBQUNqQjtBQUNBO0VBQ0UsYUFBYTtBQUNmO0FBQ0E7RUFDRSx5QkFBeUI7QUFDM0I7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0UsV0FBVztBQUNiO0FBQ0E7RUFDRSxnQkFBZ0I7QUFDbEI7QUFDQTtFQUNFLGtCQUFrQjtFQUNsQixXQUFXO0VBQ1gsY0FBYztBQUNoQjtBQUNBO0VBQ0UsaUJBQWlCO0FBQ25CO0FBQ0E7RUFDRSxnQkFBZ0I7RUFDaEIsa0JBQWtCO0FBQ3BCIiwiZmlsZSI6InNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbInVsIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xufVxudWwgbGkge1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5saSB1bCB7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG4ub3BlbiB7XG4gIGRpc3BsYXk6IGJsb2NrICFpbXBvcnRhbnQ7XG59XG4uc3RyaW5nIHtcbiAgY29sb3I6IGdyZWVuO1xufVxuLm51bWJlciB7XG4gIGNvbG9yOiBibHVlO1xufVxuLmJvb2xlYW4ge1xuICBjb2xvcjogZmlyZWJyaWNrO1xufVxuLm5vdGF0aW9uIHtcbiAgZm9udC1zdHlsZTogaXRhbGljO1xuICBjb2xvcjogIzk5OTtcbiAgZm9udC1zaXplOiA4MCU7XG59XG4ua2V5IHtcbiAgZm9udC13ZWlnaHQ6IGJvbGQ7XG59XG4uaG92ZXJhYmxlIHtcbiAgcGFkZGluZzogMXB4IDJweDtcbiAgYm9yZGVyLXJhZGl1czogMnB4O1xufVxuIl19 */");
 
 /***/ }),
 
@@ -611,18 +605,31 @@ __webpack_require__.r(__webpack_exports__);
 
 let JsonViewerComponent = class JsonViewerComponent {
     constructor() { }
-    ngOnInit() {
-    }
-    clicked(e) {
+    ngOnInit() { }
+    clicked(e, row) {
         e.stopPropagation();
-        const children = e.target.querySelector('ul') || (e.target.nextSibling && e.target.nextSibling.querySelector && e.target.nextSibling.querySelector('ul'));
+        if (typeof row.value === 'object') {
+            console.log(e, typeof row.value);
+        }
+        const targetEl = e.target.tagName === 'I'
+            ? e.target.parentNode.parentNode
+            : e.target.parentNode;
+        const children = targetEl.querySelector('ul') ||
+            (targetEl.nextSibling &&
+                targetEl.nextSibling.querySelector &&
+                targetEl.nextSibling.querySelector('ul'));
         if (children && children.classList) {
             const classList = children.classList;
-            if (classList.contains('open'))
+            if (classList.contains('open')) {
                 classList.remove('open');
-            else
+            }
+            else {
                 classList.add('open');
+            }
         }
+    }
+    isEmptyObject(obj) {
+        return obj && Object.keys(obj).length === 0;
     }
 };
 tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -658,7 +665,7 @@ Type = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".search {\n    border: none;\n    border-bottom: 2px solid #f5f5f5;\n}\n.search:focus {\n    border: none;\n    outline: none;\n    border-bottom: 2px solid orange;\n}\n.nav ul {\n    list-style-type: none;\n    font-size: 14px;\n}\n.nav .nav_link {\n    text-decoration: none;\n    color: #000000;\n}\n.nav ul[role=\"parent_listing\"] li ul {\n    display: none;\n    -webkit-padding-start: 0;\n            padding-inline-start: 0;\n}\n.nav ul[role=\"parent_listing\"] li a.open + ul{\n    display: block;\n}\n.nav ul li {\n    padding-top: 5px;\n    box-sizing: border-box;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvc2lkZW5hdi9zaWRlbmF2LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxZQUFZO0lBQ1osZ0NBQWdDO0FBQ3BDO0FBQ0E7SUFDSSxZQUFZO0lBQ1osYUFBYTtJQUNiLCtCQUErQjtBQUNuQztBQUNBO0lBQ0kscUJBQXFCO0lBQ3JCLGVBQWU7QUFDbkI7QUFDQTtJQUNJLHFCQUFxQjtJQUNyQixjQUFjO0FBQ2xCO0FBQ0E7SUFDSSxhQUFhO0lBQ2Isd0JBQXVCO1lBQXZCLHVCQUF1QjtBQUMzQjtBQUNBO0lBQ0ksY0FBYztBQUNsQjtBQUNBO0lBQ0ksZ0JBQWdCO0lBQ2hCLHNCQUFzQjtBQUMxQiIsImZpbGUiOiJzcmMvYXBwL3NpZGVuYXYvc2lkZW5hdi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNlYXJjaCB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGJvcmRlci1ib3R0b206IDJweCBzb2xpZCAjZjVmNWY1O1xufVxuLnNlYXJjaDpmb2N1cyB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIG91dGxpbmU6IG5vbmU7XG4gICAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkIG9yYW5nZTtcbn1cbi5uYXYgdWwge1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBmb250LXNpemU6IDE0cHg7XG59XG4ubmF2IC5uYXZfbGluayB7XG4gICAgdGV4dC1kZWNvcmF0aW9uOiBub25lO1xuICAgIGNvbG9yOiAjMDAwMDAwO1xufVxuLm5hdiB1bFtyb2xlPVwicGFyZW50X2xpc3RpbmdcIl0gbGkgdWwge1xuICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDA7XG59XG4ubmF2IHVsW3JvbGU9XCJwYXJlbnRfbGlzdGluZ1wiXSBsaSBhLm9wZW4gKyB1bHtcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cbi5uYXYgdWwgbGkge1xuICAgIHBhZGRpbmctdG9wOiA1cHg7XG4gICAgYm94LXNpemluZzogYm9yZGVyLWJveDtcbn0iXX0= */");
+/* harmony default export */ __webpack_exports__["default"] = (".search {\n  border: none;\n  border-bottom: 2px solid #f5f5f5;\n}\n.search:focus {\n  border: none;\n  outline: none;\n  border-bottom: 2px solid orange;\n}\n.nav ul {\n  list-style-type: none;\n  font-size: 14px;\n  margin-top: 0;\n}\n.nav .nav_link {\n  text-decoration: none;\n  color: #000000;\n}\n.nav ul li ul {\n  display: none;\n  -webkit-padding-start: 0;\n          padding-inline-start: 0;\n}\n.nav ul li a.open + ul {\n  display: block;\n}\n.nav ul li {\n  padding-top: 5px;\n  box-sizing: border-box;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvc2lkZW5hdi9zaWRlbmF2LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxZQUFZO0VBQ1osZ0NBQWdDO0FBQ2xDO0FBQ0E7RUFDRSxZQUFZO0VBQ1osYUFBYTtFQUNiLCtCQUErQjtBQUNqQztBQUNBO0VBQ0UscUJBQXFCO0VBQ3JCLGVBQWU7RUFDZixhQUFhO0FBQ2Y7QUFDQTtFQUNFLHFCQUFxQjtFQUNyQixjQUFjO0FBQ2hCO0FBQ0E7RUFDRSxhQUFhO0VBQ2Isd0JBQXVCO1VBQXZCLHVCQUF1QjtBQUN6QjtBQUNBO0VBQ0UsY0FBYztBQUNoQjtBQUNBO0VBQ0UsZ0JBQWdCO0VBQ2hCLHNCQUFzQjtBQUN4QiIsImZpbGUiOiJzcmMvYXBwL3NpZGVuYXYvc2lkZW5hdi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNlYXJjaCB7XG4gIGJvcmRlcjogbm9uZTtcbiAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICNmNWY1ZjU7XG59XG4uc2VhcmNoOmZvY3VzIHtcbiAgYm9yZGVyOiBub25lO1xuICBvdXRsaW5lOiBub25lO1xuICBib3JkZXItYm90dG9tOiAycHggc29saWQgb3JhbmdlO1xufVxuLm5hdiB1bCB7XG4gIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgZm9udC1zaXplOiAxNHB4O1xuICBtYXJnaW4tdG9wOiAwO1xufVxuLm5hdiAubmF2X2xpbmsge1xuICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XG4gIGNvbG9yOiAjMDAwMDAwO1xufVxuLm5hdiB1bCBsaSB1bCB7XG4gIGRpc3BsYXk6IG5vbmU7XG4gIHBhZGRpbmctaW5saW5lLXN0YXJ0OiAwO1xufVxuLm5hdiB1bCBsaSBhLm9wZW4gKyB1bCB7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuLm5hdiB1bCBsaSB7XG4gIHBhZGRpbmctdG9wOiA1cHg7XG4gIGJveC1zaXppbmc6IGJvcmRlci1ib3g7XG59XG4iXX0= */");
 
 /***/ }),
 
@@ -685,11 +692,11 @@ let SidenavComponent = class SidenavComponent {
     constructor(Api) {
         this.Api = Api;
         this.opened = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this.displayData = [];
         this.searchText = '';
     }
     ngOnInit() {
-        this.Api.getDbs()
-            .subscribe((res) => {
+        this.Api.getDbs().subscribe((res) => {
             this.dbs = res;
             this.filter();
         });
@@ -697,30 +704,39 @@ let SidenavComponent = class SidenavComponent {
     filter() {
         this.displayData = lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"](this.dbs.databases);
         console.log(this.displayData);
-        if (!this.searchText)
+        if (!this.searchText) {
             return;
+        }
         const pattern = new RegExp(`.*${this.searchText}.*`, 'gi');
-        this.displayData = this.displayData.map(db => {
-            db.collections = db.collections.filter(col => pattern.test(col));
-            return db;
-        });
+        this.displayData = this.displayData
+            .map(db => {
+            db.collections = db.collections.filter((col) => pattern.test(col));
+            if (db.collections.length) {
+                return db;
+            }
+            return false;
+        })
+            .filter(Boolean);
     }
     toggleDB(event) {
         event.preventDefault();
-        if (event.target.classList.contains('open'))
+        if (event.target.classList.contains('open')) {
             event.target.classList.remove('open');
-        else
+        }
+        else {
             event.target.classList.add('open');
+        }
     }
     openCollection(event) {
         event.preventDefault();
         const dbName = event.target.attributes['data-database'].value;
         const collectionName = event.target.innerText;
-        if (dbName && collectionName)
+        if (dbName && collectionName) {
             this.opened.emit({
                 dbName,
                 collectionName
             });
+        }
     }
 };
 SidenavComponent.ctorParameters = () => [
@@ -806,10 +822,9 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_2__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/arun/Desktop/mongo-ui/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /home/tushar/my/Projects/nm/mongo-ui/src/main.ts */"./src/main.ts");
 
 
 /***/ })
 
 },[[0,"runtime","vendor"]]]);
-//# sourceMappingURL=main-es2015.js.map

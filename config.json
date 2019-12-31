@@ -1,9 +1,0 @@
-{
-    "connectTo": "local",
-    "connections": {
-        "local": {
-            "url": "mongodb://localhost:27017",
-            "options": {}
-        }
-    }
-}

@@ -1,10 +1,11 @@
+require('dotenv').config();
 const express = require('express');
-const mongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const databasesRoute = require('./src/database');
-const config = require('./config.json');
-const port = 3000;
+
+const dataAccessAdapter = require('./src/db/dataAccessAdapter');
+const databasesRoute = require('./src/routes/database');
+const port = +process.env.PORT || 3000;
 
 const app = express();
 
@@ -24,27 +25,6 @@ app.use(bodyParser.json())
 app.use('/databases', databasesRoute);
 
 app.listen(port, () => {
-
+  dataAccessAdapter.InitDB();
   console.log(`Server is listening on port ${port}!`);
-
-  const connectTo = config.connectTo;
-  const dbConfig  = config.connections[connectTo];
-  if (!dbConfig) {
-    dbConfig = {
-      url: 'mongodb://localhost:27017',
-      options: {}
-    };
-  }
-
-  console.log('Connecting to mongoDB...');
-
-  mongoClient.connect(dbConfig.url, { useUnifiedTopology: true }, (err, client) => {
-    if (err) {
-      console.log(`Failed to connect mongoDB - ${err}`);
-      // return app.close();
-    } else {
-      console.log('Connected to mongoDB!!');
-      app.mongo = client;
-    }
-  });
 });

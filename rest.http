@@ -5,7 +5,7 @@ Content-Type: application/json
  "_id": "8"
 }
 ###
-PATCH http://localhost:3000/databases/mongo_gui/collections/test/documents
+PATCH http://localhost:3000/databases/580a07b8d5be18c823242213/collections/580a07b8d5be18c823242213-Reqre/documents/filter
 Content-Type: application/json
 
 {
@@ -16,3 +16,6 @@ Content-Type: application/json
 DELETE http://localhost:3000/databases/mongo_gui/collections/test/documents/5de2a8587c25d87b9f007b43
 
 ###
+
+GET http://localhost:3000/databases/580a07b8d5be18c823242213/collections/580a07b8d5be18c823242213-Reqre/documents/
+Content-Type: application/json
