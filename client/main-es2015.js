@@ -58,7 +58,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ul>\n  <li *ngFor=\"let row of data | keyvalue\" (click)=\"clicked($event, row)\">\n    <div class=\"hoverable\">\n      <ng-container [ngSwitch]=\"row.value | type\">\n        <ng-container *ngSwitchCase=\"'string'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"string value\">\"{{ row.value }}\"</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'number'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"number value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'boolean'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"boolean value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'object'\">\n          <span class=\"key\"\n            ><i\n              class=\"fas fa-server\"\n              *ngIf=\"row.value && !isEmptyObject(row.value)\"\n            ></i>\n            {{ row.key }}</span\n          >: <span class=\"notation\">{{ '{ }' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n        <ng-container *ngSwitchCase=\"'array'\">\n          <span class=\"key\"\n            ><i class=\"fas fa-server\" *ngIf=\"row.value && row.value.length\"></i>\n            {{ row.key }}</span\n          >: <span class=\"notation\">{{ '[ ]' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n      </ng-container>\n    </div>\n  </li>\n</ul>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ul>\n  <li\n    *ngFor=\"let row of data | keyvalue: originalOrder\"\n    (click)=\"clicked($event, row)\"\n  >\n    <div class=\"hoverable\">\n      <ng-container [ngSwitch]=\"row.value | type\">\n        <ng-container *ngSwitchCase=\"'string'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"string value\">\"{{ row.value }}\"</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'number'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"number value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'boolean'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"boolean value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'object'\">\n          <span class=\"key\"\n            ><i\n              class=\"fas fa-server\"\n              *ngIf=\"row.value && !isEmptyObject(row.value)\"\n            ></i>\n            {{ row.key }}</span\n          >: <span class=\"notation\">{{ '{ }' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n        <ng-container *ngSwitchCase=\"'array'\">\n          <span class=\"key\"\n            ><i class=\"fas fa-server\" *ngIf=\"row.value && row.value.length\"></i>\n            {{ row.key }}</span\n          >: <span class=\"notation\">{{ '[ ]' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n      </ng-container>\n    </div>\n  </li>\n</ul>\n");
 
 /***/ }),
 
@@ -604,7 +604,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let JsonViewerComponent = class JsonViewerComponent {
-    constructor() { }
+    constructor() {
+        this.originalOrder = (a, b) => {
+            return 0;
+        };
+    }
     ngOnInit() { }
     clicked(e, row) {
         e.stopPropagation();
