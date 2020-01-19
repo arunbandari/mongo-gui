@@ -45,7 +45,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n  <div *ngFor=\"let doc of documents\" class=\"document\">\n    <app-json-viewer [data]=\"doc\"></app-json-viewer>\n  </div>\n</div>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"tab_content\">\n  <div class=\"help\">\n    <ul class=\"meta\">\n      <li>Database: <b>{{database}}</b></li>\n      <li>Collection: <b>{{collection}}</b></li>\n      <li>Count: <b>{{documents?.length}}</b></li>\n      <li><button nz-button (click)=\"getDocuments()\" nzType=\"link\" nzTooltipTitle=\"Reload\" nzTooltipPlacement=\"top\"\n          nz-tooltip><i nz-icon nzType=\"reload\"></i></button></li>\n    </ul>\n    <div class=\"query\">\n      <nz-input-group nzSearch nzSize=\"medium\" [nzAddOnAfter]=\"suffixButton\">\n        <input type=\"text\" [(ngModel)]=\"queryBody\" nz-input placeholder=\"input query\" />\n      </nz-input-group>\n      <ng-template #suffixButton>\n        <button nz-button nzType=\"primary\" nzSize=\"medium\" nzSearch (click)=\"query(queryBody)\">Find</button>\n      </ng-template>\n    </div>\n  </div>\n  <div class=\"container\">\n    <div *ngFor=\"let doc of documents\" class=\"document\">\n      <div class=\"left\">\n        <app-json-viewer [data]=\"doc\"></app-json-viewer>\n      </div>\n      <div class=\"right\">\n        <button nz-button nzType=\"default\" (click)=\"copyToClipboard(doc)\" nzTooltipTitle=\"Copy\" nzTooltipPlacement=\"top\"\n          nz-tooltip><i nz-icon nzType=\"copy\"></i></button>\n        <button nz-button nzType=\"default\" (click)=\"deleteDocument(doc._id)\" nzTooltipTitle=\"Delete\"\n          nzTooltipPlacement=\"top\" nz-tooltip><i nz-icon nzType=\"delete\"></i></button>\n      </div>\n    </div>\n  </div>\n</div>");
 
 /***/ }),
 
@@ -330,6 +330,12 @@ let ApiService = class ApiService {
     getDocumentsByCollection(dbName, collectionName) {
         return this.http.get(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents?limit=100`);
     }
+    filterDocumentsByQuery(dbName, collectionName, query) {
+        return this.http.post(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents/filter`, query);
+    }
+    deleteDocumentById(dbName, collectionName, id) {
+        return this.http.delete(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents/${id}`);
+    }
 };
 ApiService.ctorParameters = () => [
     { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"] }
@@ -383,7 +389,7 @@ AppRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".logo {\n  height: 32px;\n  background: rgba(255, 255, 255, 0.2);\n  margin: 16px;\n}\n\n.left-layout {\n  height: 100vh;\n}\n\nnz-sider {\n  overflow: auto;\n  height: 100%;\n  position: fixed;\n  left: 0;\n}\n\n.right-layout {\n  margin-left: 300px;\n}\n\nnz-header {\n  background: #fff;\n  padding: 0;\n}\n\nnz-content {\n  overflow: initial;\n  background: #fff;\n}\n\n.inner-content {\n  padding: 24px;\n  background: #fff;\n  text-align: center;\n}\n\nnz-footer {\n  text-align: center;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxZQUFZO0VBQ1osb0NBQW9DO0VBQ3BDLFlBQVk7QUFDZDs7QUFFQTtFQUNFLGFBQWE7QUFDZjs7QUFFQTtFQUNFLGNBQWM7RUFDZCxZQUFZO0VBQ1osZUFBZTtFQUNmLE9BQU87QUFDVDs7QUFFQTtFQUNFLGtCQUFrQjtBQUNwQjs7QUFFQTtFQUNFLGdCQUFnQjtFQUNoQixVQUFVO0FBQ1o7O0FBRUE7RUFDRSxpQkFBaUI7RUFDakIsZ0JBQWdCO0FBQ2xCOztBQUVBO0VBQ0UsYUFBYTtFQUNiLGdCQUFnQjtFQUNoQixrQkFBa0I7QUFDcEI7O0FBRUE7RUFDRSxrQkFBa0I7QUFDcEIiLCJmaWxlIjoic3JjL2FwcC9hcHAuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5sb2dvIHtcbiAgaGVpZ2h0OiAzMnB4O1xuICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMik7XG4gIG1hcmdpbjogMTZweDtcbn1cblxuLmxlZnQtbGF5b3V0IHtcbiAgaGVpZ2h0OiAxMDB2aDtcbn1cblxubnotc2lkZXIge1xuICBvdmVyZmxvdzogYXV0bztcbiAgaGVpZ2h0OiAxMDAlO1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGxlZnQ6IDA7XG59XG5cbi5yaWdodC1sYXlvdXQge1xuICBtYXJnaW4tbGVmdDogMzAwcHg7XG59XG5cbm56LWhlYWRlciB7XG4gIGJhY2tncm91bmQ6ICNmZmY7XG4gIHBhZGRpbmc6IDA7XG59XG5cbm56LWNvbnRlbnQge1xuICBvdmVyZmxvdzogaW5pdGlhbDtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbn1cblxuLmlubmVyLWNvbnRlbnQge1xuICBwYWRkaW5nOiAyNHB4O1xuICBiYWNrZ3JvdW5kOiAjZmZmO1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG59XG5cbm56LWZvb3RlciB7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbn1cbiJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".logo {\n  height: 32px;\n  background: rgba(255, 255, 255, 0.2);\n  margin: 16px;\n}\n\n.left-layout {\n  height: 100vh;\n}\n\nnz-sider {\n  overflow: auto;\n  height: 100%;\n  position: fixed;\n  left: 0;\n  font-family: 'Roboto', sans-serif !important;\n}\n\n.right-layout {\n  margin-left: 300px;\n}\n\nnz-header {\n  background: #fff;\n  padding: 0;\n}\n\nnz-content {\n  overflow: hidden;\n  background: #fff;\n}\n\n.inner-content {\n  padding: 24px;\n  background: #fff;\n  text-align: center;\n}\n\nnz-footer {\n  text-align: center;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxZQUFZO0VBQ1osb0NBQW9DO0VBQ3BDLFlBQVk7QUFDZDs7QUFFQTtFQUNFLGFBQWE7QUFDZjs7QUFFQTtFQUNFLGNBQWM7RUFDZCxZQUFZO0VBQ1osZUFBZTtFQUNmLE9BQU87RUFDUCw0Q0FBNEM7QUFDOUM7O0FBRUE7RUFDRSxrQkFBa0I7QUFDcEI7O0FBRUE7RUFDRSxnQkFBZ0I7RUFDaEIsVUFBVTtBQUNaOztBQUVBO0VBQ0UsZ0JBQWdCO0VBQ2hCLGdCQUFnQjtBQUNsQjs7QUFFQTtFQUNFLGFBQWE7RUFDYixnQkFBZ0I7RUFDaEIsa0JBQWtCO0FBQ3BCOztBQUVBO0VBQ0Usa0JBQWtCO0FBQ3BCIiwiZmlsZSI6InNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubG9nbyB7XG4gIGhlaWdodDogMzJweDtcbiAgYmFja2dyb3VuZDogcmdiYSgyNTUsIDI1NSwgMjU1LCAwLjIpO1xuICBtYXJnaW46IDE2cHg7XG59XG5cbi5sZWZ0LWxheW91dCB7XG4gIGhlaWdodDogMTAwdmg7XG59XG5cbm56LXNpZGVyIHtcbiAgb3ZlcmZsb3c6IGF1dG87XG4gIGhlaWdodDogMTAwJTtcbiAgcG9zaXRpb246IGZpeGVkO1xuICBsZWZ0OiAwO1xuICBmb250LWZhbWlseTogJ1JvYm90bycsIHNhbnMtc2VyaWYgIWltcG9ydGFudDtcbn1cblxuLnJpZ2h0LWxheW91dCB7XG4gIG1hcmdpbi1sZWZ0OiAzMDBweDtcbn1cblxubnotaGVhZGVyIHtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgcGFkZGluZzogMDtcbn1cblxubnotY29udGVudCB7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIGJhY2tncm91bmQ6ICNmZmY7XG59XG5cbi5pbm5lci1jb250ZW50IHtcbiAgcGFkZGluZzogMjRweDtcbiAgYmFja2dyb3VuZDogI2ZmZjtcbiAgdGV4dC1hbGlnbjogY2VudGVyO1xufVxuXG5uei1mb290ZXIge1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG59XG4iXX0= */");
 
 /***/ }),
 
@@ -419,7 +425,7 @@ let AppComponent = class AppComponent {
         this.activeTabIndex = index;
     }
     open(obj) {
-        const tabIndex = this.tabs.findIndex(tab => tab.collection === obj.collectionName);
+        const tabIndex = this.tabs.findIndex(tab => tab.collection === obj.collectionName && tab.database === obj.dbName);
         if (tabIndex > -1) {
             this.activeTabIndex = tabIndex;
             return;
@@ -527,7 +533,7 @@ AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".container {\n  padding: 8px 16px;\n}\n.document {\n  background-color: #ffffff;\n  padding: 8px;\n  margin-bottom: 8px;\n  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */\n  border: 1px solid #f1f1f1;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHlCQUF5QjtFQUN6QixZQUFZO0VBQ1osa0JBQWtCO0VBQ2xCOzBGQUN3RjtFQUN4Rix5QkFBeUI7QUFDM0IiLCJmaWxlIjoic3JjL2FwcC9jb2xsZWN0aW9uLXJlbmRlcmVyL2NvbGxlY3Rpb24tcmVuZGVyZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb250YWluZXIge1xuICBwYWRkaW5nOiA4cHggMTZweDtcbn1cbi5kb2N1bWVudCB7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7XG4gIHBhZGRpbmc6IDhweDtcbiAgbWFyZ2luLWJvdHRvbTogOHB4O1xuICAvKiBib3gtc2hhZG93OiAwcHggMnB4IDFweCAtMXB4IHJnYmEoMCwgMCwgMCwgMC4yKSxcbiAgICAwcHggMXB4IDFweCAwcHggcmdiYSgwLCAwLCAwLCAwLjE0KSwgMHB4IDFweCAzcHggMHB4IHJnYmEoMCwgMCwgMCwgMC4xMikgIWltcG9ydGFudDsgKi9cbiAgYm9yZGVyOiAxcHggc29saWQgI2YxZjFmMTtcbn1cbiJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".container {\n  padding: 8px 10px;\n  overflow: auto;\n  height: calc(100vh - 140px);\n  background: #f5f5f5;\n}\n.document {\n  display: grid;\n  grid-template-columns: 9fr 3fr;\n  border: 1px solid #ddd;\n  background-color: #ffffff;\n  padding: 15px 8px;\n  margin-bottom: 8px;\n  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */\n}\n.right [nz-button] {\n  margin: 0px 4px !important;\n  height: 25px;\n  width: 25px;\n}\n.document .right [nz-button] {\n  visibility: hidden;\n}\n.document:hover .right [nz-button] {\n  visibility: visible;\n}\n.query {\n  padding: 0px 10px;\n}\n.query [nz-input] {\n  background: whitesmoke;\n}\n.help {\n  border-bottom: 2px solid #ddd;\n  padding-bottom: 5px;\n  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;\n}\n.tab_content {\n  grid-template-rows: auto;\n}\n.meta {\n  list-style-type: none;\n  display: inline-flex;\n  padding: 0;\n}\n.meta li {\n  padding: 0px 15px;\n  vertical-align: middle;\n  line-height: 30px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7RUFDakIsY0FBYztFQUNkLDJCQUEyQjtFQUMzQixtQkFBbUI7QUFDckI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7RUFDOUIsc0JBQXNCO0VBQ3RCLHlCQUF5QjtFQUN6QixpQkFBaUI7RUFDakIsa0JBQWtCO0VBQ2xCOzBGQUN3RjtBQUMxRjtBQUNBO0VBQ0UsMEJBQTBCO0VBQzFCLFlBQVk7RUFDWixXQUFXO0FBQ2I7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsbUJBQW1CO0FBQ3JCO0FBQ0E7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHNCQUFzQjtBQUN4QjtBQUNBO0VBQ0UsNkJBQTZCO0VBQzdCLG1CQUFtQjtFQUNuQjt1RkFDcUY7QUFDdkY7QUFDQTtFQUNFLHdCQUF3QjtBQUMxQjtBQUNBO0VBQ0UscUJBQXFCO0VBQ3JCLG9CQUFvQjtFQUNwQixVQUFVO0FBQ1o7QUFDQTtFQUNFLGlCQUFpQjtFQUNqQixzQkFBc0I7RUFDdEIsaUJBQWlCO0FBQ25CIiwiZmlsZSI6InNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVyIHtcbiAgcGFkZGluZzogOHB4IDEwcHg7XG4gIG92ZXJmbG93OiBhdXRvO1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSAxNDBweCk7XG4gIGJhY2tncm91bmQ6ICNmNWY1ZjU7XG59XG4uZG9jdW1lbnQge1xuICBkaXNwbGF5OiBncmlkO1xuICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IDlmciAzZnI7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNkZGQ7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7XG4gIHBhZGRpbmc6IDE1cHggOHB4O1xuICBtYXJnaW4tYm90dG9tOiA4cHg7XG4gIC8qIGJveC1zaGFkb3c6IDBweCAycHggMXB4IC0xcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgIDBweCAxcHggMXB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTQpLCAwcHggMXB4IDNweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEyKSAhaW1wb3J0YW50OyAqL1xufVxuLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgbWFyZ2luOiAwcHggNHB4ICFpbXBvcnRhbnQ7XG4gIGhlaWdodDogMjVweDtcbiAgd2lkdGg6IDI1cHg7XG59XG4uZG9jdW1lbnQgLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgdmlzaWJpbGl0eTogaGlkZGVuO1xufVxuLmRvY3VtZW50OmhvdmVyIC5yaWdodCBbbnotYnV0dG9uXSB7XG4gIHZpc2liaWxpdHk6IHZpc2libGU7XG59XG4ucXVlcnkge1xuICBwYWRkaW5nOiAwcHggMTBweDtcbn1cbi5xdWVyeSBbbnotaW5wdXRdIHtcbiAgYmFja2dyb3VuZDogd2hpdGVzbW9rZTtcbn1cbi5oZWxwIHtcbiAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICNkZGQ7XG4gIHBhZGRpbmctYm90dG9tOiA1cHg7XG4gIGJveC1zaGFkb3c6IDBweCAycHggMXB4IC0xcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgIDBweCAxcHggMXB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTQpLCAwcHggMXB4IDNweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEyKSAhaW1wb3J0YW50O1xufVxuLnRhYl9jb250ZW50IHtcbiAgZ3JpZC10ZW1wbGF0ZS1yb3dzOiBhdXRvO1xufVxuLm1ldGEge1xuICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICBwYWRkaW5nOiAwO1xufVxuLm1ldGEgbGkge1xuICBwYWRkaW5nOiAwcHggMTVweDtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgbGluZS1oZWlnaHQ6IDMwcHg7XG59XG4iXX0= */");
 
 /***/ }),
 
@@ -544,21 +550,65 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /* harmony import */ var _api_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../api.service */ "./src/app/api.service.ts");
+/* harmony import */ var ng_zorro_antd_message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ng-zorro-antd/message */ "./node_modules/ng-zorro-antd/fesm2015/ng-zorro-antd-message.js");
+
 
 
 
 let CollectionRendererComponent = class CollectionRendererComponent {
-    constructor(API) {
+    constructor(API, message) {
         this.API = API;
+        this.message = message;
     }
-    ngOnInit() {
+    getDocuments() {
         this.API.getDocumentsByCollection(this.database, this.collection).subscribe((documents) => {
             this.documents = documents;
         });
     }
+    ngOnInit() {
+        this.getDocuments();
+    }
+    query(criteria) {
+        try {
+            if (!criteria)
+                criteria = {};
+            else
+                criteria = JSON.parse(criteria);
+            this.API.filterDocumentsByQuery(this.database, this.collection, criteria).subscribe((documents) => {
+                this.documents = documents;
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    deleteDocument(id) {
+        this.API.deleteDocumentById(this.database, this.collection, id).subscribe((response) => {
+            this.query({});
+        });
+    }
+    copyToClipboard(text, msg) {
+        text = JSON.stringify(text);
+        let txtArea = document.createElement("textarea");
+        txtArea.style.position = 'fixed';
+        txtArea.style.top = '0';
+        txtArea.style.left = '0';
+        txtArea.style.opacity = '0';
+        txtArea.value = text;
+        document.body.appendChild(txtArea);
+        txtArea.select();
+        try {
+            let result = document.execCommand('copy');
+            if (result)
+                this.message.success('Copied!');
+        }
+        catch (err) { }
+        document.body.removeChild(txtArea);
+    }
 };
 CollectionRendererComponent.ctorParameters = () => [
-    { type: _api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"] }
+    { type: _api_service__WEBPACK_IMPORTED_MODULE_2__["ApiService"] },
+    { type: ng_zorro_antd_message__WEBPACK_IMPORTED_MODULE_3__["NzMessageService"] }
 ];
 tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])()
