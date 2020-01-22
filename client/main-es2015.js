@@ -23,6 +23,265 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
+/***/ "./node_modules/base64-js/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/base64-js/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+// Support decoding URL-safe base64 strings, as Node.js does.
+// See: https://en.wikipedia.org/wiki/Base64#URL_applications
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function getLens (b64) {
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
+}
+
+// base64 is 4/3 + up to two characters of the original data
+function byteLength (b64) {
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function toByteArray (b64) {
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
+
+  var i
+  for (i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
+  }
+
+  return parts.join('')
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/ieee754/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/ieee754/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/app.component.html":
 /*!**************************************************************************!*\
   !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/app.component.html ***!
@@ -32,7 +291,7 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<nz-layout class=\"left-layout\">\n  <nz-sider [nzWidth]=\"300\">\n    <app-sidenav (opened)=\"open($event)\"></app-sidenav>\n  </nz-sider>\n  <nz-layout class=\"right-layout\">\n    <nz-content>\n      <nz-tabset [nzType]=\"'card'\" [nzSelectedIndex]=\"activeTabIndex\">\n        <nz-tab *ngFor=\"let tab of tabs\" [nzTitle]=\"titleTemplate\">\n          <ng-template #titleTemplate>\n            <div>\n              <strong>{{ tab.database }}.</strong>{{ tab.collection\n              }}<i\n                nz-icon\n                nzType=\"close\"\n                class=\"ant-tabs-close-x\"\n                (click)=\"closeTab(tab)\"\n              ></i>\n            </div>\n          </ng-template>\n          <app-collection-renderer\n            [database]=\"tab.database\"\n            [collection]=\"tab.collection\"\n          ></app-collection-renderer>\n        </nz-tab>\n      </nz-tabset>\n    </nz-content>\n  </nz-layout>\n</nz-layout>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<nz-layout class=\"left-layout\">\n  <nz-sider [nzWidth]=\"300\">\n    <app-sidenav (opened)=\"open($event)\"></app-sidenav>\n  </nz-sider>\n  <nz-layout class=\"right-layout\">\n    <nz-content>\n      <nz-tabset [nzType]=\"'card'\" [nzSelectedIndex]=\"activeTabIndex\">\n        <nz-tab *ngFor=\"let tab of tabs\" [nzTitle]=\"titleTemplate\">\n          <ng-template #titleTemplate>\n            <div>\n              <strong>{{ tab.database }}.</strong>{{ tab.collection\n              }}<i\n                nz-icon\n                nzType=\"close\"\n                class=\"ant-tabs-close-x\"\n                (click)=\"closeTab(tab.id)\"\n              ></i>\n            </div>\n          </ng-template>\n          <app-collection-renderer\n            [database]=\"tab.database\"\n            [collection]=\"tab.collection\"\n          ></app-collection-renderer>\n        </nz-tab>\n      </nz-tabset>\n    </nz-content>\n  </nz-layout>\n</nz-layout>\n");
 
 /***/ }),
 
@@ -45,7 +304,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"tab_content\">\n  <div class=\"help\">\n    <ul class=\"meta\">\n      <li>Database: <b>{{database}}</b></li>\n      <li>Collection: <b>{{collection}}</b></li>\n      <li>Count: <b>{{documents?.length}}</b></li>\n      <li><button nz-button (click)=\"getDocuments()\" nzType=\"link\" nzTooltipTitle=\"Reload\" nzTooltipPlacement=\"top\"\n          nz-tooltip><i nz-icon nzType=\"reload\"></i></button></li>\n    </ul>\n    <div class=\"query\">\n      <nz-input-group nzSearch nzSize=\"medium\" [nzAddOnAfter]=\"suffixButton\">\n        <input type=\"text\" [(ngModel)]=\"queryBody\" nz-input placeholder=\"input query\" />\n      </nz-input-group>\n      <ng-template #suffixButton>\n        <button nz-button nzType=\"primary\" nzSize=\"medium\" nzSearch (click)=\"query(queryBody)\">Find</button>\n      </ng-template>\n    </div>\n  </div>\n  <div class=\"container\">\n    <div *ngFor=\"let doc of documents\" class=\"document\">\n      <div class=\"left\">\n        <app-json-viewer [data]=\"doc\"></app-json-viewer>\n      </div>\n      <div class=\"right\">\n        <button nz-button nzType=\"default\" (click)=\"copyToClipboard(doc)\" nzTooltipTitle=\"Copy\" nzTooltipPlacement=\"top\"\n          nz-tooltip><i nz-icon nzType=\"copy\"></i></button>\n        <button nz-button nzType=\"default\" (click)=\"deleteDocument(doc._id)\" nzTooltipTitle=\"Delete\"\n          nzTooltipPlacement=\"top\" nz-tooltip><i nz-icon nzType=\"delete\"></i></button>\n      </div>\n    </div>\n  </div>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"tab_content\">\n  <div class=\"help\">\n    <ul class=\"meta\">\n      <li>\n        Database: <b>{{ database }}</b>\n      </li>\n      <li>\n        Collection: <b>{{ collection }}</b>\n      </li>\n      <li>\n        Count: <b>{{ documents?.length }}</b>\n      </li>\n      <li>\n        <button\n          nz-button\n          (click)=\"query()\"\n          nzType=\"link\"\n          nzTooltipTitle=\"Reload\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"reload\"></i>\n        </button>\n      </li>\n    </ul>\n    <div class=\"query\">\n      <nz-input-group nzSearch nzSize=\"medium\" [nzAddOnAfter]=\"suffixButton\">\n        <input\n          type=\"text\"\n          [(ngModel)]=\"filter\"\n          nz-input\n          placeholder=\"input query\"\n        />\n      </nz-input-group>\n      <ng-template #suffixButton>\n        <button\n          nz-button\n          nzType=\"primary\"\n          nzSize=\"medium\"\n          nzSearch\n          (click)=\"query()\"\n        >\n          Find\n        </button>\n      </ng-template>\n    </div>\n  </div>\n  <div class=\"container\">\n    <nz-spin\n      nzTip=\"Loading...\"\n      [nzSpinning]=\"loading\"\n      [nzSize]=\"'large'\"\n      class=\"loader\"\n    ></nz-spin>\n    <div *ngFor=\"let doc of documents\" class=\"document\">\n      <div class=\"left\">\n        <app-json-viewer [data]=\"doc\"></app-json-viewer>\n      </div>\n      <div class=\"right\">\n        <button\n          nz-button\n          nzType=\"default\"\n          (click)=\"copyToClipboard(doc)\"\n          nzTooltipTitle=\"Copy\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"copy\"></i>\n        </button>\n        <button\n          nz-button\n          nzType=\"default\"\n          (click)=\"deleteDocument(doc._id)\"\n          nzTooltipTitle=\"Delete\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"delete\"></i>\n        </button>\n      </div>\n    </div>\n  </div>\n</div>\n");
 
 /***/ }),
 
@@ -58,7 +317,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ul>\n  <li *ngFor=\"let row of data | keyvalue: originalOrder\">\n    <div class=\"hoverable\">\n      <ng-container [ngSwitch]=\"row.value | type\">\n        <ng-container *ngSwitchCase=\"'string'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"string value\">\"{{ row.value }}\"</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'number'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"number value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'boolean'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"boolean value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'object'\">\n          <span class=\"key\"> {{ row.key }}</span\n          >:\n          <span (click)=\"clicked($event, row)\" class=\"collapsed tog\"></span>\n          <span class=\"notation\">{{ 'Object' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n        <ng-container *ngSwitchCase=\"'array'\">\n          <span class=\"key\"> {{ row.key }}</span\n          >:\n          <span (click)=\"clicked($event, row)\" class=\"collapsed tog\"></span>\n          <span class=\"notation\">{{ 'Array' }}</span\n          ><app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n      </ng-container>\n    </div>\n  </li>\n</ul>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ul>\n  <li *ngFor=\"let row of data | keyvalue: originalOrder\">\n    <div class=\"hoverable\">\n      <ng-container [ngSwitch]=\"row.value | type\">\n        <ng-container *ngSwitchCase=\"'string'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"string value\">\"{{ row.value }}\"</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'number'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"number value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'boolean'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >: <span class=\"boolean value\">{{ row.value }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'objectId'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >:\n          <span class=\"objectId value\"\n            >ObjectId(\"{{ row.value.toString() }}\")</span\n          ></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'date'\"\n          ><span class=\"key\">{{ row.key }}</span\n          >:\n          <span class=\"date value\">{{ row.value.toJSON() }}</span></ng-container\n        >\n        <ng-container *ngSwitchCase=\"'object'\">\n          <span class=\"key\"> {{ row.key }}</span\n          >:\n          <span (click)=\"clicked($event, row)\" class=\"collapsed tog\"></span>\n          <span class=\"notation\">{{ 'Object' }}</span>\n          <app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n        <ng-container *ngSwitchCase=\"'array'\">\n          <span class=\"key\"> {{ row.key }}</span\n          >:\n          <span (click)=\"clicked($event, row)\" class=\"collapsed tog\"></span>\n          <span class=\"notation\">{{ 'Array' }}</span>\n          <app-json-viewer [data]=\"row.value\"></app-json-viewer>\n        </ng-container>\n      </ng-container>\n    </div>\n  </li>\n</ul>\n");
 
 /***/ }),
 
@@ -71,7 +330,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"search-box\">\n  <input\n    type=\"text\"\n    nz-input\n    placeholder=\"Search\"\n    class=\"search\"\n    [(ngModel)]=\"searchText\"\n    (keyup)=\"filter()\"\n  />\n</div>\n<ul\n  nz-menu\n  nzTheme=\"dark\"\n  nzMode=\"inline\"\n  [nzInlineCollapsed]=\"isCollapsed\"\n  [nzInlineIndent]=\"24\"\n>\n  <ng-container *ngFor=\"let db of displayData\">\n    <li\n      nz-submenu\n      nzIcon=\"database\"\n      nzTitle=\"{{ db.name }}\"\n      [ngClass]=\"{\n        open: this.searchText && db.collections && db.collections.length\n      }\"\n    >\n      <ul>\n        <li nz-menu-item *ngFor=\"let collection of db.collections\">\n          <a\n            href=\"#\"\n            (click)=\"openCollection($event)\"\n            class=\"nav_link\"\n            [attr.data-database]=\"db.name\"\n            nz-tooltip\n            nzTooltipPlacement=\"bottom\"\n            nzTooltipTitle=\"{{ collection }}\"\n            >{{ collection }}</a\n          >\n        </li>\n      </ul>\n    </li>\n  </ng-container>\n</ul>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"search-box\">\n  <input\n    type=\"text\"\n    nz-input\n    placeholder=\"Search\"\n    class=\"search\"\n    [(ngModel)]=\"searchText\"\n    (keyup)=\"filter()\"\n  />\n</div>\n<ul\n  nz-menu\n  nzTheme=\"dark\"\n  nzMode=\"inline\"\n  [nzInlineCollapsed]=\"isCollapsed\"\n  [nzInlineIndent]=\"24\"\n>\n  <ng-container *ngFor=\"let db of displayData\">\n    <li\n      nz-submenu\n      nzIcon=\"database\"\n      nzTitle=\"{{ db.name }}\"\n      [nzOpen]=\"isInSearchMode\"\n    >\n      <ul>\n        <li nz-menu-item *ngFor=\"let collection of db.collections\">\n          <a\n            href=\"#\"\n            (click)=\"openCollection($event)\"\n            class=\"nav_link\"\n            [attr.data-database]=\"db.name\"\n            nz-tooltip\n            nzTooltipPlacement=\"bottom\"\n            nzTooltipTitle=\"{{ collection }}\"\n            >{{ collection }}</a\n          >\n        </li>\n      </ul>\n    </li>\n  </ng-container>\n</ul>\n");
 
 /***/ }),
 
@@ -328,10 +587,10 @@ let ApiService = class ApiService {
         return this.http.get('http://localhost:3000/databases?includeCollections=true');
     }
     getDocumentsByCollection(dbName, collectionName) {
-        return this.http.get(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents?limit=100`);
+        return this.http.get(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents?limit=25&ContentType=bson`);
     }
     filterDocumentsByQuery(dbName, collectionName, query) {
-        return this.http.post(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents/filter`, query);
+        return this.http.post(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents/filter?limit=25&ContentType=bson`, query);
     }
     deleteDocumentById(dbName, collectionName, id) {
         return this.http.delete(`http://localhost:3000/databases/${dbName}/collections/${collectionName}/documents/${id}`);
@@ -438,6 +697,7 @@ let AppComponent = class AppComponent {
         this.activeTabIndex = this.tabs.length - 1;
     }
     closeTab(id) {
+        console.log(id);
         const idx = this.tabs.findIndex(tab => tab.id === id);
         this.tabs.splice(idx, 1);
         if (this.tabs.length) {
@@ -533,7 +793,7 @@ AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".container {\n  padding: 8px 10px;\n  overflow: auto;\n  height: calc(100vh - 140px);\n  background: #f5f5f5;\n}\n.document {\n  display: grid;\n  grid-template-columns: 9fr 3fr;\n  border: 1px solid #ddd;\n  background-color: #ffffff;\n  padding: 15px 8px;\n  margin-bottom: 8px;\n  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */\n}\n.right [nz-button] {\n  margin: 0px 4px !important;\n  height: 25px;\n  width: 25px;\n}\n.document .right [nz-button] {\n  visibility: hidden;\n}\n.document:hover .right [nz-button] {\n  visibility: visible;\n}\n.query {\n  padding: 0px 10px;\n}\n.query [nz-input] {\n  background: whitesmoke;\n}\n.help {\n  border-bottom: 2px solid #ddd;\n  padding-bottom: 5px;\n  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important;\n}\n.tab_content {\n  grid-template-rows: auto;\n}\n.meta {\n  list-style-type: none;\n  display: inline-flex;\n  padding: 0;\n}\n.meta li {\n  padding: 0px 15px;\n  vertical-align: middle;\n  line-height: 30px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7RUFDakIsY0FBYztFQUNkLDJCQUEyQjtFQUMzQixtQkFBbUI7QUFDckI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7RUFDOUIsc0JBQXNCO0VBQ3RCLHlCQUF5QjtFQUN6QixpQkFBaUI7RUFDakIsa0JBQWtCO0VBQ2xCOzBGQUN3RjtBQUMxRjtBQUNBO0VBQ0UsMEJBQTBCO0VBQzFCLFlBQVk7RUFDWixXQUFXO0FBQ2I7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsbUJBQW1CO0FBQ3JCO0FBQ0E7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHNCQUFzQjtBQUN4QjtBQUNBO0VBQ0UsNkJBQTZCO0VBQzdCLG1CQUFtQjtFQUNuQjt1RkFDcUY7QUFDdkY7QUFDQTtFQUNFLHdCQUF3QjtBQUMxQjtBQUNBO0VBQ0UscUJBQXFCO0VBQ3JCLG9CQUFvQjtFQUNwQixVQUFVO0FBQ1o7QUFDQTtFQUNFLGlCQUFpQjtFQUNqQixzQkFBc0I7RUFDdEIsaUJBQWlCO0FBQ25CIiwiZmlsZSI6InNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVyIHtcbiAgcGFkZGluZzogOHB4IDEwcHg7XG4gIG92ZXJmbG93OiBhdXRvO1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSAxNDBweCk7XG4gIGJhY2tncm91bmQ6ICNmNWY1ZjU7XG59XG4uZG9jdW1lbnQge1xuICBkaXNwbGF5OiBncmlkO1xuICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IDlmciAzZnI7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNkZGQ7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7XG4gIHBhZGRpbmc6IDE1cHggOHB4O1xuICBtYXJnaW4tYm90dG9tOiA4cHg7XG4gIC8qIGJveC1zaGFkb3c6IDBweCAycHggMXB4IC0xcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgIDBweCAxcHggMXB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTQpLCAwcHggMXB4IDNweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEyKSAhaW1wb3J0YW50OyAqL1xufVxuLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgbWFyZ2luOiAwcHggNHB4ICFpbXBvcnRhbnQ7XG4gIGhlaWdodDogMjVweDtcbiAgd2lkdGg6IDI1cHg7XG59XG4uZG9jdW1lbnQgLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgdmlzaWJpbGl0eTogaGlkZGVuO1xufVxuLmRvY3VtZW50OmhvdmVyIC5yaWdodCBbbnotYnV0dG9uXSB7XG4gIHZpc2liaWxpdHk6IHZpc2libGU7XG59XG4ucXVlcnkge1xuICBwYWRkaW5nOiAwcHggMTBweDtcbn1cbi5xdWVyeSBbbnotaW5wdXRdIHtcbiAgYmFja2dyb3VuZDogd2hpdGVzbW9rZTtcbn1cbi5oZWxwIHtcbiAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICNkZGQ7XG4gIHBhZGRpbmctYm90dG9tOiA1cHg7XG4gIGJveC1zaGFkb3c6IDBweCAycHggMXB4IC0xcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgIDBweCAxcHggMXB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTQpLCAwcHggMXB4IDNweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEyKSAhaW1wb3J0YW50O1xufVxuLnRhYl9jb250ZW50IHtcbiAgZ3JpZC10ZW1wbGF0ZS1yb3dzOiBhdXRvO1xufVxuLm1ldGEge1xuICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICBwYWRkaW5nOiAwO1xufVxuLm1ldGEgbGkge1xuICBwYWRkaW5nOiAwcHggMTVweDtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgbGluZS1oZWlnaHQ6IDMwcHg7XG59XG4iXX0= */");
+/* harmony default export */ __webpack_exports__["default"] = (".container {\n  padding: 8px 10px;\n  overflow: auto;\n  height: calc(100vh - 140px);\n  background: #f5f5f5;\n}\n.document {\n  display: grid;\n  grid-template-columns: 9fr 3fr;\n  border: 1px solid #ddd;\n  background-color: #ffffff;\n  padding: 15px 8px;\n  margin-bottom: 8px;\n  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */\n}\n.right [nz-button] {\n  margin: 0px 4px !important;\n  height: 25px;\n  width: 25px;\n}\n.document .right [nz-button] {\n  visibility: hidden;\n}\n.document:hover .right [nz-button] {\n  visibility: visible;\n}\n.query {\n  padding: 0px 10px;\n}\n.query [nz-input] {\n  background: whitesmoke;\n}\n.help {\n  border-bottom: 2px solid #ddd;\n  padding-bottom: 5px;\n}\n.tab_content {\n  grid-template-rows: auto;\n}\n.meta {\n  list-style-type: none;\n  display: inline-flex;\n  padding: 0;\n}\n.meta li {\n  padding: 0px 15px;\n  vertical-align: middle;\n  line-height: 30px;\n}\n.bar {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n}\n.loader {\n  top: 100px;\n  position: relative;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7RUFDakIsY0FBYztFQUNkLDJCQUEyQjtFQUMzQixtQkFBbUI7QUFDckI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7RUFDOUIsc0JBQXNCO0VBQ3RCLHlCQUF5QjtFQUN6QixpQkFBaUI7RUFDakIsa0JBQWtCO0VBQ2xCOzBGQUN3RjtBQUMxRjtBQUNBO0VBQ0UsMEJBQTBCO0VBQzFCLFlBQVk7RUFDWixXQUFXO0FBQ2I7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsbUJBQW1CO0FBQ3JCO0FBQ0E7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHNCQUFzQjtBQUN4QjtBQUNBO0VBQ0UsNkJBQTZCO0VBQzdCLG1CQUFtQjtBQUNyQjtBQUNBO0VBQ0Usd0JBQXdCO0FBQzFCO0FBQ0E7RUFDRSxxQkFBcUI7RUFDckIsb0JBQW9CO0VBQ3BCLFVBQVU7QUFDWjtBQUNBO0VBQ0UsaUJBQWlCO0VBQ2pCLHNCQUFzQjtFQUN0QixpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7QUFDaEM7QUFDQTtFQUNFLFVBQVU7RUFDVixrQkFBa0I7QUFDcEIiLCJmaWxlIjoic3JjL2FwcC9jb2xsZWN0aW9uLXJlbmRlcmVyL2NvbGxlY3Rpb24tcmVuZGVyZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb250YWluZXIge1xuICBwYWRkaW5nOiA4cHggMTBweDtcbiAgb3ZlcmZsb3c6IGF1dG87XG4gIGhlaWdodDogY2FsYygxMDB2aCAtIDE0MHB4KTtcbiAgYmFja2dyb3VuZDogI2Y1ZjVmNTtcbn1cbi5kb2N1bWVudCB7XG4gIGRpc3BsYXk6IGdyaWQ7XG4gIGdyaWQtdGVtcGxhdGUtY29sdW1uczogOWZyIDNmcjtcbiAgYm9yZGVyOiAxcHggc29saWQgI2RkZDtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZmZmZjtcbiAgcGFkZGluZzogMTVweCA4cHg7XG4gIG1hcmdpbi1ib3R0b206IDhweDtcbiAgLyogYm94LXNoYWRvdzogMHB4IDJweCAxcHggLTFweCByZ2JhKDAsIDAsIDAsIDAuMiksXG4gICAgMHB4IDFweCAxcHggMHB4IHJnYmEoMCwgMCwgMCwgMC4xNCksIDBweCAxcHggM3B4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTIpICFpbXBvcnRhbnQ7ICovXG59XG4ucmlnaHQgW256LWJ1dHRvbl0ge1xuICBtYXJnaW46IDBweCA0cHggIWltcG9ydGFudDtcbiAgaGVpZ2h0OiAyNXB4O1xuICB3aWR0aDogMjVweDtcbn1cbi5kb2N1bWVudCAucmlnaHQgW256LWJ1dHRvbl0ge1xuICB2aXNpYmlsaXR5OiBoaWRkZW47XG59XG4uZG9jdW1lbnQ6aG92ZXIgLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbn1cbi5xdWVyeSB7XG4gIHBhZGRpbmc6IDBweCAxMHB4O1xufVxuLnF1ZXJ5IFtuei1pbnB1dF0ge1xuICBiYWNrZ3JvdW5kOiB3aGl0ZXNtb2tlO1xufVxuLmhlbHAge1xuICBib3JkZXItYm90dG9tOiAycHggc29saWQgI2RkZDtcbiAgcGFkZGluZy1ib3R0b206IDVweDtcbn1cbi50YWJfY29udGVudCB7XG4gIGdyaWQtdGVtcGxhdGUtcm93czogYXV0bztcbn1cbi5tZXRhIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgcGFkZGluZzogMDtcbn1cbi5tZXRhIGxpIHtcbiAgcGFkZGluZzogMHB4IDE1cHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIGxpbmUtaGVpZ2h0OiAzMHB4O1xufVxuLmJhciB7XG4gIGRpc3BsYXk6IGdyaWQ7XG4gIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMWZyIDFmcjtcbn1cbi5sb2FkZXIge1xuICB0b3A6IDEwMHB4O1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG59XG4iXX0= */");
 
 /***/ }),
 
@@ -551,6 +811,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /* harmony import */ var _api_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../api.service */ "./src/app/api.service.ts");
 /* harmony import */ var ng_zorro_antd_message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ng-zorro-antd/message */ "./node_modules/ng-zorro-antd/fesm2015/ng-zorro-antd-message.js");
+/* harmony import */ var bson__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bson */ "./node_modules/bson/dist/bson.browser.esm.js");
+
 
 
 
@@ -559,37 +821,40 @@ let CollectionRendererComponent = class CollectionRendererComponent {
     constructor(API, message) {
         this.API = API;
         this.message = message;
-    }
-    getDocuments() {
-        this.API.getDocumentsByCollection(this.database, this.collection).subscribe((documents) => {
-            this.documents = documents;
-        });
+        this.loading = false;
     }
     ngOnInit() {
         this.getDocuments();
     }
-    query(criteria) {
+    getDocuments() {
+        this.loading = true;
+        this.API.getDocumentsByCollection(this.database, this.collection).subscribe((documents) => {
+            this.loading = false;
+            this.documents = Object.values(Object(bson__WEBPACK_IMPORTED_MODULE_4__["deserialize"])(Buffer.from(documents.data)));
+        });
+    }
+    query() {
         try {
-            if (!criteria)
-                criteria = {};
-            else
-                criteria = JSON.parse(criteria);
-            this.API.filterDocumentsByQuery(this.database, this.collection, criteria).subscribe((documents) => {
-                this.documents = documents;
+            this.loading = true;
+            const filter = this.filter ? JSON.parse(this.filter) : {};
+            this.API.filterDocumentsByQuery(this.database, this.collection, filter).subscribe((documents) => {
+                this.loading = false;
+                this.documents = Object.values(Object(bson__WEBPACK_IMPORTED_MODULE_4__["deserialize"])(Buffer.from(documents.data)));
             });
         }
         catch (err) {
             console.log(err);
+            this.loading = false;
         }
     }
     deleteDocument(id) {
-        this.API.deleteDocumentById(this.database, this.collection, id).subscribe((response) => {
-            this.query({});
+        this.API.deleteDocumentById(this.database, this.collection, id).subscribe(() => {
+            this.query();
         });
     }
     copyToClipboard(text, msg) {
         text = JSON.stringify(text);
-        let txtArea = document.createElement("textarea");
+        let txtArea = document.createElement('textarea');
         txtArea.style.position = 'fixed';
         txtArea.style.top = '0';
         txtArea.style.left = '0';
@@ -637,7 +902,7 @@ CollectionRendererComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("ul {\n  list-style-type: none;\n  margin-bottom: 0px;\n}\nul li {\n  position: relative;\n}\nli ul {\n  display: none;\n}\n.open {\n  display: block !important;\n}\n.string {\n  color: green;\n}\n.number {\n  color: blue;\n}\n.boolean {\n  color: firebrick;\n}\n.notation {\n  font-style: italic;\n  color: #999;\n  font-size: 80%;\n}\n.key {\n  font-weight: bold;\n}\n.hoverable {\n  padding: 1px 2px;\n  border-radius: 2px;\n}\n.collapsed::before {\n  content: '+';\n}\n.expanded::before {\n  content: '-';\n}\n.tog {\n  position: absolute;\n  left: -20px;\n  cursor: pointer;\n  color: #fff;\n  width: 15px;\n  line-height: 15px;\n  top: 3px;\n  text-align: center;\n  cursor: pointer;\n  font-family: Arial, Tahoma, sans-serif;\n  font-weight: bold;\n  border-radius: 2px;\n  border-width: 1px;\n  border-color: #0053a6 #0053a6 #000;\n  background-color: #6891e7;\n  background-image: linear-gradient(to bottom, #4495e7 0, #0053a6 100%);\n  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);\n  -ms-box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n  box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtFQUNyQixrQkFBa0I7QUFDcEI7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsYUFBYTtBQUNmO0FBQ0E7RUFDRSx5QkFBeUI7QUFDM0I7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0UsV0FBVztBQUNiO0FBQ0E7RUFDRSxnQkFBZ0I7QUFDbEI7QUFDQTtFQUNFLGtCQUFrQjtFQUNsQixXQUFXO0VBQ1gsY0FBYztBQUNoQjtBQUNBO0VBQ0UsaUJBQWlCO0FBQ25CO0FBQ0E7RUFDRSxnQkFBZ0I7RUFDaEIsa0JBQWtCO0FBQ3BCO0FBQ0E7RUFDRSxZQUFZO0FBQ2Q7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0Usa0JBQWtCO0VBQ2xCLFdBQVc7RUFDWCxlQUFlO0VBQ2YsV0FBVztFQUNYLFdBQVc7RUFDWCxpQkFBaUI7RUFDakIsUUFBUTtFQUNSLGtCQUFrQjtFQUNsQixlQUFlO0VBQ2Ysc0NBQXNDO0VBQ3RDLGlCQUFpQjtFQUdqQixrQkFBa0I7RUFDbEIsaUJBQWlCO0VBQ2pCLGtDQUFrQztFQUNsQyx5QkFBeUI7RUFZekIscUVBQXFFO0VBQ3JFLHlDQUF5QztFQUV6Qyx1REFBdUQ7RUFFdkQsbURBQW1EO0FBQ3JEIiwiZmlsZSI6InNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbInVsIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBtYXJnaW4tYm90dG9tOiAwcHg7XG59XG51bCBsaSB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbn1cbmxpIHVsIHtcbiAgZGlzcGxheTogbm9uZTtcbn1cbi5vcGVuIHtcbiAgZGlzcGxheTogYmxvY2sgIWltcG9ydGFudDtcbn1cbi5zdHJpbmcge1xuICBjb2xvcjogZ3JlZW47XG59XG4ubnVtYmVyIHtcbiAgY29sb3I6IGJsdWU7XG59XG4uYm9vbGVhbiB7XG4gIGNvbG9yOiBmaXJlYnJpY2s7XG59XG4ubm90YXRpb24ge1xuICBmb250LXN0eWxlOiBpdGFsaWM7XG4gIGNvbG9yOiAjOTk5O1xuICBmb250LXNpemU6IDgwJTtcbn1cbi5rZXkge1xuICBmb250LXdlaWdodDogYm9sZDtcbn1cbi5ob3ZlcmFibGUge1xuICBwYWRkaW5nOiAxcHggMnB4O1xuICBib3JkZXItcmFkaXVzOiAycHg7XG59XG4uY29sbGFwc2VkOjpiZWZvcmUge1xuICBjb250ZW50OiAnKyc7XG59XG4uZXhwYW5kZWQ6OmJlZm9yZSB7XG4gIGNvbnRlbnQ6ICctJztcbn1cbi50b2cge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGxlZnQ6IC0yMHB4O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGNvbG9yOiAjZmZmO1xuICB3aWR0aDogMTVweDtcbiAgbGluZS1oZWlnaHQ6IDE1cHg7XG4gIHRvcDogM3B4O1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgZm9udC1mYW1pbHk6IEFyaWFsLCBUYWhvbWEsIHNhbnMtc2VyaWY7XG4gIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAtbW96LWJvcmRlci1yYWRpdXM6IDJweDtcbiAgLXdlYmtpdC1ib3JkZXItcmFkaXVzOiAycHg7XG4gIGJvcmRlci1yYWRpdXM6IDJweDtcbiAgYm9yZGVyLXdpZHRoOiAxcHg7XG4gIGJvcmRlci1jb2xvcjogIzAwNTNhNiAjMDA1M2E2ICMwMDA7XG4gIGJhY2tncm91bmQtY29sb3I6ICM2ODkxZTc7XG4gIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtbXMtbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtby1saW5lYXItZ3JhZGllbnQodG9wLCAjNDQ5NWU3IDAsICMwMDUzYTYgMTAwJSk7XG4gIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtZ3JhZGllbnQoXG4gICAgbGluZWFyLFxuICAgIGxlZnQgdG9wLFxuICAgIGxlZnQgYm90dG9tLFxuICAgIGNvbG9yLXN0b3AoMCwgIzQ0OTVlNyksXG4gICAgY29sb3Itc3RvcCgxMDAlLCAjMDA1M2E2KVxuICApO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWxpbmVhci1ncmFkaWVudCh0b3AsICM0NDk1ZTcgMCwgIzAwNTNhNiAxMDAlKTtcbiAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KHRvIGJvdHRvbSwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICB0ZXh0LXNoYWRvdzogMXB4IDFweCAwIHJnYmEoMCwgMCwgMCwgMC42KTtcbiAgLW1vei1ib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG4gIC1tcy1ib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG4gIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAxcHggMCByZ2JhKDI1NiwgMjU2LCAyNTYsIDAuMzUpO1xuICBib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG59XG4iXX0= */");
+/* harmony default export */ __webpack_exports__["default"] = ("ul {\n  list-style-type: none;\n  margin-bottom: 0px;\n}\nul li {\n  position: relative;\n}\nli ul {\n  display: none;\n}\n.open {\n  display: block !important;\n}\n.string {\n  color: green;\n}\n.number {\n  color: blue;\n}\n.boolean {\n  color: firebrick;\n}\n.date {\n  color: #9c27b0;\n}\n.objectId {\n  color: #e20303;\n}\n.notation {\n  font-style: italic;\n  color: #999;\n  font-size: 80%;\n}\n.key {\n  font-weight: bold;\n}\n.hoverable {\n  padding: 1px 2px;\n  border-radius: 2px;\n}\n.collapsed::before {\n  content: '+';\n}\n.expanded::before {\n  content: '-';\n}\n.tog {\n  position: absolute;\n  left: -20px;\n  cursor: pointer;\n  color: #fff;\n  width: 15px;\n  line-height: 15px;\n  top: 3px;\n  text-align: center;\n  cursor: pointer;\n  font-family: Arial, Tahoma, sans-serif;\n  font-weight: bold;\n  border-radius: 2px;\n  border-width: 1px;\n  border-color: #0053a6 #0053a6 #000;\n  background-color: #6891e7;\n  background-image: linear-gradient(to bottom, #4495e7 0, #0053a6 100%);\n  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);\n  -ms-box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n  box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtFQUNyQixrQkFBa0I7QUFDcEI7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsYUFBYTtBQUNmO0FBQ0E7RUFDRSx5QkFBeUI7QUFDM0I7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0UsV0FBVztBQUNiO0FBQ0E7RUFDRSxnQkFBZ0I7QUFDbEI7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGtCQUFrQjtFQUNsQixXQUFXO0VBQ1gsY0FBYztBQUNoQjtBQUNBO0VBQ0UsaUJBQWlCO0FBQ25CO0FBQ0E7RUFDRSxnQkFBZ0I7RUFDaEIsa0JBQWtCO0FBQ3BCO0FBQ0E7RUFDRSxZQUFZO0FBQ2Q7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0Usa0JBQWtCO0VBQ2xCLFdBQVc7RUFDWCxlQUFlO0VBQ2YsV0FBVztFQUNYLFdBQVc7RUFDWCxpQkFBaUI7RUFDakIsUUFBUTtFQUNSLGtCQUFrQjtFQUNsQixlQUFlO0VBQ2Ysc0NBQXNDO0VBQ3RDLGlCQUFpQjtFQUdqQixrQkFBa0I7RUFDbEIsaUJBQWlCO0VBQ2pCLGtDQUFrQztFQUNsQyx5QkFBeUI7RUFZekIscUVBQXFFO0VBQ3JFLHlDQUF5QztFQUV6Qyx1REFBdUQ7RUFFdkQsbURBQW1EO0FBQ3JEIiwiZmlsZSI6InNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbInVsIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBtYXJnaW4tYm90dG9tOiAwcHg7XG59XG51bCBsaSB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbn1cbmxpIHVsIHtcbiAgZGlzcGxheTogbm9uZTtcbn1cbi5vcGVuIHtcbiAgZGlzcGxheTogYmxvY2sgIWltcG9ydGFudDtcbn1cbi5zdHJpbmcge1xuICBjb2xvcjogZ3JlZW47XG59XG4ubnVtYmVyIHtcbiAgY29sb3I6IGJsdWU7XG59XG4uYm9vbGVhbiB7XG4gIGNvbG9yOiBmaXJlYnJpY2s7XG59XG4uZGF0ZSB7XG4gIGNvbG9yOiAjOWMyN2IwO1xufVxuLm9iamVjdElkIHtcbiAgY29sb3I6ICNlMjAzMDM7XG59XG4ubm90YXRpb24ge1xuICBmb250LXN0eWxlOiBpdGFsaWM7XG4gIGNvbG9yOiAjOTk5O1xuICBmb250LXNpemU6IDgwJTtcbn1cbi5rZXkge1xuICBmb250LXdlaWdodDogYm9sZDtcbn1cbi5ob3ZlcmFibGUge1xuICBwYWRkaW5nOiAxcHggMnB4O1xuICBib3JkZXItcmFkaXVzOiAycHg7XG59XG4uY29sbGFwc2VkOjpiZWZvcmUge1xuICBjb250ZW50OiAnKyc7XG59XG4uZXhwYW5kZWQ6OmJlZm9yZSB7XG4gIGNvbnRlbnQ6ICctJztcbn1cbi50b2cge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGxlZnQ6IC0yMHB4O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGNvbG9yOiAjZmZmO1xuICB3aWR0aDogMTVweDtcbiAgbGluZS1oZWlnaHQ6IDE1cHg7XG4gIHRvcDogM3B4O1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgZm9udC1mYW1pbHk6IEFyaWFsLCBUYWhvbWEsIHNhbnMtc2VyaWY7XG4gIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAtbW96LWJvcmRlci1yYWRpdXM6IDJweDtcbiAgLXdlYmtpdC1ib3JkZXItcmFkaXVzOiAycHg7XG4gIGJvcmRlci1yYWRpdXM6IDJweDtcbiAgYm9yZGVyLXdpZHRoOiAxcHg7XG4gIGJvcmRlci1jb2xvcjogIzAwNTNhNiAjMDA1M2E2ICMwMDA7XG4gIGJhY2tncm91bmQtY29sb3I6ICM2ODkxZTc7XG4gIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtbXMtbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtby1saW5lYXItZ3JhZGllbnQodG9wLCAjNDQ5NWU3IDAsICMwMDUzYTYgMTAwJSk7XG4gIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtZ3JhZGllbnQoXG4gICAgbGluZWFyLFxuICAgIGxlZnQgdG9wLFxuICAgIGxlZnQgYm90dG9tLFxuICAgIGNvbG9yLXN0b3AoMCwgIzQ0OTVlNyksXG4gICAgY29sb3Itc3RvcCgxMDAlLCAjMDA1M2E2KVxuICApO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWxpbmVhci1ncmFkaWVudCh0b3AsICM0NDk1ZTcgMCwgIzAwNTNhNiAxMDAlKTtcbiAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KHRvIGJvdHRvbSwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICB0ZXh0LXNoYWRvdzogMXB4IDFweCAwIHJnYmEoMCwgMCwgMCwgMC42KTtcbiAgLW1vei1ib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG4gIC1tcy1ib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG4gIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAxcHggMCByZ2JhKDI1NiwgMjU2LCAyNTYsIDAuMzUpO1xuICBib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG59XG4iXX0= */");
 
 /***/ }),
 
@@ -654,6 +919,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Type", function() { return Type; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+/* harmony import */ var bson__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bson */ "./node_modules/bson/dist/bson.browser.esm.js");
+
 
 
 
@@ -707,6 +974,10 @@ JsonViewerComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 let Type = class Type {
     transform(value) {
+        if (value instanceof bson__WEBPACK_IMPORTED_MODULE_2__["ObjectID"])
+            return 'objectId';
+        if (value instanceof Date)
+            return 'date';
         return Array.isArray(value) ? 'array' : typeof value;
     }
 };
@@ -764,9 +1035,10 @@ let SidenavComponent = class SidenavComponent {
         });
     }
     filter() {
+        this.isInSearchMode = true;
         this.displayData = lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"](this.dbs.databases);
-        console.log(this.displayData);
         if (!this.searchText) {
+            this.isInSearchMode = false;
             return;
         }
         const pattern = new RegExp(`.*${this.searchText}.*`, 'gi');
