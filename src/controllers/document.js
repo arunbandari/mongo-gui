@@ -1,5 +1,5 @@
 const ObjectID = require('mongodb').ObjectID;
-
+const BSON = require('bson');
 const Model = require('../models');
 
 const getModel = (req) => {
@@ -8,9 +8,12 @@ const getModel = (req) => {
     return new Model(dbName, collectionName);
 }
 
-const sendResponse = (dbOperation, res, next) => {
+const sendResponse = (dbOperation, req, res, next) => {
     dbOperation
-        .then(data => res.send(data))
+        .then(data => {
+            if (req.query.ContentType === 'bson') data = JSON.stringify(BSON.serialize(data));
+            res.send(data);
+        })
         .catch(err => next(err));
 }
 
@@ -30,7 +33,7 @@ function find (req, res, next) {
     const filter = req.query;
     const model = getModel(req);
     const dbOperation = model.find({}, filter).toArray();
-    sendResponse(dbOperation, res, next);
+    sendResponse(dbOperation, req, res, next);
 }
 
 function findOne (req, res, next) {
@@ -38,43 +41,44 @@ function findOne (req, res, next) {
     const documentId = req.documentId;
     const query = documentId ? { _id: documentId } : {};
     const dbOperation = model.findOne(query);
-    sendResponse(dbOperation, res, next);
+    sendResponse(dbOperation, req, res, next);
 }
 
 function insertOne (req, res, next) {
     const body = req.body;
     const model = getModel(req);
     const dbOperation = model.insertOne(body);
-    sendResponse(dbOperation, res, next);
+    sendResponse(dbOperation, req, res, next);
 }
 
 function updateOne (req, res, next) {
     const model = getModel(req);
     const documentId = req.documentId;
     const dbOperation = model.updateOne({ _id: documentId }, { $set: req.body });
-    sendResponse(dbOperation, res, next);
+    sendResponse(dbOperation, req, res, next);
 }
 
 function replaceOne (req, res, next) {
     const model = getModel(req);
     const documentId = req.documentId;
     const dbOperation = model.replaceOne({ _id: documentId }, req.body)
-    sendResponse(dbOperation, res, next);
+    sendResponse(dbOperation, req, res, next);
 }
 
 function deleteOne (req, res, next) {
     const model = getModel(req);
     const documentId = req.documentId;
     const dbOperation = model.deleteOne({ _id: documentId });
-    sendResponse(dbOperation, res, next);
+    sendResponse(dbOperation, req, res, next);
 }
 
 function filter (req, res, next) {
     const model = getModel(req);
     const query = req.body;
+    const options = req.query;
     if (req.documentId && req.documentId !== 'filter') query._id = req.documentId;
-    const dbOperation = model.find(query).toArray();
-    sendResponse(dbOperation, res, next);
+    const dbOperation = model.find(query, options).toArray();
+    sendResponse(dbOperation, req, res, next);
 }
   
 module.exports = {
