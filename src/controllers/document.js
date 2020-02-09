@@ -74,10 +74,22 @@ function deleteOne (req, res, next) {
 
 function filter (req, res, next) {
     const model = getModel(req);
-    const query = req.body;
-    const options = req.query;
-    if (req.documentId && req.documentId !== 'filter') query._id = req.documentId;
-    const dbOperation = model.find(query, options).toArray();
+    const query = req.body || {};
+    const options = req.query || {};
+    const skip = Number(options.skip) || 0;
+    const getDocuments = model.find(query, options).toArray();
+    const getCount = model.countDocuments(query, options);
+    Promise.all([getDocuments, getCount])
+      .then(([documents, count]) => {
+        let data = { documents, count, from: skip + 1, to: skip + documents.length };
+        if (req.query.ContentType === 'bson') data = JSON.stringify(BSON.serialize(data));
+        res.send(data);
+      });
+}
+
+function stats (req, res, next) {
+    const model = getModel(req);
+    const dbOperation = model.stats();
     sendResponse(dbOperation, req, res, next);
 }
   
@@ -90,4 +102,5 @@ module.exports = {
     updateOne,
     replaceOne,
     deleteOne,
+    stats
 };

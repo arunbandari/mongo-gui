@@ -35,6 +35,14 @@ class Model {
   deleteOne(query) {
     return this.collection.deleteOne(query);
   }
+
+  countDocuments(query, options) {
+    return this.collection.countDocuments(query, options);
+  }
+
+  stats() {
+    return this.collection.stats();
+  }
 }
 
 module.exports = Model;

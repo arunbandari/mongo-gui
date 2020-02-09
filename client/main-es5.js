@@ -286,7 +286,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<nz-layout class=\"left-layout\">\n  <nz-sider [nzWidth]=\"300\">\n    <app-sidenav (opened)=\"open($event)\"></app-sidenav>\n  </nz-sider>\n  <nz-layout class=\"right-layout\">\n    <nz-content>\n      <nz-tabset [nzType]=\"'card'\" [nzSelectedIndex]=\"activeTabIndex\">\n        <nz-tab *ngFor=\"let tab of tabs\" [nzTitle]=\"titleTemplate\">\n          <ng-template #titleTemplate>\n            <div>\n              <strong>{{ tab.database }}.</strong>{{ tab.collection\n              }}<i\n                nz-icon\n                nzType=\"close\"\n                class=\"ant-tabs-close-x\"\n                (click)=\"closeTab(tab.id)\"\n              ></i>\n            </div>\n          </ng-template>\n          <app-collection-renderer\n            [database]=\"tab.database\"\n            [collection]=\"tab.collection\"\n          ></app-collection-renderer>\n        </nz-tab>\n      </nz-tabset>\n    </nz-content>\n  </nz-layout>\n</nz-layout>\n";
+    __webpack_exports__["default"] = "<nz-layout class=\"left-layout\">\n  <nz-sider [nzWidth]=\"300\">\n    <app-sidenav (opened)=\"open($event)\" [dbs]=\"dbs\"></app-sidenav>\n  </nz-sider>\n  <nz-layout class=\"right-layout\">\n    <nz-content>\n      <nz-tabset\n        [nzType]=\"'card'\"\n        [nzSelectedIndex]=\"activeTabIndex\"\n        *ngIf=\"tabs && tabs.length\"\n      >\n        <nz-tab *ngFor=\"let tab of tabs\" [nzTitle]=\"titleTemplate\">\n          <ng-template #titleTemplate>\n            <div>\n              <strong>{{ tab.database }}.</strong>{{ tab.collection\n              }}<i\n                nz-icon\n                nzType=\"close\"\n                class=\"ant-tabs-close-x\"\n                (click)=\"closeTab(tab.id)\"\n              ></i>\n            </div>\n          </ng-template>\n          <app-collection-renderer\n            [database]=\"tab.database\"\n            [collection]=\"tab.collection\"\n          ></app-collection-renderer>\n        </nz-tab>\n      </nz-tabset>\n\n      <nz-table\n        *ngIf=\"!tabs || tabs.length == 0\"\n        #basicTable\n        [nzData]=\"dbs.databases\"\n      >\n        <thead>\n          <tr>\n            <th>Name</th>\n            <th>Size</th>\n            <th>Collections</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let data of basicTable.data\">\n            <td>\n              <a href=\"javascript:void(0)\" (click)=\"openCollection(data)\">{{\n                data.name\n              }}</a>\n            </td>\n            <td>{{ data.sizeOnDisk }}</td>\n            <td>{{ data.collections.length }}</td>\n          </tr>\n        </tbody>\n      </nz-table>\n      <router-outlet></router-outlet>\n    </nz-content>\n  </nz-layout>\n</nz-layout>\n";
     /***/
   },
 
@@ -306,7 +306,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"tab_content\">\n  <div class=\"help\">\n    <ul class=\"meta\">\n      <li>\n        Database: <b>{{ database }}</b>\n      </li>\n      <li>\n        Collection: <b>{{ collection }}</b>\n      </li>\n      <li>\n        Count: <b>{{ documents?.length }}</b>\n      </li>\n      <li>\n        <button\n          nz-button\n          (click)=\"query()\"\n          nzType=\"link\"\n          nzTooltipTitle=\"Reload\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"reload\"></i>\n        </button>\n      </li>\n    </ul>\n    <div class=\"query\">\n      <nz-input-group nzSearch nzSize=\"medium\" [nzAddOnAfter]=\"suffixButton\">\n        <input\n          type=\"text\"\n          [(ngModel)]=\"filter\"\n          nz-input\n          placeholder=\"input query\"\n        />\n      </nz-input-group>\n      <ng-template #suffixButton>\n        <button\n          nz-button\n          nzType=\"primary\"\n          nzSize=\"medium\"\n          nzSearch\n          (click)=\"query()\"\n        >\n          Find\n        </button>\n      </ng-template>\n    </div>\n  </div>\n  <div class=\"container\">\n    <nz-spin\n      nzTip=\"Loading...\"\n      [nzSpinning]=\"loading\"\n      [nzSize]=\"'large'\"\n      class=\"loader\"\n    ></nz-spin>\n    <div *ngFor=\"let doc of documents\" class=\"document\">\n      <div class=\"left\">\n        <app-json-viewer [data]=\"doc\"></app-json-viewer>\n      </div>\n      <div class=\"right\">\n        <button\n          nz-button\n          nzType=\"default\"\n          (click)=\"copyToClipboard(doc)\"\n          nzTooltipTitle=\"Copy\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"copy\"></i>\n        </button>\n        <button\n          nz-button\n          nzType=\"default\"\n          (click)=\"deleteDocument(doc._id)\"\n          nzTooltipTitle=\"Delete\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"delete\"></i>\n        </button>\n      </div>\n    </div>\n  </div>\n</div>\n";
+    __webpack_exports__["default"] = "<div class=\"tab_content\">\n  <div class=\"help\">\n    <ul class=\"meta\">\n      <li>\n        Database: <b>{{ database }}</b>\n      </li>\n      <li>\n        Collection: <b>{{ collection }}</b>\n      </li>\n      <li>\n        Count:\n        <b>{{\n          data?.count\n            ? data.count + ' (Displaying ' + data.from + ' - ' + data.to + ')'\n            : 0\n        }}</b>\n      </li>\n      <li>\n        <button\n          nz-button\n          (click)=\"query()\"\n          nzType=\"link\"\n          nzTooltipTitle=\"Reload\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"reload\"></i>\n        </button>\n      </li>\n    </ul>\n    <div class=\"bar\">\n      <div class=\"query\">\n        <nz-input-group nzSearch nzSize=\"medium\" [nzAddOnAfter]=\"suffixButton\">\n          <input\n            type=\"text\"\n            [(ngModel)]=\"filter\"\n            nz-input\n            placeholder=\"input query\"\n          />\n        </nz-input-group>\n        <ng-template #suffixButton>\n          <button\n            nz-button\n            nzType=\"primary\"\n            nzSize=\"medium\"\n            nzSearch\n            (click)=\"query()\"\n          >\n            Find\n          </button>\n        </ng-template>\n      </div>\n      <div>\n        <nz-pagination\n          [(nzPageIndex)]=\"pageIndex\"\n          [nzTotal]=\"data?.count\"\n          [nzPageSize]=\"25\"\n          (click)=\"query()\"\n          [nzShowQuickJumper]=\"'true'\"\n        ></nz-pagination>\n      </div>\n    </div>\n  </div>\n  <div class=\"container\">\n    <nz-spin\n      nzTip=\"Loading...\"\n      [nzSpinning]=\"loading\"\n      [nzSize]=\"'large'\"\n      class=\"loader\"\n    ></nz-spin>\n    <div *ngFor=\"let doc of data?.documents\" class=\"document\">\n      <div class=\"left\">\n        <app-json-viewer [data]=\"doc\"></app-json-viewer>\n      </div>\n      <div class=\"right\">\n        <button\n          nz-button\n          nzType=\"default\"\n          (click)=\"copyToClipboard(doc)\"\n          nzTooltipTitle=\"Copy\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"copy\"></i>\n        </button>\n        <button\n          nz-button\n          nzType=\"default\"\n          (click)=\"deleteDocument(doc._id)\"\n          nzTooltipTitle=\"Delete\"\n          nzTooltipPlacement=\"top\"\n          nz-tooltip\n        >\n          <i nz-icon nzType=\"delete\"></i>\n        </button>\n      </div>\n    </div>\n  </div>\n</div>\n";
     /***/
   },
 
@@ -346,7 +346,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"search-box\">\n  <input\n    type=\"text\"\n    nz-input\n    placeholder=\"Search\"\n    class=\"search\"\n    [(ngModel)]=\"searchText\"\n    (keyup)=\"filter()\"\n  />\n</div>\n<ul\n  nz-menu\n  nzTheme=\"dark\"\n  nzMode=\"inline\"\n  [nzInlineCollapsed]=\"isCollapsed\"\n  [nzInlineIndent]=\"24\"\n>\n  <ng-container *ngFor=\"let db of displayData\">\n    <li\n      nz-submenu\n      nzIcon=\"database\"\n      nzTitle=\"{{ db.name }}\"\n      [nzOpen]=\"isInSearchMode\"\n    >\n      <ul>\n        <li nz-menu-item *ngFor=\"let collection of db.collections\">\n          <a\n            href=\"#\"\n            (click)=\"openCollection($event)\"\n            class=\"nav_link\"\n            [attr.data-database]=\"db.name\"\n            nz-tooltip\n            nzTooltipPlacement=\"bottom\"\n            nzTooltipTitle=\"{{ collection }}\"\n            >{{ collection }}</a\n          >\n        </li>\n      </ul>\n    </li>\n  </ng-container>\n</ul>\n";
+    __webpack_exports__["default"] = "<div class=\"search-box\">\n  <input\n    type=\"text\"\n    nz-input\n    placeholder=\"Search\"\n    class=\"search\"\n    [(ngModel)]=\"searchText\"\n    (keyup)=\"filter()\"\n  />\n</div>\n<ul\n  nz-menu\n  nzTheme=\"dark\"\n  nzMode=\"inline\"\n  [nzInlineCollapsed]=\"isCollapsed\"\n  [nzInlineIndent]=\"24\"\n>\n  <ng-container *ngFor=\"let db of displayData\">\n    <li\n      nz-submenu\n      nzIcon=\"database\"\n      nzTitle=\"{{ db.name }}\"\n      [nzOpen]=\"isInSearchMode\"\n    >\n      <ul>\n        <li nz-menu-item *ngFor=\"let collection of db.collections\">\n          <a\n            href=\"javascript:void(0)\"\n            (click)=\"openCollection($event, db.name, collection)\"\n            class=\"nav_link\"\n            nz-tooltip\n            nzTooltipPlacement=\"bottom\"\n            nzTooltipTitle=\"{{ collection }}\"\n            >{{ collection }}</a\n          >\n        </li>\n      </ul>\n    </li>\n  </ng-container>\n</ul>\n";
     /***/
   },
 
@@ -968,7 +968,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "filterDocumentsByQuery",
         value: function filterDocumentsByQuery(dbName, collectionName, query) {
-          return this.http.post("http://localhost:3000/databases/".concat(dbName, "/collections/").concat(collectionName, "/documents/filter?limit=25&ContentType=bson"), query);
+          var pageIndex = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+          return this.http.post("http://localhost:3000/databases/".concat(dbName, "/collections/").concat(collectionName, "/documents/filter?limit=25&skip=").concat((pageIndex - 1) * 25, "&ContentType=bson"), query);
         }
       }, {
         key: "deleteDocumentById",
@@ -1111,6 +1112,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         this.title = 'mongo-ui-latest';
         this.tabs = [];
         this.activeTabIndex = 0;
+        this.dbs = {
+          databases: []
+        };
+        this.isLoadingDbs = false;
       }
 
       _createClass(AppComponent, [{
@@ -1120,6 +1125,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           this.Api.getDocumentsByCollection('local', 'startup_log').subscribe(function (documents) {
             _this.docs = documents;
+          });
+          this.isLoadingDbs = true;
+          this.Api.getDbs().subscribe(function (res) {
+            _this.dbs = res;
+            _this.isLoadingDbs = false;
+          }, function (error) {
+            _this.isLoadingDbs = false;
           });
         }
       }, {
@@ -1149,7 +1161,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "closeTab",
         value: function closeTab(id) {
-          console.log(id);
           var idx = this.tabs.findIndex(function (tab) {
             return tab.id === id;
           });
@@ -1158,6 +1169,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           if (this.tabs.length) {
             this.activeTabIndex = this.tabs.length - 1;
           }
+        }
+      }, {
+        key: "openCollection",
+        value: function openCollection(obj) {
+          this.open({
+            dbName: obj.name,
+            collectionName: obj.collections[0]
+          });
         }
       }]);
 
@@ -1312,7 +1331,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".container {\n  padding: 8px 10px;\n  overflow: auto;\n  height: calc(100vh - 140px);\n  background: #f5f5f5;\n}\n.document {\n  display: grid;\n  grid-template-columns: 9fr 3fr;\n  border: 1px solid #ddd;\n  background-color: #ffffff;\n  padding: 15px 8px;\n  margin-bottom: 8px;\n  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */\n}\n.right [nz-button] {\n  margin: 0px 4px !important;\n  height: 25px;\n  width: 25px;\n}\n.document .right [nz-button] {\n  visibility: hidden;\n}\n.document:hover .right [nz-button] {\n  visibility: visible;\n}\n.query {\n  padding: 0px 10px;\n}\n.query [nz-input] {\n  background: whitesmoke;\n}\n.help {\n  border-bottom: 2px solid #ddd;\n  padding-bottom: 5px;\n}\n.tab_content {\n  grid-template-rows: auto;\n}\n.meta {\n  list-style-type: none;\n  display: inline-flex;\n  padding: 0;\n}\n.meta li {\n  padding: 0px 15px;\n  vertical-align: middle;\n  line-height: 30px;\n}\n.bar {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n}\n.loader {\n  top: 100px;\n  position: relative;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7RUFDakIsY0FBYztFQUNkLDJCQUEyQjtFQUMzQixtQkFBbUI7QUFDckI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7RUFDOUIsc0JBQXNCO0VBQ3RCLHlCQUF5QjtFQUN6QixpQkFBaUI7RUFDakIsa0JBQWtCO0VBQ2xCOzBGQUN3RjtBQUMxRjtBQUNBO0VBQ0UsMEJBQTBCO0VBQzFCLFlBQVk7RUFDWixXQUFXO0FBQ2I7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsbUJBQW1CO0FBQ3JCO0FBQ0E7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHNCQUFzQjtBQUN4QjtBQUNBO0VBQ0UsNkJBQTZCO0VBQzdCLG1CQUFtQjtBQUNyQjtBQUNBO0VBQ0Usd0JBQXdCO0FBQzFCO0FBQ0E7RUFDRSxxQkFBcUI7RUFDckIsb0JBQW9CO0VBQ3BCLFVBQVU7QUFDWjtBQUNBO0VBQ0UsaUJBQWlCO0VBQ2pCLHNCQUFzQjtFQUN0QixpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7QUFDaEM7QUFDQTtFQUNFLFVBQVU7RUFDVixrQkFBa0I7QUFDcEIiLCJmaWxlIjoic3JjL2FwcC9jb2xsZWN0aW9uLXJlbmRlcmVyL2NvbGxlY3Rpb24tcmVuZGVyZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb250YWluZXIge1xuICBwYWRkaW5nOiA4cHggMTBweDtcbiAgb3ZlcmZsb3c6IGF1dG87XG4gIGhlaWdodDogY2FsYygxMDB2aCAtIDE0MHB4KTtcbiAgYmFja2dyb3VuZDogI2Y1ZjVmNTtcbn1cbi5kb2N1bWVudCB7XG4gIGRpc3BsYXk6IGdyaWQ7XG4gIGdyaWQtdGVtcGxhdGUtY29sdW1uczogOWZyIDNmcjtcbiAgYm9yZGVyOiAxcHggc29saWQgI2RkZDtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZmZmZjtcbiAgcGFkZGluZzogMTVweCA4cHg7XG4gIG1hcmdpbi1ib3R0b206IDhweDtcbiAgLyogYm94LXNoYWRvdzogMHB4IDJweCAxcHggLTFweCByZ2JhKDAsIDAsIDAsIDAuMiksXG4gICAgMHB4IDFweCAxcHggMHB4IHJnYmEoMCwgMCwgMCwgMC4xNCksIDBweCAxcHggM3B4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTIpICFpbXBvcnRhbnQ7ICovXG59XG4ucmlnaHQgW256LWJ1dHRvbl0ge1xuICBtYXJnaW46IDBweCA0cHggIWltcG9ydGFudDtcbiAgaGVpZ2h0OiAyNXB4O1xuICB3aWR0aDogMjVweDtcbn1cbi5kb2N1bWVudCAucmlnaHQgW256LWJ1dHRvbl0ge1xuICB2aXNpYmlsaXR5OiBoaWRkZW47XG59XG4uZG9jdW1lbnQ6aG92ZXIgLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbn1cbi5xdWVyeSB7XG4gIHBhZGRpbmc6IDBweCAxMHB4O1xufVxuLnF1ZXJ5IFtuei1pbnB1dF0ge1xuICBiYWNrZ3JvdW5kOiB3aGl0ZXNtb2tlO1xufVxuLmhlbHAge1xuICBib3JkZXItYm90dG9tOiAycHggc29saWQgI2RkZDtcbiAgcGFkZGluZy1ib3R0b206IDVweDtcbn1cbi50YWJfY29udGVudCB7XG4gIGdyaWQtdGVtcGxhdGUtcm93czogYXV0bztcbn1cbi5tZXRhIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgcGFkZGluZzogMDtcbn1cbi5tZXRhIGxpIHtcbiAgcGFkZGluZzogMHB4IDE1cHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIGxpbmUtaGVpZ2h0OiAzMHB4O1xufVxuLmJhciB7XG4gIGRpc3BsYXk6IGdyaWQ7XG4gIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMWZyIDFmcjtcbn1cbi5sb2FkZXIge1xuICB0b3A6IDEwMHB4O1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG59XG4iXX0= */";
+    __webpack_exports__["default"] = ".container {\n  padding: 8px 10px;\n  overflow: auto;\n  height: calc(100vh - 140px);\n  background: #f5f5f5;\n}\n.document {\n  display: grid;\n  grid-template-columns: 9fr 3fr;\n  border: 1px solid #ddd;\n  background-color: #ffffff;\n  padding: 15px 8px;\n  margin-bottom: 8px;\n  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),\n    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */\n}\n.right [nz-button] {\n  margin: 0px 4px !important;\n  height: 25px;\n  width: 25px;\n}\n.document .right [nz-button] {\n  visibility: hidden;\n}\n.document:hover .right [nz-button] {\n  visibility: visible;\n}\n.query {\n  padding: 0px 10px;\n}\n.query [nz-input] {\n  background: whitesmoke;\n}\n.help {\n  border-bottom: 2px solid #ddd;\n  padding-bottom: 5px;\n}\n.tab_content {\n  grid-template-rows: auto;\n}\n.meta {\n  list-style-type: none;\n  display: -webkit-inline-box;\n  display: inline-flex;\n  padding: 0;\n}\n.meta li {\n  padding: 0px 15px;\n  vertical-align: middle;\n  line-height: 30px;\n}\n.bar {\n  display: grid;\n  grid-template-columns: 4fr 2fr;\n}\n.loader {\n  top: 100px;\n  position: relative;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxpQkFBaUI7RUFDakIsY0FBYztFQUNkLDJCQUEyQjtFQUMzQixtQkFBbUI7QUFDckI7QUFDQTtFQUNFLGFBQWE7RUFDYiw4QkFBOEI7RUFDOUIsc0JBQXNCO0VBQ3RCLHlCQUF5QjtFQUN6QixpQkFBaUI7RUFDakIsa0JBQWtCO0VBQ2xCOzBGQUN3RjtBQUMxRjtBQUNBO0VBQ0UsMEJBQTBCO0VBQzFCLFlBQVk7RUFDWixXQUFXO0FBQ2I7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsbUJBQW1CO0FBQ3JCO0FBQ0E7RUFDRSxpQkFBaUI7QUFDbkI7QUFDQTtFQUNFLHNCQUFzQjtBQUN4QjtBQUNBO0VBQ0UsNkJBQTZCO0VBQzdCLG1CQUFtQjtBQUNyQjtBQUNBO0VBQ0Usd0JBQXdCO0FBQzFCO0FBQ0E7RUFDRSxxQkFBcUI7RUFDckIsMkJBQW9CO0VBQXBCLG9CQUFvQjtFQUNwQixVQUFVO0FBQ1o7QUFDQTtFQUNFLGlCQUFpQjtFQUNqQixzQkFBc0I7RUFDdEIsaUJBQWlCO0FBQ25CO0FBQ0E7RUFDRSxhQUFhO0VBQ2IsOEJBQThCO0FBQ2hDO0FBQ0E7RUFDRSxVQUFVO0VBQ1Ysa0JBQWtCO0FBQ3BCIiwiZmlsZSI6InNyYy9hcHAvY29sbGVjdGlvbi1yZW5kZXJlci9jb2xsZWN0aW9uLXJlbmRlcmVyLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVyIHtcbiAgcGFkZGluZzogOHB4IDEwcHg7XG4gIG92ZXJmbG93OiBhdXRvO1xuICBoZWlnaHQ6IGNhbGMoMTAwdmggLSAxNDBweCk7XG4gIGJhY2tncm91bmQ6ICNmNWY1ZjU7XG59XG4uZG9jdW1lbnQge1xuICBkaXNwbGF5OiBncmlkO1xuICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IDlmciAzZnI7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNkZGQ7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmZmZmZmY7XG4gIHBhZGRpbmc6IDE1cHggOHB4O1xuICBtYXJnaW4tYm90dG9tOiA4cHg7XG4gIC8qIGJveC1zaGFkb3c6IDBweCAycHggMXB4IC0xcHggcmdiYSgwLCAwLCAwLCAwLjIpLFxuICAgIDBweCAxcHggMXB4IDBweCByZ2JhKDAsIDAsIDAsIDAuMTQpLCAwcHggMXB4IDNweCAwcHggcmdiYSgwLCAwLCAwLCAwLjEyKSAhaW1wb3J0YW50OyAqL1xufVxuLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgbWFyZ2luOiAwcHggNHB4ICFpbXBvcnRhbnQ7XG4gIGhlaWdodDogMjVweDtcbiAgd2lkdGg6IDI1cHg7XG59XG4uZG9jdW1lbnQgLnJpZ2h0IFtuei1idXR0b25dIHtcbiAgdmlzaWJpbGl0eTogaGlkZGVuO1xufVxuLmRvY3VtZW50OmhvdmVyIC5yaWdodCBbbnotYnV0dG9uXSB7XG4gIHZpc2liaWxpdHk6IHZpc2libGU7XG59XG4ucXVlcnkge1xuICBwYWRkaW5nOiAwcHggMTBweDtcbn1cbi5xdWVyeSBbbnotaW5wdXRdIHtcbiAgYmFja2dyb3VuZDogd2hpdGVzbW9rZTtcbn1cbi5oZWxwIHtcbiAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICNkZGQ7XG4gIHBhZGRpbmctYm90dG9tOiA1cHg7XG59XG4udGFiX2NvbnRlbnQge1xuICBncmlkLXRlbXBsYXRlLXJvd3M6IGF1dG87XG59XG4ubWV0YSB7XG4gIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gIHBhZGRpbmc6IDA7XG59XG4ubWV0YSBsaSB7XG4gIHBhZGRpbmc6IDBweCAxNXB4O1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICBsaW5lLWhlaWdodDogMzBweDtcbn1cbi5iYXIge1xuICBkaXNwbGF5OiBncmlkO1xuICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IDRmciAyZnI7XG59XG4ubG9hZGVyIHtcbiAgdG9wOiAxMDBweDtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xufVxuIl19 */";
     /***/
   },
 
@@ -1375,35 +1394,27 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         this.API = API;
         this.message = message;
         this.loading = false;
+        this.pageIndex = 1;
       }
 
       _createClass(CollectionRendererComponent, [{
         key: "ngOnInit",
         value: function ngOnInit() {
-          this.getDocuments();
-        }
-      }, {
-        key: "getDocuments",
-        value: function getDocuments() {
-          var _this2 = this;
-
-          this.loading = true;
-          this.API.getDocumentsByCollection(this.database, this.collection).subscribe(function (documents) {
-            _this2.loading = false;
-            _this2.documents = Object.values(Object(bson__WEBPACK_IMPORTED_MODULE_4__["deserialize"])(Buffer.from(documents.data)));
-          });
+          this.query();
         }
       }, {
         key: "query",
         value: function query() {
-          var _this3 = this;
+          var _this2 = this;
 
           try {
             this.loading = true;
             var filter = this.filter ? JSON.parse(this.filter) : {};
-            this.API.filterDocumentsByQuery(this.database, this.collection, filter).subscribe(function (documents) {
-              _this3.loading = false;
-              _this3.documents = Object.values(Object(bson__WEBPACK_IMPORTED_MODULE_4__["deserialize"])(Buffer.from(documents.data)));
+            console.log(this.pageIndex);
+            this.API.filterDocumentsByQuery(this.database, this.collection, filter, this.pageIndex).subscribe(function (documents) {
+              _this2.loading = false;
+              _this2.data = Object(bson__WEBPACK_IMPORTED_MODULE_4__["deserialize"])(Buffer.from(documents.data));
+              console.log(_this2.data);
             });
           } catch (err) {
             console.log(err);
@@ -1413,10 +1424,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "deleteDocument",
         value: function deleteDocument(id) {
-          var _this4 = this;
+          var _this3 = this;
 
           this.API.deleteDocumentById(this.database, this.collection, id).subscribe(function () {
-            _this4.query();
+            _this3.message.info('Deleted!');
+
+            _this3.query();
           });
         }
       }, {
@@ -1434,7 +1447,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
           try {
             var result = document.execCommand('copy');
-            if (result) this.message.success('Copied!');
+
+            if (result) {
+              this.message.success('Copied!');
+            }
           } catch (err) {}
 
           document.body.removeChild(txtArea);
@@ -1482,7 +1498,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "ul {\n  list-style-type: none;\n  margin-bottom: 0px;\n}\nul li {\n  position: relative;\n}\nli ul {\n  display: none;\n}\n.open {\n  display: block !important;\n}\n.string {\n  color: green;\n}\n.number {\n  color: blue;\n}\n.boolean {\n  color: firebrick;\n}\n.date {\n  color: #9c27b0;\n}\n.objectId {\n  color: #e20303;\n}\n.notation {\n  font-style: italic;\n  color: #999;\n  font-size: 80%;\n}\n.key {\n  font-weight: bold;\n}\n.hoverable {\n  padding: 1px 2px;\n  border-radius: 2px;\n}\n.collapsed::before {\n  content: '+';\n}\n.expanded::before {\n  content: '-';\n}\n.tog {\n  position: absolute;\n  left: -20px;\n  cursor: pointer;\n  color: #fff;\n  width: 15px;\n  line-height: 15px;\n  top: 3px;\n  text-align: center;\n  cursor: pointer;\n  font-family: Arial, Tahoma, sans-serif;\n  font-weight: bold;\n  border-radius: 2px;\n  border-width: 1px;\n  border-color: #0053a6 #0053a6 #000;\n  background-color: #6891e7;\n  background-image: linear-gradient(to bottom, #4495e7 0, #0053a6 100%);\n  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);\n  -ms-box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n  box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtFQUNyQixrQkFBa0I7QUFDcEI7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsYUFBYTtBQUNmO0FBQ0E7RUFDRSx5QkFBeUI7QUFDM0I7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0UsV0FBVztBQUNiO0FBQ0E7RUFDRSxnQkFBZ0I7QUFDbEI7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGtCQUFrQjtFQUNsQixXQUFXO0VBQ1gsY0FBYztBQUNoQjtBQUNBO0VBQ0UsaUJBQWlCO0FBQ25CO0FBQ0E7RUFDRSxnQkFBZ0I7RUFDaEIsa0JBQWtCO0FBQ3BCO0FBQ0E7RUFDRSxZQUFZO0FBQ2Q7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0Usa0JBQWtCO0VBQ2xCLFdBQVc7RUFDWCxlQUFlO0VBQ2YsV0FBVztFQUNYLFdBQVc7RUFDWCxpQkFBaUI7RUFDakIsUUFBUTtFQUNSLGtCQUFrQjtFQUNsQixlQUFlO0VBQ2Ysc0NBQXNDO0VBQ3RDLGlCQUFpQjtFQUdqQixrQkFBa0I7RUFDbEIsaUJBQWlCO0VBQ2pCLGtDQUFrQztFQUNsQyx5QkFBeUI7RUFZekIscUVBQXFFO0VBQ3JFLHlDQUF5QztFQUV6Qyx1REFBdUQ7RUFFdkQsbURBQW1EO0FBQ3JEIiwiZmlsZSI6InNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbInVsIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBtYXJnaW4tYm90dG9tOiAwcHg7XG59XG51bCBsaSB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbn1cbmxpIHVsIHtcbiAgZGlzcGxheTogbm9uZTtcbn1cbi5vcGVuIHtcbiAgZGlzcGxheTogYmxvY2sgIWltcG9ydGFudDtcbn1cbi5zdHJpbmcge1xuICBjb2xvcjogZ3JlZW47XG59XG4ubnVtYmVyIHtcbiAgY29sb3I6IGJsdWU7XG59XG4uYm9vbGVhbiB7XG4gIGNvbG9yOiBmaXJlYnJpY2s7XG59XG4uZGF0ZSB7XG4gIGNvbG9yOiAjOWMyN2IwO1xufVxuLm9iamVjdElkIHtcbiAgY29sb3I6ICNlMjAzMDM7XG59XG4ubm90YXRpb24ge1xuICBmb250LXN0eWxlOiBpdGFsaWM7XG4gIGNvbG9yOiAjOTk5O1xuICBmb250LXNpemU6IDgwJTtcbn1cbi5rZXkge1xuICBmb250LXdlaWdodDogYm9sZDtcbn1cbi5ob3ZlcmFibGUge1xuICBwYWRkaW5nOiAxcHggMnB4O1xuICBib3JkZXItcmFkaXVzOiAycHg7XG59XG4uY29sbGFwc2VkOjpiZWZvcmUge1xuICBjb250ZW50OiAnKyc7XG59XG4uZXhwYW5kZWQ6OmJlZm9yZSB7XG4gIGNvbnRlbnQ6ICctJztcbn1cbi50b2cge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGxlZnQ6IC0yMHB4O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGNvbG9yOiAjZmZmO1xuICB3aWR0aDogMTVweDtcbiAgbGluZS1oZWlnaHQ6IDE1cHg7XG4gIHRvcDogM3B4O1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgZm9udC1mYW1pbHk6IEFyaWFsLCBUYWhvbWEsIHNhbnMtc2VyaWY7XG4gIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAtbW96LWJvcmRlci1yYWRpdXM6IDJweDtcbiAgLXdlYmtpdC1ib3JkZXItcmFkaXVzOiAycHg7XG4gIGJvcmRlci1yYWRpdXM6IDJweDtcbiAgYm9yZGVyLXdpZHRoOiAxcHg7XG4gIGJvcmRlci1jb2xvcjogIzAwNTNhNiAjMDA1M2E2ICMwMDA7XG4gIGJhY2tncm91bmQtY29sb3I6ICM2ODkxZTc7XG4gIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtbXMtbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtby1saW5lYXItZ3JhZGllbnQodG9wLCAjNDQ5NWU3IDAsICMwMDUzYTYgMTAwJSk7XG4gIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtZ3JhZGllbnQoXG4gICAgbGluZWFyLFxuICAgIGxlZnQgdG9wLFxuICAgIGxlZnQgYm90dG9tLFxuICAgIGNvbG9yLXN0b3AoMCwgIzQ0OTVlNyksXG4gICAgY29sb3Itc3RvcCgxMDAlLCAjMDA1M2E2KVxuICApO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWxpbmVhci1ncmFkaWVudCh0b3AsICM0NDk1ZTcgMCwgIzAwNTNhNiAxMDAlKTtcbiAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KHRvIGJvdHRvbSwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICB0ZXh0LXNoYWRvdzogMXB4IDFweCAwIHJnYmEoMCwgMCwgMCwgMC42KTtcbiAgLW1vei1ib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG4gIC1tcy1ib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG4gIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAxcHggMCByZ2JhKDI1NiwgMjU2LCAyNTYsIDAuMzUpO1xuICBib3gtc2hhZG93OiBpbnNldCAwIDFweCAwIHJnYmEoMjU2LCAyNTYsIDI1NiwgMC4zNSk7XG59XG4iXX0= */";
+    __webpack_exports__["default"] = "ul {\n  list-style-type: none;\n  margin-bottom: 0px;\n}\nul li {\n  position: relative;\n}\nli ul {\n  display: none;\n}\n.open {\n  display: block !important;\n}\n.string {\n  color: green;\n}\n.number {\n  color: blue;\n}\n.boolean {\n  color: firebrick;\n}\n.date {\n  color: #9c27b0;\n}\n.objectId {\n  color: #e20303;\n}\n.notation {\n  font-style: italic;\n  color: #999;\n  font-size: 80%;\n}\n.key {\n  font-weight: bold;\n}\n.hoverable {\n  padding: 1px 2px;\n  border-radius: 2px;\n}\n.collapsed::before {\n  content: '+';\n}\n.expanded::before {\n  content: '-';\n}\n.tog {\n  position: absolute;\n  left: -20px;\n  cursor: pointer;\n  color: #fff;\n  width: 15px;\n  line-height: 15px;\n  top: 3px;\n  text-align: center;\n  cursor: pointer;\n  font-family: Arial, Tahoma, sans-serif;\n  font-weight: bold;\n  border-radius: 2px;\n  border-width: 1px;\n  border-color: #0053a6 #0053a6 #000;\n  background-color: #6891e7;\n  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #4495e7), to(#0053a6));\n  background-image: linear-gradient(to bottom, #4495e7 0, #0053a6 100%);\n  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);\n  -ms-box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n  box-shadow: inset 0 1px 0 rgba(256, 256, 256, 0.35);\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvanNvbi12aWV3ZXIvanNvbi12aWV3ZXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtFQUNyQixrQkFBa0I7QUFDcEI7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjtBQUNBO0VBQ0UsYUFBYTtBQUNmO0FBQ0E7RUFDRSx5QkFBeUI7QUFDM0I7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0UsV0FBVztBQUNiO0FBQ0E7RUFDRSxnQkFBZ0I7QUFDbEI7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGNBQWM7QUFDaEI7QUFDQTtFQUNFLGtCQUFrQjtFQUNsQixXQUFXO0VBQ1gsY0FBYztBQUNoQjtBQUNBO0VBQ0UsaUJBQWlCO0FBQ25CO0FBQ0E7RUFDRSxnQkFBZ0I7RUFDaEIsa0JBQWtCO0FBQ3BCO0FBQ0E7RUFDRSxZQUFZO0FBQ2Q7QUFDQTtFQUNFLFlBQVk7QUFDZDtBQUNBO0VBQ0Usa0JBQWtCO0VBQ2xCLFdBQVc7RUFDWCxlQUFlO0VBQ2YsV0FBVztFQUNYLFdBQVc7RUFDWCxpQkFBaUI7RUFDakIsUUFBUTtFQUNSLGtCQUFrQjtFQUNsQixlQUFlO0VBQ2Ysc0NBQXNDO0VBQ3RDLGlCQUFpQjtFQUdqQixrQkFBa0I7RUFDbEIsaUJBQWlCO0VBQ2pCLGtDQUFrQztFQUNsQyx5QkFBeUI7RUFZekIsc0dBQXFFO0VBQXJFLHFFQUFxRTtFQUNyRSx5Q0FBeUM7RUFFekMsdURBQXVEO0VBRXZELG1EQUFtRDtBQUNyRCIsImZpbGUiOiJzcmMvYXBwL2pzb24tdmlld2VyL2pzb24tdmlld2VyLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJ1bCB7XG4gIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgbWFyZ2luLWJvdHRvbTogMHB4O1xufVxudWwgbGkge1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG59XG5saSB1bCB7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG4ub3BlbiB7XG4gIGRpc3BsYXk6IGJsb2NrICFpbXBvcnRhbnQ7XG59XG4uc3RyaW5nIHtcbiAgY29sb3I6IGdyZWVuO1xufVxuLm51bWJlciB7XG4gIGNvbG9yOiBibHVlO1xufVxuLmJvb2xlYW4ge1xuICBjb2xvcjogZmlyZWJyaWNrO1xufVxuLmRhdGUge1xuICBjb2xvcjogIzljMjdiMDtcbn1cbi5vYmplY3RJZCB7XG4gIGNvbG9yOiAjZTIwMzAzO1xufVxuLm5vdGF0aW9uIHtcbiAgZm9udC1zdHlsZTogaXRhbGljO1xuICBjb2xvcjogIzk5OTtcbiAgZm9udC1zaXplOiA4MCU7XG59XG4ua2V5IHtcbiAgZm9udC13ZWlnaHQ6IGJvbGQ7XG59XG4uaG92ZXJhYmxlIHtcbiAgcGFkZGluZzogMXB4IDJweDtcbiAgYm9yZGVyLXJhZGl1czogMnB4O1xufVxuLmNvbGxhcHNlZDo6YmVmb3JlIHtcbiAgY29udGVudDogJysnO1xufVxuLmV4cGFuZGVkOjpiZWZvcmUge1xuICBjb250ZW50OiAnLSc7XG59XG4udG9nIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBsZWZ0OiAtMjBweDtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBjb2xvcjogI2ZmZjtcbiAgd2lkdGg6IDE1cHg7XG4gIGxpbmUtaGVpZ2h0OiAxNXB4O1xuICB0b3A6IDNweDtcbiAgdGV4dC1hbGlnbjogY2VudGVyO1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGZvbnQtZmFtaWx5OiBBcmlhbCwgVGFob21hLCBzYW5zLXNlcmlmO1xuICBmb250LXdlaWdodDogYm9sZDtcbiAgLW1vei1ib3JkZXItcmFkaXVzOiAycHg7XG4gIC13ZWJraXQtYm9yZGVyLXJhZGl1czogMnB4O1xuICBib3JkZXItcmFkaXVzOiAycHg7XG4gIGJvcmRlci13aWR0aDogMXB4O1xuICBib3JkZXItY29sb3I6ICMwMDUzYTYgIzAwNTNhNiAjMDAwO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNjg5MWU3O1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtbW96LWxpbmVhci1ncmFkaWVudCh0b3AsICM0NDk1ZTcgMCwgIzAwNTNhNiAxMDAlKTtcbiAgYmFja2dyb3VuZC1pbWFnZTogLW1zLWxpbmVhci1ncmFkaWVudCh0b3AsICM0NDk1ZTcgMCwgIzAwNTNhNiAxMDAlKTtcbiAgYmFja2dyb3VuZC1pbWFnZTogLW8tbGluZWFyLWdyYWRpZW50KHRvcCwgIzQ0OTVlNyAwLCAjMDA1M2E2IDEwMCUpO1xuICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWdyYWRpZW50KFxuICAgIGxpbmVhcixcbiAgICBsZWZ0IHRvcCxcbiAgICBsZWZ0IGJvdHRvbSxcbiAgICBjb2xvci1zdG9wKDAsICM0NDk1ZTcpLFxuICAgIGNvbG9yLXN0b3AoMTAwJSwgIzAwNTNhNilcbiAgKTtcbiAgYmFja2dyb3VuZC1pbWFnZTogLXdlYmtpdC1saW5lYXItZ3JhZGllbnQodG9wLCAjNDQ5NWU3IDAsICMwMDUzYTYgMTAwJSk7XG4gIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCh0byBib3R0b20sICM0NDk1ZTcgMCwgIzAwNTNhNiAxMDAlKTtcbiAgdGV4dC1zaGFkb3c6IDFweCAxcHggMCByZ2JhKDAsIDAsIDAsIDAuNik7XG4gIC1tb3otYm94LXNoYWRvdzogaW5zZXQgMCAxcHggMCByZ2JhKDI1NiwgMjU2LCAyNTYsIDAuMzUpO1xuICAtbXMtYm94LXNoYWRvdzogaW5zZXQgMCAxcHggMCByZ2JhKDI1NiwgMjU2LCAyNTYsIDAuMzUpO1xuICAtd2Via2l0LWJveC1zaGFkb3c6IGluc2V0IDAgMXB4IDAgcmdiYSgyNTYsIDI1NiwgMjU2LCAwLjM1KTtcbiAgYm94LXNoYWRvdzogaW5zZXQgMCAxcHggMCByZ2JhKDI1NiwgMjU2LCAyNTYsIDAuMzUpO1xufVxuIl19 */";
     /***/
   },
 
@@ -1700,13 +1716,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _createClass(SidenavComponent, [{
         key: "ngOnInit",
         value: function ngOnInit() {
-          var _this5 = this;
-
-          this.Api.getDbs().subscribe(function (res) {
-            _this5.dbs = res;
-
-            _this5.filter();
-          });
+          if (this.dbs) {
+            this.filter();
+          }
+        }
+      }, {
+        key: "ngOnChanges",
+        value: function ngOnChanges() {
+          if (this.dbs) {
+            this.filter();
+          }
         }
       }, {
         key: "filter",
@@ -1724,31 +1743,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             db.collections = db.collections.filter(function (col) {
               return pattern.test(col);
             });
-
-            if (db.collections.length) {
-              return db;
-            }
-
-            return false;
+            return db.collections.length ? db : false;
           }).filter(Boolean);
         }
       }, {
-        key: "toggleDB",
-        value: function toggleDB(event) {
-          event.preventDefault();
-
-          if (event.target.classList.contains('open')) {
-            event.target.classList.remove('open');
-          } else {
-            event.target.classList.add('open');
-          }
-        }
-      }, {
         key: "openCollection",
-        value: function openCollection(event) {
+        value: function openCollection(event, dbName, collectionName) {
           event.preventDefault();
-          var dbName = event.target.attributes['data-database'].value;
-          var collectionName = event.target.innerText;
 
           if (dbName && collectionName) {
             this.opened.emit({
@@ -1769,6 +1770,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     };
 
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])()], SidenavComponent.prototype, "opened", void 0);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])()], SidenavComponent.prototype, "dbs", void 0);
     SidenavComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
       selector: 'app-sidenav',
       template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(

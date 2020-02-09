@@ -2,12 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const compression = require('compression')
 
 const dataAccessAdapter = require('./src/db/dataAccessAdapter');
 const databasesRoute = require('./src/routes/database');
 const port = +process.env.PORT || 3000;
 
 const app = express();
+// app.use(compression());
 
 app.use(express.static('client'))
 app.get('/', (req, res) => res.sendFile(__dirname + '../client/index.html'));
