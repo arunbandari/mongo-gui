@@ -18,6 +18,7 @@ const sendResponse = (dbOperation, req, res, next) => {
 }
 
 function middleware (req, res, next) {
+    req.body = (req.query.incomingType === 'bson') ? BSON.deserialize(Buffer.from(req.body)) : req.body
     const body = req.body;
     const params = req.params;
     let documentId = body._id || params.documentId;
