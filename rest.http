@@ -13,9 +13,22 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/databases/mongo_gui/collections/test/documents/5de2a8587c25d87b9f007b43
+DELETE http://localhost:3000/databases/abcd
 
 ###
 
 GET http://localhost:3000/databases/580a07b8d5be18c823242213/collections/580a07b8d5be18c823242213-Reqre/documents/
 Content-Type: application/json
+###
+
+POST http://localhost:3000/databases/quiz/collections
+Content-Type: application/json
+
+{
+    "collectionName": "employees",
+    "dbName": "quiz"
+}
+
+###
+
+DELETE http://localhost:3000/databases/quiz/collections/result

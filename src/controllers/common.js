@@ -31,7 +31,36 @@ function listCollections (req, res, next) {
       .catch(next);
 }
 
+function createCollection(req, res, next) {
+  const dbName = req.body.database || req.params.dbName;
+  const collectionName = req.body.collection;
+  const db = dataAccessAdapter.ConnectToDb(dbName);
+  db.createCollection(collectionName)
+    .then(() => res.send({ message:  `A new collection: ${collectionName} has been added to database: ${dbName}` }))
+    .catch(next);
+}
+
+function dropCollection(req, res, next) {
+  const dbName = req.params.dbName;
+  const collectionName = req.params.collectionName;
+  const db = dataAccessAdapter.ConnectToDb(dbName);
+  db.collection(collectionName).drop()
+    .then(() => res.send({ message:  'success' }))
+    .catch(next);
+}
+
+function dropDB(req, res, next) {
+  const dbName = req.params.dbName;
+  const db = dataAccessAdapter.ConnectToDb(dbName);
+  db.dropDatabase()
+    .then(() => res.send({ message:  'success' }))
+    .catch(next);
+}
+
 module.exports = {
     listDatabases,
     listCollections,
+    createCollection,
+    dropCollection,
+    dropDB
 }
