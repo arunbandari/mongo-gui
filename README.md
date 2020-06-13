@@ -1,5 +1,5 @@
 #  mongo-gui
-A web-based MongoDB user interface.
+A web-based MongoDB graphical user interface.
 
 ##  Features
  - Connect to local/remote mongodb instances
