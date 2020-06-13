@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "eg2.vscode-npm-script",
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "esbenp.prettier-vscode",
+    "johnpapa.angular-essentials",
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "eamodio.gitlens"
+  ]
+}

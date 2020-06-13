@@ -1,0 +1,86 @@
+<ul>
+  <li *ngFor="let row of data | keyvalue: originalOrder">
+    <div class="hoverable">
+      <ng-container [ngSwitch]="row.value | type">
+        <ng-container *ngSwitchCase="'String'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="string value">"{{ row.value }}"</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'Number'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="number value">{{ row.value }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'Boolean'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="boolean value">{{ row.value }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'null'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="null value">null</span>
+        </ng-container>
+        <ng-container *ngSwitchCase="'RegExp'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="regexp value">{{ row.value }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'Timestamp'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="timestamp value">{{ row.value }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'MaxKey'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="value">MaxKey()</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'MinKey'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="value">MinKey()</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'Binary'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="value"
+            >Binary('{{ row.value.toJSON() }}', {{ row.value.sub_type }})</span
+          ></ng-container
+        >
+        <ng-container *ngSwitchCase="'ObjectID'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="objectId value"
+            >ObjectId("{{ row.value.toString() }}")</span
+          ></ng-container
+        >
+        <ng-container *ngSwitchCase="'Date'"
+          ><span class="key">{{ row.key }}</span
+          >:<span class="date value">{{
+            row.value.toISOString()
+          }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'Object'">
+          <span class="key"> {{ row.key }}</span
+          >:<span
+            *ngIf="row.value | isEmpty"
+            (click)="clicked($event, row)"
+            class="collapsed tog"
+          ></span>
+          <span class="notation">{{
+            (row.value | isEmpty) ? 'Object' : '{}'
+          }}</span>
+          <app-json-viewer [data]="row.value"></app-json-viewer>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Array'">
+          <span class="key"> {{ row.key }}</span
+          >:<span
+            (click)="clicked($event, row)"
+            class="collapsed tog"
+            *ngIf="row.value | isEmpty"
+          ></span>
+          <span class="notation">{{
+            (row.value | isEmpty) ? 'Array[' + row.value.length + ']' : '[]'
+          }}</span>
+          <app-json-viewer [data]="row.value"></app-json-viewer>
+        </ng-container>
+        <ng-container *ngSwitchDefault
+          ><span class="key">{{ row.key }}</span
+          >:<span class="value">{{ row.value }}</span>
+        </ng-container>
+      </ng-container>
+    </div>
+  </li>
+</ul>

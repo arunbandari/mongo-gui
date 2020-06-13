@@ -1,0 +1,104 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Mukta+Vaani&display=swap');
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Mukta Vaani', sans-serif !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  /* background-color: #335c67 !important; */
+}
+/* ::-webkit-scrollbar-track {
+  background: #001529;
+} */
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  /* border-radius: 5px; */
+}
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+  background: #335c67;
+} */
+.ant-menu-inline {
+  border-right-color: #fff !important;
+}
+.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+  height: 25px !important;
+  line-height: 25px !important;
+}
+.ant-menu-item {
+  height: 25px !important;
+  line-height: 25px !important;
+}
+
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+  background-color: #41545d !important;
+  box-shadow: 0px !important;
+}
+
+.ant-menu.ant-menu-dark {
+  font-weight: 600;
+  background-color: #41545d !important;
+  color: #ffffffa6 !important;
+}
+.ant-menu-sub.ant-menu-inline {
+  box-shadow: none !important;
+  color: #ffffffa6 !important;
+  padding-left: 8px !important;
+}
+.ant-menu-dark .ant-menu-item:hover > a,
+.ant-menu-dark .ant-menu-item:active > a {
+  color: #ffffffa6 !important;
+}
+.ant-menu-dark .ant-menu-submenu-title,
+.ant-menu-dark .ant-menu-item-selected > a,
+.ant-menu-dark
+  .ant-menu-submenu-title:active
+  .ant-menu-dark
+  .ant-menu-submenu-title:hover {
+  color: #ffffffa6 !important;
+}
+
+.light-text {
+  font-weight: 100;
+}
+.text-align-right {
+  text-align: right;
+}
+.pagination_bar {
+  display: grid;
+  grid-template-columns: 4fr 8fr;
+  overflow: hidden;
+}
+
+/* button */
+.add-db-btn {
+  position: absolute;
+  top: 17px;
+  right: 30px;
+}
+.spl-button {
+  display: inline-block;
+  padding: 2px 5px;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.15em;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: #c6c6c6;
+  background-color: green;
+  box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
+  text-align: center;
+}
+.spl-button:hover {
+  color: #fff;
+}

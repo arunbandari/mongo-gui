@@ -1,0 +1,170 @@
+<div class="tab_content">
+  <div class="help">
+    <div class="bar">
+      <div class="query">
+        <nz-input-group nzSearch nzSize="medium" [nzAddOnAfter]="suffixButton">
+          <input
+            type="text"
+            [(ngModel)]="filter"
+            nz-input
+            placeholder='Query and filter documents... eg. { "name": "John" }'
+          />
+        </nz-input-group>
+        <ng-template #suffixButton>
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="medium"
+            nzSearch
+            (click)="uiQuery()"
+          >
+            Find
+          </button>
+        </ng-template>
+      </div>
+      <div>
+        <nz-button-group>
+          <button nz-button nzType="default" (click)="openEditor({}, 'create')">
+            <i nz-icon nzType="plus"></i>Add
+          </button>
+          <button nz-button nzType="default" (click)="query()">
+            <i nz-icon nzType="reload"></i
+            >{{ loading ? 'Loading...' : 'Reload' }}
+          </button>
+        </nz-button-group>
+      </div>
+    </div>
+  </div>
+  <div class="pagination light-text">
+    <div class="pagination_bar">
+      <div>
+        {{
+          (database + ' → ' + collection).length > 45
+            ? (database + ' → ' + collection).substring(0, 45) + '...'
+            : database + ' → ' + collection
+        }}
+      </div>
+      <div class="text-align-right">
+        <nz-pagination
+          [(nzPageIndex)]="pageIndex"
+          [nzTotal]="data?.count"
+          [nzSize]="'small'"
+          [nzPageSize]="10"
+          (nzPageIndexChange)="query()"
+          nzShowQuickJumper="true"
+          [nzShowTotal]="renderItemTemplate"
+        ></nz-pagination>
+        <ng-template #renderItemTemplate let-total let-range="range">
+          Displaying {{ range[0] }} - {{ range[1] }} of {{ total }} documents
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <nz-spin
+      [nzSpinning]="loading"
+      class="loader"
+      [nzIndicator]="indicatorTemplate"
+    ></nz-spin>
+    <ng-template #indicatorTemplate
+      ><i nz-icon nzType="loading" style="font-size: 80px;"></i>
+    </ng-template>
+    <div *ngFor="let doc of data?.documents; let i = index" class="document">
+      <div class="left">
+        <app-json-viewer [data]="doc"></app-json-viewer>
+      </div>
+      <div class="right">
+        <button
+          nz-button
+          nzType="default"
+          (click)="openEditor(doc, 'update')"
+          nzTooltipTitle="Edit"
+          nzTooltipPlacement="top"
+          nz-tooltip
+        >
+          <i nz-icon nzType="edit"></i>
+        </button>
+        <button
+          nz-button
+          nzType="default"
+          (click)="copyToClipboard(doc)"
+          nzTooltipTitle="Copy"
+          nzTooltipPlacement="top"
+          nz-tooltip
+        >
+          <i nz-icon nzType="copy"></i>
+        </button>
+        <button
+          class="spl-button"
+          nz-button
+          nzType="default"
+          nzTooltipTitle="Delete"
+          nzTooltipPlacement="top"
+          nz-tooltip
+          nz-popconfirm
+          nzPopconfirmTitle="Are you sure delete this document?"
+          (nzOnConfirm)="deleteDocument(doc._id)"
+          nzPopconfirmPlacement="left"
+        >
+          <i nz-icon nzType="delete"></i>
+        </button>
+      </div>
+    </div>
+
+    <nz-empty
+      *ngIf="!loading && (!data || !data.documents.length)"
+      nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+      [nzNotFoundContent]="contentTpl"
+    >
+      <ng-template #contentTpl>
+        <span> This collection doesn't have any documents </span>
+      </ng-template>
+    </nz-empty>
+  </div>
+</div>
+<nz-drawer
+  [nzBodyStyle]="{
+    height: 'calc(100% - 55px)',
+    overflow: 'auto',
+    'padding-bottom': '53px'
+  }"
+  [nzMaskClosable]="true"
+  [nzWidth]="1000"
+  [nzVisible]="showEditor"
+  [nzTitle]="
+    documentEditorMode === 'create' ? 'Add new document' : 'Edit document'
+  "
+  (nzOnClose)="closeEditor()"
+>
+  <nz-alert
+    *ngIf="error.status"
+    class="error_info"
+    nzType="error"
+    nzCloseable
+    [nzMessage]="error.desc"
+  >
+  </nz-alert>
+  <textarea
+    spellcheck="false"
+    nz-input
+    [(ngModel)]="documentBeingEdited"
+    style="font-family: monospace; min-height: 500px;"
+  ></textarea>
+  <div class="footer">
+    <button
+      type="button"
+      (click)="closeEditor()"
+      class="ant-btn"
+      style="margin-right: 8px;"
+    >
+      <span>Cancel</span>
+    </button>
+    <button
+      type="button"
+      (click)="updateDocument()"
+      class="ant-btn ant-btn-primary"
+    >
+      <span>{{ documentEditorMode === 'create' ? 'Add' : 'Save' }}</span>
+    </button>
+  </div>
+</nz-drawer>

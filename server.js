@@ -11,10 +11,10 @@ const port = +process.env.PORT || 3000;
 
 const app = express();
 
-app.use(express.static('client'));
+app.use(express.static('client/public'));
 
 // serve gzipped static files
-app.use(gzipStatic(__dirname + '/client'))
+app.use(gzipStatic(__dirname + '/client/public'));
 
 // enables cors
 app.use(cors());
@@ -29,7 +29,7 @@ app.use(bodyParser.json())
 app.use('/databases', databasesRoute);
 
 // serve home page
-app.get('/', (req, res) => res.sendFile(__dirname + '../client/index.html'));
+app.get('/', (req, res) => res.sendFile(__dirname + '../client/public/index.html'));
 
 app.listen(port, () => {
   dataAccessAdapter.InitDB();

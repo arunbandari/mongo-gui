@@ -1,0 +1,401 @@
+<nz-layout class="left-layout">
+  <nz-sider [nzWidth]="300" [nzTheme]="'dark'">
+    <div>
+      <div class="side_top">
+        <div class="title">
+          <h2 (click)="openDashBoard()">
+            <i nz-icon nzType="experiment" nzTheme="outline"></i> Mongo GUI
+          </h2>
+        </div>
+      </div>
+      <div class="search-box">
+        <nz-input-group [nzPrefix]="reloadIcon" [nzSuffix]="searchIcon">
+          <input
+            type="text"
+            nz-input
+            placeholder="Search for collections"
+            class="search"
+            [(ngModel)]="searchText"
+            (keyup)="filter()"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </nz-input-group>
+        <ng-template #reloadIcon
+          ><i
+            nz-icon
+            nzType="reload"
+            class="reload-dbs-btn"
+            [nzTooltipTitle]="isLoadingDbs ? 'Loading...' : 'Reload'"
+            (click)="reloadSideNav()"
+            nzTooltipPlacement="top"
+            nz-tooltip
+          ></i
+        ></ng-template>
+        <ng-template #searchIcon
+          ><i nz-icon nzType="search" style="color: #c4c4c4;"></i
+        ></ng-template>
+      </div>
+      <div class="side_explorer">
+        <ul class="menu">
+          <li *ngFor="let db of menuData" (click)="expand($event)">
+            <div
+              class="{{
+                isInSearchMode ? 'db_item nav_item open' : 'db_item nav_item'
+              }}"
+            >
+              {{ db.name
+              }}<span class="action"
+                ><span
+                  ><i
+                    nz-icon
+                    nzType="plus-circle"
+                    nzTheme="outline"
+                    nzTooltipTitle="Add new collection"
+                    nzTooltipPlacement="top"
+                    nz-tooltip
+                    (click)="openModal('addTable', { database: db.name })"
+                  ></i
+                ></span>
+                <span
+                  ><i
+                    nz-icon
+                    nzType="delete"
+                    nzTheme="fill"
+                    nzTooltipTitle="Drop database"
+                    nzTooltipPlacement="top"
+                    nz-tooltip
+                    (click)="openModal('dropDataBase', { database: db.name })"
+                  ></i
+                ></span>
+              </span>
+            </div>
+            <ul>
+              <li *ngFor="let collection of db.collections">
+                <div
+                  class="nav_item collection_item"
+                  (click)="openTab(db.name, collection)"
+                >
+                  {{ collection }}
+                  <span class="action">
+                    <span
+                      ><i
+                        nz-icon
+                        nzType="delete"
+                        nzTheme="fill"
+                        nzTooltipTitle="Drop collection"
+                        nzTooltipPlacement="top"
+                        nz-tooltip
+                        (click)="
+                          openModal('dropTable', {
+                            database: db.name,
+                            collection: collection
+                          })
+                        "
+                      ></i
+                    ></span>
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <a
+          nzType="link"
+          (click)="openModal('addDB', {})"
+          class="spl-button add-db-btn"
+        >
+          <i nz-icon nzType="plus" nzTheme="outline"></i>Add Database
+        </a>
+      </div>
+    </div>
+  </nz-sider>
+  <nz-layout class="right-layout">
+    <nz-content>
+      <nz-tabset
+        [nzType]="'card'"
+        [nzSelectedIndex]="activeTabIndex"
+        *ngIf="tabs && tabs.length"
+      >
+        <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+          <ng-template #titleTemplate>
+            <div title="{{ tab.database + '.' + tab.collection }}">
+              {{
+                tab.collection.length > 28
+                  ? tab.collection.substring(0, 28) + '...'
+                  : tab.collection
+              }}<i
+                nz-icon
+                nzType="close"
+                class="ant-tabs-close-x"
+                (click)="closeTab(tab.id)"
+              ></i>
+            </div>
+          </ng-template>
+          <app-collection-renderer
+            [database]="tab.database"
+            [collection]="tab.collection"
+          ></app-collection-renderer>
+        </nz-tab>
+      </nz-tabset>
+      <div *ngIf="!tabs || tabs.length == 0" class="dashboard-stats">
+        <nz-descriptions nzTitle="Database stats">
+          <nz-descriptions-item nzTitle="Databases">{{
+            stats.databases
+          }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Collections">{{
+            stats.collections
+          }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Size">{{
+            stats.size
+          }}</nz-descriptions-item>
+        </nz-descriptions>
+      </div>
+      <nz-table
+        *ngIf="!tabs || tabs.length == 0"
+        #basicTable
+        [nzData]="dbs.databases"
+        nzBordered="true"
+        class="table_home"
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Collections</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>
+              <a href="javascript:void(0)" (click)="openFirstTable(data)">{{
+                data.name
+              }}</a>
+            </td>
+            <td>{{ data.sizeOnDisk }}</td>
+            <td>{{ data.collections.length }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+
+<nz-modal
+  [(nzVisible)]="addTable"
+  (nzOnCancel)="closeModal('addTable')"
+  nzTitle="Add new collection"
+  [nzFooter]="addTableFooter"
+>
+  <form nz-form [formGroup]="addTableForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database"
+        >Database</nz-form-label
+      >
+      <nz-form-control
+        [nzSm]="14"
+        [nzXs]="24"
+        nzExtra="New collection will be added to this database"
+      >
+        <input nz-input formControlName="database" id="database" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="collection" nzRequired
+        >Collection</nz-form-label
+      >
+      <nz-form-control
+        [nzSm]="14"
+        [nzXs]="24"
+        nzErrorTip="Please enter a valid collection name"
+      >
+        <input
+          nz-input
+          id="collection"
+          formControlName="collection"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+<ng-template #addTableFooter>
+  <button nz-button nzType="default" (click)="closeModal('addTable')">
+    Cancel
+  </button>
+  <button
+    nz-button
+    nzType="primary"
+    [disabled]="!addTableForm.valid || addTableLoader"
+    (click)="createTable()"
+  >
+    {{ addTableLoader ? 'Adding ...' : 'Add' }}
+  </button>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="dropTable"
+  nzTitle="Drop collection"
+  (nzOnCancel)="closeModal('dropTable')"
+  [nzFooter]="dropTablelFooter"
+>
+  <form nz-form [formGroup]="dropTableForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database"
+        >Database</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="database" id="database" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="collection" nzRequired
+        >Collection</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input id="collection" formControlName="collection" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="confirmCollection" nzRequired
+        >Confirm collection</nz-form-label
+      >
+      <nz-form-control
+        [nzSm]="14"
+        [nzXs]="24"
+        nzErrorTip="Collection !== Confirm collection"
+      >
+        <input
+          nz-input
+          id="confirmCollection"
+          formControlName="confirmCollection"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+<ng-template #dropTablelFooter>
+  <button nz-button nzType="default" (click)="closeModal('dropTable')">
+    Cancel
+  </button>
+  <button
+    nz-button
+    nzType="danger"
+    [disabled]="!dropTableForm.valid || dropTableLoader"
+    (click)="dropCollection()"
+  >
+    {{ dropTableLoader ? 'Dropping ...' : 'Drop' }}
+  </button>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="dropDataBase"
+  nzTitle="Drop database"
+  (nzOnCancel)="closeModal('dropDataBase')"
+  [nzFooter]="dropDataBaseFooter"
+>
+  <form nz-form [formGroup]="dropDataBaseForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database"
+        >Database</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input formControlName="database" id="database" readonly />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="confirmDataBase" nzRequired
+        >Confirm database</nz-form-label
+      >
+      <nz-form-control
+        [nzSm]="14"
+        [nzXs]="24"
+        nzErrorTip="Database !== Confirm database"
+      >
+        <input
+          nz-input
+          id="confirmDataBase"
+          formControlName="confirmDataBase"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+<ng-template #dropDataBaseFooter>
+  <button nz-button nzType="default" (click)="closeModal('dropDataBase')">
+    Cancel
+  </button>
+  <button
+    nz-button
+    nzType="danger"
+    [disabled]="!dropDataBaseForm.valid || dropDataBaseLoader"
+    (click)="dropDB()"
+  >
+    {{ dropDataBaseLoader ? 'Dropping ...' : 'Drop' }}
+  </button>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="addDB"
+  nzTitle="Add Database"
+  (nzOnCancel)="closeModal('addDB')"
+  [nzFooter]="addDBFooter"
+>
+  <form nz-form [formGroup]="addDBForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database"
+        >Database</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input
+          nz-input
+          formControlName="database"
+          id="database"
+          placeholder="Enter a name for the new database"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="collection" nzRequired
+        >Collection</nz-form-label
+      >
+      <nz-form-control
+        [nzSm]="14"
+        [nzXs]="24"
+        nzExtra="You need to add at least one collection inorder to work with the new database"
+      >
+        <input
+          nz-input
+          id="collection"
+          formControlName="collection"
+          autocomplete="off"
+          placeholder="Enter a name for the new collection"
+          spellcheck="false"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+<ng-template #addDBFooter>
+  <button nz-button nzType="default" (click)="closeModal('addDB')">
+    Cancel
+  </button>
+  <button
+    nz-button
+    nzType="primary"
+    [disabled]="!addDBForm.valid || addDBLoader"
+    (click)="addDataBase()"
+  >
+    {{ addDBLoader ? 'Adding ...' : 'Add' }}
+  </button>
+</ng-template>
