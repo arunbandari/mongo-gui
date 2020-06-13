@@ -102,3 +102,16 @@ body {
 .spl-button:hover {
   color: #fff;
 }
+
+/* tables */
+.table_home {
+  padding: 0px 10px;
+}
+
+.table_home > tr > td {
+  padding: 5px !important;
+}
+.ant-table-tbody > tr > td,
+.ant-table-thead > tr > th {
+  padding: 5px !important;
+}

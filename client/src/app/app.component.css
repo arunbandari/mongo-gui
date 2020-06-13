@@ -39,18 +39,6 @@ nz-footer {
   text-align: center;
 }
 
-.table_home {
-  padding: 10px;
-}
-
-.table_home > tr > td {
-  padding: 5px !important;
-}
-.ant-table-tbody > tr > td,
-.ant-table-thead > tr > th {
-  padding: 8px !important;
-}
-
 /* sidenav */
 .menu,
 .menu li ul {
