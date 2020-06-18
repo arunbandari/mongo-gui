@@ -32,3 +32,6 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3000/databases/quiz/collections/result
+
+###
+http://localhost:4321/databases/ApplaudCloud/collections/Form/documents/

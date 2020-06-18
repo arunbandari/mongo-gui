@@ -4,11 +4,11 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { serialize, deserialize, EJSON } from 'bson';
 
 @Component({
-  selector: 'app-collection-renderer',
-  templateUrl: './collection-renderer.component.html',
-  styleUrls: ['./collection-renderer.component.css'],
+  selector: 'app-collection',
+  templateUrl: './collection.component.html',
+  styleUrls: ['./collection.component.css'],
 })
-export class CollectionRendererComponent implements OnInit {
+export class CollectionComponent implements OnInit {
   @Input() database: any;
   @Input() collection: any;
   data: any;

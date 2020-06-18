@@ -1,14 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Pipe, PipeTransform } from '@angular/core';
 import { KeyValue } from '@angular/common';
-import { ObjectID, ObjectId } from 'bson';
 
 @Component({
-  selector: 'app-json-viewer',
-  templateUrl: './json-viewer.component.html',
-  styleUrls: ['./json-viewer.component.css'],
+  selector: 'app-document',
+  templateUrl: './document.component.html',
+  styleUrls: ['./document.component.css']
 })
-export class JsonViewerComponent implements OnInit {
+export class Document implements OnInit {
   @Input() data: any;
   constructor() {}
 
@@ -48,22 +46,20 @@ export class JsonViewerComponent implements OnInit {
   ): number => {
     return 0;
   };
-}
-@Pipe({ name: 'type' })
-export class Type implements PipeTransform {
-  transform(value: any) {
-    if (value === null) return 'null';
-    if (value === undefined) return 'undefined';
-    return value._bsontype || value.constructor.name;
-  }
-}
-@Pipe({ name: 'isEmpty' })
-export class IsEmpty implements PipeTransform {
-  transform(value) {
-    let arr = value;
-    if (value.constructor.name === 'Object') {
-      arr = Object.keys(value);
+
+  showMoreLessText(e, value) {
+    e.preventDefault();
+    const thisClassList = e.target.classList;
+    if (thisClassList.contains('expanded')) {
+      thisClassList.replace('expanded', 'collapsed');
+    } else {
+      thisClassList.replace('collapsed', 'expanded');
     }
-    return arr.length ? true : false;
+    const flag = e.target.previousElementSibling.classList.toggle('full-text');
+    if (flag) {
+      e.target.previousElementSibling.innerText = `"${value}"`;
+    } else {
+      e.target.previousElementSibling.innerText = `"${value.substring(0, 79)}..."`;
+    }
   }
 }

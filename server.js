@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');;
@@ -7,13 +6,14 @@ var gzipStatic = require('connect-gzip-static');
 
 const dataAccessAdapter = require('./src/db/dataAccessAdapter');
 const databasesRoute = require('./src/routes/database');
-const port = +process.env.PORT || 3000;
+const port = 4321;
 
 const app = express();
 
+// serve static files form client/public
 app.use(express.static('client/public'));
 
-// serve gzipped static files
+// process & serve gzipped static files
 app.use(gzipStatic(__dirname + '/client/public'));
 
 // enables cors
@@ -31,7 +31,8 @@ app.use('/databases', databasesRoute);
 // serve home page
 app.get('/', (req, res) => res.sendFile(__dirname + '../client/public/index.html'));
 
+// listen application on port:4321
 app.listen(port, () => {
   dataAccessAdapter.InitDB();
-  console.log(`Server is listening on port ${port}!`);
+  console.log(`Access Mongo GUI at http://localhost:${port}!`);
 });

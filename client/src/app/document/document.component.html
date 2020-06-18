@@ -1,0 +1,31 @@
+<ul>
+  <li *ngFor="let row of data | keyvalue: originalOrder">
+    <ng-container [ngSwitch]="row.value | type">
+      <ng-container *ngSwitchCase="'String'">
+        <div class="fieldset" [ngClass]="row.value | type">
+          <div class="key">{{ row.key }}</div>
+          <div class="separator">:</div>
+          <div class="value">{{ row.value | formatValue }}</div>
+          <span (click)="showMoreLessText($event, row.value)" class="collapsed toggle" *ngIf="row.value | hasMoreText"></span>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="(row.value | isExpandable) ? (row.value | type) : ''">
+        <div class="fieldset" [ngClass]="row.value | type">
+          <div class="key">{{ row.key }}</div>
+          <div class="separator">:</div>
+          <div class="value meta-data">{{ row.value | formatValue }}</div>
+        </div>
+        <app-document [data]="row.value"></app-document>
+        <span (click)="clicked($event, row)" class="collapsed toggle"
+        ></span>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <div class="fieldset" [ngClass]="row.value | type">
+          <div class="key">{{ row.key }}</div>
+          <div class="separator">:</div>
+          <div class="value">{{ row.value | formatValue }}</div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </li>
+</ul>

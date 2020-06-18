@@ -71,7 +71,7 @@
     </ng-template>
     <div *ngFor="let doc of data?.documents; let i = index" class="document">
       <div class="left">
-        <app-json-viewer [data]="doc"></app-json-viewer>
+        <app-document [data]="doc"></app-document>
       </div>
       <div class="right">
         <button

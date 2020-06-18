@@ -134,10 +134,10 @@
               ></i>
             </div>
           </ng-template>
-          <app-collection-renderer
+          <app-collection
             [database]="tab.database"
             [collection]="tab.collection"
-          ></app-collection-renderer>
+          ></app-collection>
         </nz-tab>
       </nz-tabset>
       <div *ngIf="!tabs || tabs.length == 0" class="dashboard-stats">

@@ -1,0 +1,99 @@
+ul {
+  list-style-type: none;
+  margin-bottom: 0px;
+  font-family: monospace;
+}
+ul li {
+  position: relative;
+  line-height: initial;
+}
+li ul {
+  display: none;
+}
+.open {
+  display: block !important;
+}
+.String .value{
+  color: #2a9ead !important;
+  height: 1rem;
+  overflow: hidden;
+}
+.Number .value{
+  color: #4b714d !important;
+}
+.Boolean .value {
+  color: firebrick !important;
+}
+.Date .value {
+  color: #e91e63 !important;
+}
+.null .value {
+  color: #3f51b5 !important;
+}
+.ObjectID .value {
+  color: #f7754c !important;
+}
+.RegExp .value {
+  color: #999 !important;
+}
+.Timestamp .value {
+  color: #333 !important;
+}
+.Code .value {
+  color: #0053a6 !important;
+}
+.meta-data {
+  /* font-style: italic; */
+  color: #999 !important;
+  font-size: x-small !important;
+  font-weight: 100;
+}
+.key {
+  font-weight: 600;
+  color: #444;
+  font-size: smaller;
+}
+.value {
+  font-weight: 600;
+  font-size: smaller;
+  color: #999;
+}
+.fieldset {
+  line-height: 18px;
+  word-wrap: break-word;
+}
+.collapsed::before {
+  /* content: '\25B7'; */
+  /* content: '+'; */
+  content: '\276F';
+}
+.expanded::before {
+  /* content: '\25E2'; */
+  /* content: '-'; */
+  content: '\276F';
+  display: inline-block;
+  -webkit-transform: rotate(40deg);
+  -moz-transform: rotate(40deg);
+  -o-transform: rotate(40deg);
+  transform: rotate(90deg);
+}
+.toggle {
+  position: absolute;
+  left: -16px;
+  cursor: pointer;
+  color: #ccc !important;
+  width: 12px;
+  line-height: 12px;
+  top: 4px;
+  text-align: center;
+  cursor: pointer;
+  font-size: x-small;
+}
+
+.fieldset {
+  display: inline-flex;
+}
+
+.full-text {
+  height: auto !important;
+}
