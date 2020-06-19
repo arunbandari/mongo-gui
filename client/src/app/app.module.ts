@@ -6,11 +6,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ApiService } from './api.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Document } from './document/document.component';
 import { CollectionComponent } from './collection/collection.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { Type, HasMoreText, IsExpandable, FormatValue } from './common/pipes'
+import { HttpErrorInterceptor } from './common/interceptors/http-error.interceptor'
 
 @NgModule({
   declarations: [
@@ -31,7 +32,11 @@ import { Type, HasMoreText, IsExpandable, FormatValue } from './common/pipes'
     HttpClientModule,
     NgZorroAntdModule,
   ],
-  providers: [ApiService, { provide: NZ_I18N, useValue: en_US }],
+  providers: [ApiService, { provide: NZ_I18N, useValue: en_US }, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpErrorInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

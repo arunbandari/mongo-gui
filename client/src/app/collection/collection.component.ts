@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { serialize, deserialize, EJSON } from 'bson';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-collection',
@@ -19,7 +20,7 @@ export class CollectionComponent implements OnInit {
   documentEditorMode = 'create';
   documentBeingEdited: any;
   error: { status: boolean; desc: string } = { status: false, desc: '' };
-  constructor(private API: ApiService, private message: NzMessageService) {}
+  constructor(private API: ApiService, private message: NzMessageService, private notification: NzNotificationService) {}
 
   ngOnInit() {
     this.query();
@@ -37,9 +38,6 @@ export class CollectionComponent implements OnInit {
         .subscribe(
           (documents: any) => {
             this.data = deserialize(Buffer.from(documents.data));
-          },
-          (err) => {
-            alert(JSON.stringify(err.error));
           }
         )
         .add(() => {
@@ -81,10 +79,6 @@ export class CollectionComponent implements OnInit {
             this.closeEditor();
             this.message.success('A new document has been added');
             this.query();
-          },
-          (err) => {
-            this.error.status = true;
-            this.error.desc = JSON.stringify(err);
           }
         );
       } else {
@@ -97,10 +91,6 @@ export class CollectionComponent implements OnInit {
             this.closeEditor();
             this.message.success('The document has been updated');
             this.query();
-          },
-          (err) => {
-            this.error.status = true;
-            this.error.desc = JSON.stringify(err);
           }
         );
       }

@@ -35,9 +35,6 @@ export class AppComponent implements OnInit {
           this.dbs = res;
           this.computeStats();
           this.filter();
-        },
-        (error) => {
-          alert(JSON.stringify(error));
         }
       )
       .add(() => {
@@ -184,16 +181,11 @@ export class AppComponent implements OnInit {
 
     const body = this.addTableForm.value;
     this.Api.createCollection(body)
-      .subscribe(
-        () => {
+      .subscribe(() => {
           this.getDatabases(); // re-renders side nav
           this.openTab(body.database, body.collection);
           this.closeModal('addTable');
-        },
-        (err) => {
-          alert(JSON.stringify(err));
-        }
-      )
+        })
       .add(() => {
         this.addTableLoader = false;
       });
@@ -207,16 +199,11 @@ export class AppComponent implements OnInit {
 
     const body = this.dropTableForm.value;
     this.Api.dropCollection(body)
-      .subscribe(
-        () => {
+      .subscribe(() => {
           this.getDatabases(); // re-render side nav
           this.closeTab(`${body.database}.${body.collection}`);
           this.closeModal('dropTable');
-        },
-        (err) => {
-          alert(JSON.stringify(err));
-        }
-      )
+        })
       .add(() => {
         this.dropTableLoader = false;
       });
@@ -230,16 +217,11 @@ export class AppComponent implements OnInit {
 
     const body = this.dropDataBaseForm.value;
     this.Api.dropDB(body)
-      .subscribe(
-        () => {
+      .subscribe(() => {
           this.getDatabases(); // re-render side-nav
           this.closeTabsByDataBase(body.database);
           this.closeModal('dropDataBase');
-        },
-        (err) => {
-          alert(JSON.stringify(err));
-        }
-      )
+        })
       .add(() => {
         this.dropDataBaseLoader = false;
       });
@@ -253,16 +235,11 @@ export class AppComponent implements OnInit {
 
     const body = this.addDBForm.value;
     this.Api.createCollection(body)
-      .subscribe(
-        () => {
+      .subscribe(() => {
           this.getDatabases(); // re-render side-nav
           this.openTab(body.database, body.collection);
           this.closeModal('addDB');
-        },
-        (err) => {
-          alert(JSON.stringify(err));
-        }
-      )
+        })
       .add(() => {
         this.addDBLoader = false;
       });

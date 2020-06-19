@@ -36,3 +36,13 @@ app.listen(port, () => {
   dataAccessAdapter.InitDB();
   console.log(`Access Mongo GUI at http://localhost:${port}!`);
 });
+
+// error handler
+app.use((err, req, res, next) => {
+  console.log(err);
+  const error = {
+    errmsg: err.errmsg,
+    name: err.name,
+  };
+  res.status(500).send(error);
+});
