@@ -1,4 +1,4 @@
-<div class="tab_content">
+<div class="tab-content">
   <div class="help">
     <div class="bar">
       <div class="query">
@@ -36,28 +36,26 @@
     </div>
   </div>
   <div class="pagination light-text">
-    <div class="pagination_bar">
-      <div>
-        {{
-          (database + ' → ' + collection).length > 45
-            ? (database + ' → ' + collection).substring(0, 45) + '...'
-            : database + ' → ' + collection
-        }}
-      </div>
-      <div class="text-align-right">
-        <nz-pagination
-          [(nzPageIndex)]="pageIndex"
-          [nzTotal]="data?.count"
-          [nzSize]="'small'"
-          [nzPageSize]="10"
-          (nzPageIndexChange)="query()"
-          nzShowQuickJumper="true"
-          [nzShowTotal]="renderItemTemplate"
-        ></nz-pagination>
-        <ng-template #renderItemTemplate let-total let-range="range">
-          Displaying {{ range[0] }} - {{ range[1] }} of {{ total }} documents
-        </ng-template>
-      </div>
+    <div class="left-child">
+      {{
+        (database + ' → ' + collection).length > 45
+          ? (database + ' → ' + collection).substring(0, 45) + '...'
+          : database + ' → ' + collection
+      }}
+    </div>
+    <div class="right-child">
+      <nz-pagination
+        [(nzPageIndex)]="pageIndex"
+        [nzTotal]="data?.count"
+        [nzSize]="'small'"
+        [nzPageSize]="10"
+        (nzPageIndexChange)="query()"
+        nzShowQuickJumper="true"
+        [nzShowTotal]="renderItemTemplate"
+      ></nz-pagination>
+      <ng-template #renderItemTemplate let-total let-range="range">
+        Displaying {{ range[0] }} - {{ range[1] }} of {{ total }} documents
+      </ng-template>
     </div>
   </div>
   <div class="container">
@@ -136,14 +134,6 @@
   "
   (nzOnClose)="closeEditor()"
 >
-  <nz-alert
-    *ngIf="error.status"
-    class="error_info"
-    nzType="error"
-    nzCloseable
-    [nzMessage]="error.desc"
-  >
-  </nz-alert>
   <textarea
     spellcheck="false"
     nz-input

@@ -85,7 +85,8 @@ function filter (req, res, next) {
         let data = { documents, count, from: skip + 1, to: skip + documents.length };
         if (req.query.ContentType === 'bson') data = JSON.stringify(BSON.serialize(data));
         res.send(data);
-      });
+      })
+      .catch(err => next(err));
 }
 
 function stats (req, res, next) {

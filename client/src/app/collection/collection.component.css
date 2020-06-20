@@ -11,8 +11,6 @@
   padding: 15px 8px;
   margin-bottom: 8px;
   position: relative;
-  /* box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12) !important; */
 }
 .right [nz-button] {
   margin: 0px 4px !important;
@@ -37,7 +35,7 @@
   border-bottom: 1px solid #e5e5e5;
   padding-bottom: 5px;
 }
-.tab_content {
+.tab-content {
   grid-template-rows: auto;
 }
 .meta {
@@ -59,8 +57,9 @@
   padding: 0px 10px;
 }
 .loader {
-  top: 100px;
-  position: relative;
+  top: 35%;
+  left: 40%;
+  position: absolute;
 }
 .footer {
   position: absolute;
@@ -72,11 +71,17 @@
   left: 0px;
   background: #fff;
 }
-.error_info {
-  margin-bottom: 20px;
-}
 
 .pagination {
   padding: 5px 15px;
   border-bottom: 3px solid #e5e5e5;
+}
+
+.left-child, .right-child {
+  display: inline-block;
+}
+
+.right-child {
+  text-align: right;
+  float: right;
 }

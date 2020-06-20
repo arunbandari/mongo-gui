@@ -3,7 +3,6 @@ import {
     HttpInterceptor,
     HttpHandler,
     HttpRequest,
-    HttpResponse,
     HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -28,8 +27,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 errorMessage = error.error.message;
             } else {
                 // server-side error
-                name = error.error.name;
-                errorMessage = error.error.errmsg;
+                name = error.error.name || error.name;
+                errorMessage = error.error.errmsg || error.message;
             }
             this.notification.create(
                 'error',
