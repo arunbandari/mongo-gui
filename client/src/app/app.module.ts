@@ -10,7 +10,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Document } from './document/document.component';
 import { CollectionComponent } from './collection/collection.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
-import { Type, HasMoreText, IsExpandable, FormatValue } from './common/pipes'
+import { Type, HasMoreText, IsExpandable, FormatValue } from './common/pipes/pipes'
+import { FileSizePipe } from './common/pipes/file-size.pipe'
 import { HttpErrorInterceptor } from './common/interceptors/http-error.interceptor'
 
 @NgModule({
@@ -21,6 +22,7 @@ import { HttpErrorInterceptor } from './common/interceptors/http-error.intercept
     IsExpandable,
     HasMoreText,
     FormatValue,
+    FileSizePipe,
     CollectionComponent,
   ],
   imports: [

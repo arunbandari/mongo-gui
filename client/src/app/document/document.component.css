@@ -57,6 +57,7 @@ li ul {
   font-weight: 600;
   font-size: smaller;
   color: #999;
+  word-break: break-all;
 }
 .fieldset {
   line-height: 18px;

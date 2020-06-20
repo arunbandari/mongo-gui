@@ -1,5 +1,8 @@
 {
   "main": "server.js",
+  "scripts": {
+    "build-ui": "cd client && npm run clean-build-compress"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "bson": "^4.0.3",
