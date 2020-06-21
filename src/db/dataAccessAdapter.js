@@ -1,4 +1,5 @@
 const mongoClient = require('mongodb').MongoClient;
+const argv = require('minimist')(process.argv.slice(2));
 
 class DataBase {
   constructor() {}
@@ -11,8 +12,8 @@ class DataBase {
   }
 
   static InitDB(app) {
-    const url = process.argv[2] || 'mongodb://localhost:27017';
-
+    const url = argv.u || process.env.URL || 'mongodb://localhost:27017';
+    console.log(url);
     console.log(`> Connecting to mongoDB @ ${url}`);
     mongoClient.connect(url, { useUnifiedTopology: true })
       .then(client => {

@@ -1,4 +1,5 @@
 const cors = require('cors');
+const argv = require('minimist')(process.argv.slice(2));
 const express = require('express');
 const bodyParser = require('body-parser');
 const eventEmitter = require('events');
@@ -8,7 +9,6 @@ const gzipProcessor = require('connect-gzip-static');
 const dataAccessAdapter = require('./src/db/dataAccessAdapter');
 const databasesRoute = require('./src/routes/database');
 
-const port = process.env.PORT || 4321;
 
 // initialize app
 const app = express();
@@ -42,6 +42,7 @@ dataAccessAdapter.InitDB(app);
 
 // listen on :port once the app is connected to the MongoDB
 app.once('connectedToDB', () => {
+  const port = argv.p || process.env.PORT || 4321;
   app.listen(port, () => {
     console.log(`> Access Mongo GUI at http://localhost:${port}`);
   });
