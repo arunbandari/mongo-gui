@@ -1,5 +1,19 @@
 {
+  "name": "mongo-gui",
+  "description": "A web-based MongoDB graphical user interface",
+  "version": "0.0.0",
   "main": "server.js",
+  "license": "MIT",
+  "keywords": ["mongodb-user-interface", "mongodb-web-ui", "mongo-ui", "mongo-gui", "mongodb"],
+  "homepage": "https://mongo-gui.herokuapp.com/",
+  "bugs": {
+    "url" : "https://github.com/arunbandari/mongo-gui/issues",
+    "email" : "arunbandari2@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arunbandari/mongo-gui"
+  },
   "scripts": {
     "build-ui": "cd client && npm run clean-build-compress"
   },
