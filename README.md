@@ -36,7 +36,7 @@ There are two ways to install **mongo-gui**.
  - URL (-u): ```mongodb://localhost:27017```
  - PORT (-p): ```4321```
 
-   and the application will be accesible at http://localhost:4321
+   and the application will be accesible at ```http://localhost:4321```
 
 To connect to any other mongodb instance, pass mongo connection string as an argument, eg:
 
