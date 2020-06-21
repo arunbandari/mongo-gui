@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const cors = require('cors');
 const argv = require('minimist')(process.argv.slice(2));
 const express = require('express');
