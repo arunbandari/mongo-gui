@@ -31,5 +31,8 @@
     "express": "^4.17.1",
     "minimist": "^1.2.5",
     "mongodb": "^3.4.1"
+  },
+  "bin": {
+    "mongo-gui": "./server.js"
   }
 }
