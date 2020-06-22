@@ -6,11 +6,11 @@ import { KeyValue } from '@angular/common';
   templateUrl: './document.component.html',
   styleUrls: ['./document.component.css']
 })
-export class Document implements OnInit {
+export class DocumentComponent implements OnInit {
   @Input() data: any;
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
   clicked(e, row) {
     e.stopPropagation();
     const thisClassList = e.target.classList;
@@ -45,7 +45,7 @@ export class Document implements OnInit {
     b: KeyValue<number, string>
   ): number => {
     return 0;
-  };
+  }
 
   showMoreLessText(e, value) {
     e.preventDefault();

@@ -1,16 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Document } from './document.component';
+import { DocumentComponent } from './document.component';
 
-describe('Document', () => {
+describe('DocumentComponent', () => {
   let component: Document;
   let fixture: ComponentFixture<Document>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ Document ]
+      declarations: [DocumentComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

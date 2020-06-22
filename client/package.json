@@ -8,8 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "clean": "rimraf dist && rimraf public",
-    "compress": "npx gzipper --verbose ./dist ./public",
+    "clean": "rimraf dist && rimraf ../public",
+    "compress": "npx gzipper --verbose ./dist ../public",
     "build:prod": "ng build --prod",
     "clean-build-compress": "npm run clean && npm run build:prod && npm run compress"
   },

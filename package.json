@@ -5,11 +5,13 @@
   "main": "server.js",
   "license": "MIT",
   "keywords": [
-    "mongodb-user-interface",
-    "mongodb-web-ui",
-    "mongo-ui",
-    "mongo-gui",
-    "mongodb"
+    "mongodb",
+    "express",
+    "admin",
+    "mongo",
+    "gui",
+    "ui",
+    "user-interface"
   ],
   "homepage": "https://mongo-gui.herokuapp.com/",
   "bugs": {
@@ -21,6 +23,7 @@
     "url": "https://github.com/arunbandari/mongo-gui"
   },
   "scripts": {
+    "start": "node server.js",
     "build-ui": "cd client && npm run clean-build-compress"
   },
   "dependencies": {

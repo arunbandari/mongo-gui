@@ -14,13 +14,13 @@ export class CollectionComponent implements OnInit {
   @Input() collection: any;
   data: any;
   filter: any;
-  loading: boolean = false;
+  loading = false;
   pageIndex = 1;
   showEditor = false;
   documentEditorMode = 'create';
   documentBeingEdited: any;
   error: { status: boolean; desc: string } = { status: false, desc: '' };
-  constructor(private API: ApiService, private message: NzMessageService, private notification: NzNotificationService) {}
+  constructor(private API: ApiService, private message: NzMessageService, private notification: NzNotificationService) { }
 
   ngOnInit() {
     this.query();
@@ -130,7 +130,7 @@ export class CollectionComponent implements OnInit {
       if (result) {
         this.message.success('Copied!');
       }
-    } catch (err) {}
+    } catch (err) { }
     document.body.removeChild(txtArea);
   }
 }

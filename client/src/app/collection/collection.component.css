@@ -77,7 +77,8 @@
   border-bottom: 3px solid #e5e5e5;
 }
 
-.left-child, .right-child {
+.left-child,
+.right-child {
   display: inline-block;
 }
 

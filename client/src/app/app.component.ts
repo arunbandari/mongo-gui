@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as _ from 'lodash';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +9,8 @@ import * as _ from 'lodash';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  // constrcutor
+  constructor(private Api: ApiService, private fb: FormBuilder) { }
   title = 'ui';
   docs: any;
   activeTabIndex = 0;
@@ -17,7 +19,7 @@ export class AppComponent implements OnInit {
     databases: [],
   };
   isLoadingDbs = false;
-  isInSearchMode: boolean = false;
+  isInSearchMode = false;
   searchText: string;
   menuData: any;
   stats = {
@@ -25,6 +27,28 @@ export class AppComponent implements OnInit {
     collections: 0,
     size: 0,
   };
+  /* Forms related stuff */
+  // Forms
+  addDBForm!: FormGroup;
+  addTableForm!: FormGroup;
+  dropTableForm!: FormGroup;
+  dropDataBaseForm!: FormGroup;
+  /* tab related operations */
+  tabs = [];
+  /* collection related operations */
+  // create new collection
+  addTableLoader = false;
+  // drop collection
+  dropTableLoader = false;
+  // drop database
+  dropDataBaseLoader = false;
+  // add database
+  addDBLoader = false;
+  /* methods to open & close Modals */
+  addDB = false;
+  addTable = false;
+  dropTable = false;
+  dropDataBase = false;
 
   /* side-nav */
   getDatabases() {
@@ -52,12 +76,6 @@ export class AppComponent implements OnInit {
     );
     this.stats.size = this.dbs.totalSize;
   }
-  /* Forms related stuff */
-  // Forms
-  addDBForm!: FormGroup;
-  addTableForm!: FormGroup;
-  dropTableForm!: FormGroup;
-  dropDataBaseForm!: FormGroup;
 
   mustMatch(controlName, matchingControlName) {
     return (formGroup: FormGroup) => {
@@ -105,8 +123,6 @@ export class AppComponent implements OnInit {
       }
     );
   }
-  // constrcutor
-  constructor(private Api: ApiService, private fb: FormBuilder) {}
   ngOnInit() {
     this.getDatabases();
     this.initForms();
@@ -119,7 +135,7 @@ export class AppComponent implements OnInit {
 
   filter() {
     this.isInSearchMode = true;
-    this.menuData = _.cloneDeep(this.dbs.databases);
+    this.menuData = cloneDeep(this.dbs.databases);
     if (!this.searchText) {
       this.isInSearchMode = false;
       return;
@@ -132,8 +148,6 @@ export class AppComponent implements OnInit {
       })
       .filter((db) => db.collections.length);
   }
-  /* tab related operations */
-  tabs = [];
 
   activateTab(index) {
     this.activeTabIndex = index;
@@ -171,84 +185,70 @@ export class AppComponent implements OnInit {
   openDashBoard() {
     this.closeAllTabs();
   }
-  /* collection related operations */
-  // create new collection
-  addTableLoader: boolean = false;
   createTable() {
-    if (!this.addTableForm.valid) return;
+    if (!this.addTableForm.valid) { return; }
 
     this.addTableLoader = true;
 
     const body = this.addTableForm.value;
     this.Api.createCollection(body)
       .subscribe(() => {
-          this.getDatabases(); // re-renders side nav
-          this.openTab(body.database, body.collection);
-          this.closeModal('addTable');
-        })
+        this.getDatabases(); // re-renders side nav
+        this.openTab(body.database, body.collection);
+        this.closeModal('addTable');
+      })
       .add(() => {
         this.addTableLoader = false;
       });
   }
-  // drop collection
-  dropTableLoader: boolean = false;
   dropCollection() {
-    if (!this.dropTableForm.valid) return;
+    if (!this.dropTableForm.valid) { return; }
 
     this.dropTableLoader = true;
 
     const body = this.dropTableForm.value;
     this.Api.dropCollection(body)
       .subscribe(() => {
-          this.getDatabases(); // re-render side nav
-          this.closeTab(`${body.database}.${body.collection}`);
-          this.closeModal('dropTable');
-        })
+        this.getDatabases(); // re-render side nav
+        this.closeTab(`${body.database}.${body.collection}`);
+        this.closeModal('dropTable');
+      })
       .add(() => {
         this.dropTableLoader = false;
       });
   }
-  // drop database
-  dropDataBaseLoader: boolean = false;
   dropDB() {
-    if (!this.dropDataBaseForm.valid) return;
+    if (!this.dropDataBaseForm.valid) { return; }
 
     this.dropDataBaseLoader = true;
 
     const body = this.dropDataBaseForm.value;
     this.Api.dropDB(body)
       .subscribe(() => {
-          this.getDatabases(); // re-render side-nav
-          this.closeTabsByDataBase(body.database);
-          this.closeModal('dropDataBase');
-        })
+        this.getDatabases(); // re-render side-nav
+        this.closeTabsByDataBase(body.database);
+        this.closeModal('dropDataBase');
+      })
       .add(() => {
         this.dropDataBaseLoader = false;
       });
   }
-  // add database
-  addDBLoader: boolean = false;
   addDataBase() {
-    if (!this.addDBForm.valid) return;
+    if (!this.addDBForm.valid) { return; }
 
     this.addDBLoader = true;
 
     const body = this.addDBForm.value;
     this.Api.createCollection(body)
       .subscribe(() => {
-          this.getDatabases(); // re-render side-nav
-          this.openTab(body.database, body.collection);
-          this.closeModal('addDB');
-        })
+        this.getDatabases(); // re-render side-nav
+        this.openTab(body.database, body.collection);
+        this.closeModal('addDB');
+      })
       .add(() => {
         this.addDBLoader = false;
       });
   }
-  /* methods to open & close Modals */
-  addDB: boolean = false;
-  addTable: boolean = false;
-  dropTable: boolean = false;
-  dropDataBase: boolean = false;
 
   closeModal(title) {
     this[title] = false;
@@ -256,22 +256,21 @@ export class AppComponent implements OnInit {
 
   openModal(title, options) {
     // initializes values
-    console.log(options);
     if (title === 'addTable') {
       this.addTableForm.reset();
-      this.addTableForm.controls['database'].setValue(options.database);
+      this.addTableForm.controls.database.setValue(options.database);
     }
     if (title === 'addDB') {
       this.addDBForm.reset();
     }
     if (title === 'dropTable') {
       this.dropTableForm.reset();
-      this.dropTableForm.controls['database'].setValue(options.database);
-      this.dropTableForm.controls['collection'].setValue(options.collection);
+      this.dropTableForm.controls.database.setValue(options.database);
+      this.dropTableForm.controls.collection.setValue(options.collection);
     }
     if (title === 'dropDataBase') {
       this.dropDataBaseForm.reset();
-      this.dropDataBaseForm.controls['database'].setValue(options.database);
+      this.dropDataBaseForm.controls.database.setValue(options.database);
     }
     // opens modal
     this[title] = true;
