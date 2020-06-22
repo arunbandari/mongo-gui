@@ -4,7 +4,6 @@ const cors = require('cors');
 const argv = require('minimist')(process.argv.slice(2));
 const express = require('express');
 const bodyParser = require('body-parser');
-const eventEmitter = require('events');
 const gzipProcessor = require('connect-gzip-static');
 
 
@@ -35,9 +34,6 @@ app.use('/databases', databasesRoute);
 
 // serve home page
 app.get('/', (req, res) => res.sendFile(__dirname + '../client/public/index.html'));
-
-// add event emitter to app
-app.__proto__ = new eventEmitter();
 
 // connect to database
 dataAccessAdapter.InitDB(app);
