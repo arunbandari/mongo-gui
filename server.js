@@ -5,11 +5,15 @@ const argv = require('minimist')(process.argv.slice(2));
 const express = require('express');
 const bodyParser = require('body-parser');
 const gzipProcessor = require('connect-gzip-static');
+const updateNotifier = require('update-notifier');
 
 
 const dataAccessAdapter = require('./src/db/dataAccessAdapter');
 const databasesRoute = require('./src/routes/database');
 
+// notify users on new releases - https://github.com/arunbandari/mongo-gui/issues/5
+const pkg = require('./package.json');
+updateNotifier({ pkg }).notify();
 
 // initialize app
 const app = express();
