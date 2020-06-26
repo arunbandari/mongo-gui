@@ -35,7 +35,7 @@ export class ApiService {
     );
   }
   updateDocument(dbName, collectionName, document) {
-    return this.http.patch(
+    return this.http.put(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=bson`,
       document
     );
