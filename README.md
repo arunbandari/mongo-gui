@@ -30,6 +30,22 @@ There are two ways to install **mongo-gui**.
 
  Note: *Node.js must be installed on your machine to run this application*
 
+### From Docker Hub:
+Docker compose
+```yaml
+version: '3'
+
+services:
+  mongo-gui:
+    container_name: "mongo-gui"
+    image: ugleiton/mongo-gui
+    restart: always
+    ports:
+      - "4321:4321"
+    environment:
+      - MONGO_URL=mongodb://localhost:27017
+```
+
 ## Usage
  The commands ```mongo-gui``` and ```npm start or node server.js``` start the application with the following configuaration:
 
