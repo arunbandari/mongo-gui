@@ -84,6 +84,8 @@ export class CollectionComponent implements OnInit {
           (response) => {
             this.closeEditor();
             this.message.success('A new document has been added');
+            this.data.count += 1;
+            this.pageIndex = Math.floor(this.data.count / 10) + 1;
             this.query();
           }
         );
