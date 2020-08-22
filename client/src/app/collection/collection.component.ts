@@ -56,11 +56,9 @@ export class CollectionComponent implements OnInit {
     this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
       () => {
         this.message.info('Deleted!');
-        if (!((this.data.count - 1) % 10) && (this.data.count - 1) < (this.pageIndex * 10))
-        {
-          if (this.pageIndex != 1)
+        this.data.count--;
+        if ((!(this.data.count % 10)) && (this.data.count < (this.pageIndex * 10)) && (this.pageIndex != 1))
             this.pageIndex -= 1;
-        }
         this.query();
       }
     );
@@ -83,6 +81,8 @@ export class CollectionComponent implements OnInit {
           (response) => {
             this.closeEditor();
             this.message.success('A new document has been added');
+            this.data.count++;
+            this.pageIndex = Math.ceil(this.data.count / 10);
             this.query();
           }
         );
