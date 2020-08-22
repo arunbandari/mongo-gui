@@ -56,6 +56,11 @@ export class CollectionComponent implements OnInit {
     this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
       () => {
         this.message.info('Deleted!');
+        if (!((this.data.count - 1) % 10) && (this.data.count - 1) < (this.pageIndex * 10))
+        {
+          if (this.pageIndex != 1)
+            this.pageIndex -= 1;
+        }
         this.query();
       }
     );
