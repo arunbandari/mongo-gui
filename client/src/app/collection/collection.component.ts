@@ -26,27 +26,31 @@ export class CollectionComponent implements OnInit {
     this.query();
   }
   query() {
-    try {
-      this.loading = true;
-      const filter = this.filter ? JSON.parse(this.filter) : {};
-      this.API.filterDocumentsByQuery(
-        this.database,
-        this.collection,
-        filter,
-        this.pageIndex
-      )
-        .subscribe(
-          (documents: any) => {
-            this.data = deserialize(Buffer.from(documents.data));
-          }
+    return new Promise((resolve) => {
+      try {
+        this.loading = true;
+        const filter = this.filter ? JSON.parse(this.filter) : {};
+        this.API.filterDocumentsByQuery(
+          this.database,
+          this.collection,
+          filter,
+          this.pageIndex
         )
-        .add(() => {
-          this.loading = false;
-        });
-    } catch (err) {
-      alert('Invalid JSON query!!');
-      this.loading = false;
-    }
+          .subscribe(
+            (documents: any) => {
+              this.data = deserialize(Buffer.from(documents.data));
+            }
+          )
+          .add(() => {
+            this.loading = false;
+            resolve();
+          });
+      } catch (err) {
+        alert('Invalid JSON query!!');
+        this.loading = false;
+        resolve();
+      }
+    });
   }
   uiQuery() {
     this.pageIndex = 1;
@@ -56,10 +60,11 @@ export class CollectionComponent implements OnInit {
     this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
       () => {
         this.message.info('Deleted!');
-        this.data.count--;
-        if ((!(this.data.count % 10)) && (this.data.count < (this.pageIndex * 10)) && (this.pageIndex != 1))
-            this.pageIndex -= 1;
-        this.query();
+        this.query().then(() => {
+          if ((this.pageIndex * 10) >= this.data.count)
+            this.pageIndex = Math.ceil(this.data.count / 10);
+          this.query();
+        });
       }
     );
   }
@@ -81,9 +86,10 @@ export class CollectionComponent implements OnInit {
           (response) => {
             this.closeEditor();
             this.message.success('A new document has been added');
-            this.data.count++;
-            this.pageIndex = Math.ceil(this.data.count / 10);
-            this.query();
+            this.query().then(() => {
+              this.pageIndex = Math.ceil(this.data.count / 10);
+              this.query();
+            });
           }
         );
       } else {
