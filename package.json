@@ -33,8 +33,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "minimist": "^1.2.5",
-    "mongodb": "^3.4.1",
-    "update-notifier": "^2.5.0"
+    "mongodb": "^3.4.1"
   },
   "bin": {
     "mongo-gui": "./server.js"
