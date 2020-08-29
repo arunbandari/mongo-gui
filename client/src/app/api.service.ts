@@ -29,6 +29,11 @@ export class ApiService {
       query
     );
   }
+  getDocumentCount(dbName, collectionName) {
+    return this.http.get(
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/stats?ContentType=bson`
+    );
+  }
   deleteDocumentById(dbName, collectionName, id) {
     return this.http.delete(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/${id}`
