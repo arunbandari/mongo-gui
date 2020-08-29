@@ -26,31 +26,27 @@ export class CollectionComponent implements OnInit {
     this.query();
   }
   query() {
-    return new Promise((resolve) => {
-      try {
-        this.loading = true;
-        const filter = this.filter ? JSON.parse(this.filter) : {};
-        this.API.filterDocumentsByQuery(
-          this.database,
-          this.collection,
-          filter,
-          this.pageIndex
+    try {
+      this.loading = true;
+      const filter = this.filter ? JSON.parse(this.filter) : {};
+      this.API.filterDocumentsByQuery(
+        this.database,
+        this.collection,
+        filter,
+        this.pageIndex
+      )
+        .subscribe(
+          (documents: any) => {
+            this.data = deserialize(Buffer.from(documents.data));
+          }
         )
-          .subscribe(
-            (documents: any) => {
-              this.data = deserialize(Buffer.from(documents.data));
-            }
-          )
-          .add(() => {
-            this.loading = false;
-            resolve();
-          });
-      } catch (err) {
-        alert('Invalid JSON query!!');
-        this.loading = false;
-        resolve();
-      }
-    });
+        .add(() => {
+          this.loading = false;
+        });
+    } catch (err) {
+      alert('Invalid JSON query!!');
+      this.loading = false;
+    }
   }
   uiQuery() {
     this.pageIndex = 1;
@@ -59,11 +55,12 @@ export class CollectionComponent implements OnInit {
   deleteDocument(id) {
     this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
       () => {
-        this.message.info('Deleted!');
-        this.query().then(() => {
-          if ((this.pageIndex * 10) >= this.data.count)
-            this.pageIndex = Math.ceil(this.data.count / 10);
-          this.query();
+        this.API.getDocumentCount(this.database, this.collection).subscribe((res: any) => {
+            this.message.info('Deleted!');
+            this.data.count = deserialize(Buffer.from(res.data)).count;
+            if ((this.pageIndex * 10) >= this.data.count)
+              this.pageIndex = Math.ceil(this.data.count / 10);
+            this.query();
         });
       }
     );
@@ -84,10 +81,10 @@ export class CollectionComponent implements OnInit {
           orignalDocument
         ).subscribe(
           (response) => {
-            this.closeEditor();
-            this.message.success('A new document has been added');
-            this.query().then(() => {
-              this.pageIndex = Math.ceil(this.data.count / 10);
+            this.API.getDocumentCount(this.database, this.collection).subscribe((res: any) => {
+              this.closeEditor();
+              this.message.success('A new document has been added');
+              this.pageIndex = Math.ceil((deserialize(Buffer.from(res.data)).count) / 10);
               this.query();
             });
           }
