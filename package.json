@@ -1,7 +1,7 @@
 {
   "name": "mongo-gui",
   "description": "A web-based MongoDB graphical user interface",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "server.js",
   "license": "MIT",
   "keywords": [
