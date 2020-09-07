@@ -14,6 +14,9 @@ router.get('(/:documentId)?', documentCtrl.findOne);
 // filter
 router.post('/filter', documentCtrl.filter);
 
+// count
+router.post('/count', documentCtrl.count);
+
 // createOne
 router.post('/', documentCtrl.insertOne);
 
