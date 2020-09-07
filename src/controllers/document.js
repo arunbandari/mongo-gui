@@ -120,5 +120,6 @@ module.exports = {
     updateOne,
     replaceOne,
     deleteOne,
-    stats
+    stats,
+    count
 };
