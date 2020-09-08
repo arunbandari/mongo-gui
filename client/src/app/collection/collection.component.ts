@@ -55,13 +55,17 @@ export class CollectionComponent implements OnInit {
   deleteDocument(id) {
     this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
       () => {
-        this.API.getDocumentCount(this.database, this.collection).subscribe((res: any) => {
-            this.message.info('Deleted!');
-            this.data.count = deserialize(Buffer.from(res.data)).count;
-            if ((this.pageIndex * 10) >= this.data.count)
-              this.pageIndex = Math.ceil(this.data.count / 10);
-            this.query();
-        });
+        try{
+            this.API.getDocumentCount(this.database, this.collection, (this.filter ? JSON.parse(this.filter) : {})).subscribe((res: any) => {
+                this.message.info('Deleted!');
+                this.data.count = deserialize(Buffer.from(res.data)).count;
+                if ((this.pageIndex * 10) >= this.data.count)
+                  this.pageIndex = Math.ceil(this.data.count / 10);
+                this.query();
+            });
+      } catch(err) {
+        alert('Invalid JSON query!!');
+        this.loading = false;
       }
     );
   }
@@ -81,12 +85,17 @@ export class CollectionComponent implements OnInit {
           orignalDocument
         ).subscribe(
           (response) => {
-            this.API.getDocumentCount(this.database, this.collection).subscribe((res: any) => {
-              this.closeEditor();
-              this.message.success('A new document has been added');
-              this.pageIndex = Math.ceil((deserialize(Buffer.from(res.data)).count) / 10);
-              this.query();
-            });
+            try{
+              this.API.getDocumentCount(this.database, this.collection, (this.filter ? JSON.parse(this.filter) : {})).subscribe((res: any) => {
+                this.closeEditor();
+                this.message.success('A new document has been added');
+                this.pageIndex = Math.ceil((deserialize(Buffer.from(res.data)).count) / 10);
+                this.query();
+              });
+            } catch(err) {
+                alert('Invalid JSON query!!');
+                this.loading = false;
+            }
           }
         );
       } else {

@@ -94,7 +94,23 @@ function stats (req, res, next) {
     const dbOperation = model.stats();
     sendResponse(dbOperation, req, res, next);
 }
-  
+
+function count(req, res, next) {
+    const model = getModel(req);
+    const query = req.body || {};
+    const options = req.query || {};
+    const dbOperation = model.countDocuments(query, options);
+    dbOperation
+        .then(data => {
+            data = JSON.parse('{"count" : ' + data + ' }');
+            if (req.query.ContentType === 'bson') data = JSON.stringify(BSON.serialize(
+                    data
+                ));
+                res.send(data);
+        })
+        .catch(err => next(err));
+}
+
 module.exports = {
     middleware,
     find,
@@ -104,5 +120,6 @@ module.exports = {
     updateOne,
     replaceOne,
     deleteOne,
-    stats
+    stats,
+    count
 };
