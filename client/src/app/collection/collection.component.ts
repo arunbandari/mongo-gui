@@ -67,6 +67,7 @@ export class CollectionComponent implements OnInit {
         alert('Invalid JSON query!!');
         this.loading = false;
       }
+     }
     );
   }
 
