@@ -1,4 +1,5 @@
 [![npm version](https://badge.fury.io/js/mongo-gui.svg)](https://www.npmjs.com/package/mongo-gui)
+![Known Vulnerabilities](https://snyk.io/test/npm/name/badge.svg)
 
 #  Mongo GUI
 A web-based MongoDB graphical user interface.
