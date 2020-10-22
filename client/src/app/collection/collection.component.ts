@@ -4,6 +4,12 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { serialize, deserialize, EJSON } from 'bson';
 import { NzNotificationService } from 'ng-zorro-antd';
 
+interface simpleSearch {
+  key: any,
+  value: any,
+  type: string
+}
+
 @Component({
   selector: 'app-collection',
   templateUrl: './collection.component.html',
@@ -13,43 +19,74 @@ export class CollectionComponent implements OnInit {
   @Input() database: any;
   @Input() collection: any;
   data: any;
-  filter: any;
+  filter = '';
+  ejsonFilter:any;
   loading = false;
   pageIndex = 1;
   showEditor = false;
   documentEditorMode = 'create';
   documentBeingEdited: any;
+  searchMode = 'simple';
+  searchObj: simpleSearch = {
+    key: '',
+    value: '',
+    type: 'String'
+  };
+  showAdvancedSearchForm = false;
   error: { status: boolean; desc: string } = { status: false, desc: '' };
   constructor(private API: ApiService, private message: NzMessageService, private notification: NzNotificationService) { }
 
+  editorOptions = {
+    theme: 'vs',
+    language: 'json',
+    suggest: {
+      showIcons: false,
+    },
+    contextmenu: false,
+    codeLens: false,
+    renderLineHighlight: 'none'
+  };
+  code: string= '{}';
   ngOnInit() {
     this.query();
   }
   query() {
-    try {
-      this.loading = true;
-      const filter = this.filter ? JSON.parse(this.filter) : {};
-      this.API.filterDocumentsByQuery(
-        this.database,
-        this.collection,
-        filter,
-        this.pageIndex
-      )
-        .subscribe(
-          (documents: any) => {
-            this.data = deserialize(Buffer.from(documents.data));
-          }
-        )
-        .add(() => {
-          this.loading = false;
-        });
-    } catch (err) {
-      alert('Invalid JSON query!!');
+    // console.log(this.code, '#####');
+    this.loading = true;
+    this.API.filterDocumentsByQuery(
+      this.database,
+      this.collection,
+      this.ejsonFilter || serialize(EJSON.deserialize({})),
+      this.pageIndex
+    )
+    .subscribe(
+      (documents: any) => {
+        this.data = deserialize(Buffer.from(documents.data));
+        if (this.searchMode === 'advanced') this.closeAdvancedSearchForm();
+      }
+    )
+    .add(() => {
       this.loading = false;
+    });
+  }
+  getQuery() {
+    if (this.searchMode === 'simple') {
+      if (!this.searchObj.key) return '{}';
+      let key = this.searchObj.key;
+      let value = this.searchObj.value;
+      if (this.searchObj.type === 'ObjectId') value = { "$oid": value };
+      if (this.searchObj.type === 'Date') value = { "$date": value };
+      if (this.searchObj.type === 'Number') value = { "$numberInt": value };
+      return JSON.stringify({ [key] : value });
     }
+    else return this.filter;
   }
   uiQuery() {
     this.pageIndex = 1;
+    this.filter = this.getQuery();
+    this.ejsonFilter = serialize(
+      EJSON.deserialize(JSON.parse(this.filter))
+    );
     this.query();
   }
   deleteDocument(id) {
@@ -132,7 +169,12 @@ export class CollectionComponent implements OnInit {
     this.showEditor = false;
     this.documentBeingEdited = '';
   }
-
+  openAdvancedSearchForm() {
+    this.showAdvancedSearchForm = true;
+  }
+  closeAdvancedSearchForm() {
+    this.showAdvancedSearchForm = false;
+  }
   copyToClipboard(text: string) {
     text = JSON.stringify(text);
     const txtArea = document.createElement('textarea');

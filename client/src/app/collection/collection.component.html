@@ -2,25 +2,39 @@
   <div class="help">
     <div class="bar">
       <div class="query">
-        <nz-input-group nzSearch nzSize="medium" [nzAddOnAfter]="suffixButton">
+        <nz-input-group nzCompact>
+          <nz-select [(ngModel)]="searchMode" style="width:15%">
+            <nz-option nzLabel="Simple" nzValue="simple"></nz-option>
+            <nz-option nzLabel="Advanced" nzValue="advanced"></nz-option>
+          </nz-select>
+          <input type="text" nz-input placeholder="Query documents..." style="width:70%;" *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter"/>
+          <input type="text" nz-input placeholder="Key" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.key"/>
           <input
-            type="text"
-            [(ngModel)]="filter"
-            nz-input
-            placeholder='Query and filter documents... eg. { "name": "John" }'
+          type="text"
+          disabled
+          nz-input
+          placeholder=":"
+          style="width: 4%; pointer-events: none;"
+          *ngIf="searchMode === 'simple'"
           />
-        </nz-input-group>
-        <ng-template #suffixButton>
+          <input type="text" nz-input placeholder="Value" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.value"/>
+          <nz-select [(ngModel)]="searchObj.type" style="width:16%" *ngIf="searchMode === 'simple'">
+            <nz-option nzLabel="ObjectId" nzValue="ObjectId"></nz-option>
+            <nz-option nzLabel="String" nzValue="String"></nz-option>
+            <nz-option nzLabel="Date" nzValue="Date"></nz-option>
+            <nz-option nzLabel="Number" nzValue="Number"></nz-option>
+            <nz-option nzLabel="Boolean" nzValue="Boolean"></nz-option>
+          </nz-select>
           <button
-            nz-button
-            nzType="primary"
-            nzSize="medium"
-            nzSearch
-            (click)="uiQuery()"
+          nz-button
+          nzType="primary"
+          nzSize="medium"
+          (click)="uiQuery()"
+          style="width:15%"
           >
-            Find
-          </button>
-        </ng-template>
+          Find
+        </button>
+        </nz-input-group>
       </div>
       <div>
         <nz-button-group>
@@ -134,12 +148,7 @@
   "
   (nzOnClose)="closeEditor()"
 >
-  <textarea
-    spellcheck="false"
-    nz-input
-    [(ngModel)]="documentBeingEdited"
-    style="font-family: monospace; min-height: 500px;"
-  ></textarea>
+<ngx-monaco-editor *ngIf="showEditor" class="document-editor" [options]="editorOptions" [(ngModel)]="documentBeingEdited"></ngx-monaco-editor>
   <div class="footer">
     <button
       type="button"
@@ -158,3 +167,13 @@
     </button>
   </div>
 </nz-drawer>
+
+<nz-modal
+  [(nzVisible)]="showAdvancedSearchForm"
+  nzTitle="Query"
+  (nzOnOk)="uiQuery()"
+  (nzOnCancel)="closeAdvancedSearchForm()"
+  [nzOkLoading]="loading"
+  >
+  <ngx-monaco-editor *ngIf="showAdvancedSearchForm" [options]="editorOptions" [(ngModel)]="filter"></ngx-monaco-editor>
+</nz-modal>

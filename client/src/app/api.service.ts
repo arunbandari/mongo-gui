@@ -25,7 +25,7 @@ export class ApiService {
     return this.http.post(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/filter?limit=10&skip=${
       (pageIndex - 1) * 10
-      }&ContentType=bson`,
+      }&ContentType=bson&incomingType=bson`,
       query
     );
   }

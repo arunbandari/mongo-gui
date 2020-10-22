@@ -22,10 +22,12 @@ function middleware (req, res, next) {
     const body = req.body;
     const params = req.params;
     let documentId = body._id || params.documentId;
-    if (documentId) {
+    if (documentId && documentId !== 'filter') {
         if (ObjectID.isValid(documentId)) documentId = ObjectID(documentId);
         req.documentId = documentId;
         delete body._id;
+    } else {
+        req.documentId = '';
     }
     next();
 }
@@ -78,6 +80,8 @@ function filter (req, res, next) {
     const query = req.body || {};
     const options = req.query || {};
     const skip = Number(options.skip) || 0;
+    const documentId = req.documentId;
+    if (documentId) query._id = documentId;
     const getDocuments = model.find(query, options).toArray();
     const getCount = model.countDocuments(query, options);
     Promise.all([getDocuments, getCount])

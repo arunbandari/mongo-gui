@@ -12,6 +12,9 @@
   margin-bottom: 8px;
   position: relative;
 }
+.document-editor {
+  height: calc(100% - 50px) !important;
+}
 .right [nz-button] {
   margin: 0px 4px !important;
   height: 25px;
