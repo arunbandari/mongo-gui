@@ -19,7 +19,7 @@ Read-only demo: https://mongo-gui.herokuapp.com/
  - Rich user interface
 
 ## How to install and run
-There are two ways to install **mongo-gui**.
+The following are the different ways to install **mongo-gui**.
 ### From npm:
  - Install the module globally using the command ```npm install -g mongo-gui```
  - Then use the command ```mongo-gui``` to run the application
