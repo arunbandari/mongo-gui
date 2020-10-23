@@ -7,7 +7,7 @@
             <nz-option nzLabel="Simple" nzValue="simple"></nz-option>
             <nz-option nzLabel="Advanced" nzValue="advanced"></nz-option>
           </nz-select>
-          <input type="text" nz-input placeholder="Query documents..." style="width:70%;" *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter"/>
+          <input type="text" nz-input placeholder="Query documents..." style="width:70%;" *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter" spellcheck="false"/>
           <input type="text" nz-input placeholder="Key" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.key" spellcheck="false"/>
           <input
           type="text"
