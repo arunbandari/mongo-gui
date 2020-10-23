@@ -181,18 +181,18 @@
       </nz-table>
 
       <div style="padding: 10px;" *ngIf="!tabs || tabs.length == 0">
-        <a href="https://github.com/arunbandari/mongo-gui" target="_blank">
-          <nz-tag nzColor="#211F1F">
+        <nz-tag nzColor="#211F1F">
+          <a href="https://github.com/arunbandari/mongo-gui" target="_blank">
             <i nz-icon nzType="github"></i>
             <span> GitHub</span>
-          </nz-tag>
-        </a>
-        <a href="https://www.npmjs.com/package/mongo-gui" target="_blank">
-          <nz-tag nzColor="#c00">
+          </a>
+        </nz-tag>
+        <nz-tag nzColor="#c00">
+          <a href="https://www.npmjs.com/package/mongo-gui" target="_blank">
             <i nz-icon nzType="npm"></i>
             <span>npm</span>
-          </nz-tag>
-        </a>
+          </a>
+        </nz-tag>
       </div>
 
       <router-outlet></router-outlet>

@@ -8,7 +8,7 @@
             <nz-option nzLabel="Advanced" nzValue="advanced"></nz-option>
           </nz-select>
           <input type="text" nz-input placeholder="Query documents..." style="width:70%;" *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter"/>
-          <input type="text" nz-input placeholder="Key" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.key"/>
+          <input type="text" nz-input placeholder="Key" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.key" spellcheck="false"/>
           <input
           type="text"
           disabled
@@ -17,7 +17,7 @@
           style="width: 4%; pointer-events: none;"
           *ngIf="searchMode === 'simple'"
           />
-          <input type="text" nz-input placeholder="Value" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.value"/>
+          <input type="text" nz-input placeholder="Value" style="width:25%;" *ngIf="searchMode === 'simple'" [(ngModel)]="searchObj.value" spellcheck="false"/>
           <nz-select [(ngModel)]="searchObj.type" style="width:16%" *ngIf="searchMode === 'simple'">
             <nz-option nzLabel="ObjectId" nzValue="ObjectId"></nz-option>
             <nz-option nzLabel="String" nzValue="String"></nz-option>
@@ -37,6 +37,7 @@
         </nz-input-group>
       </div>
       <div>
+        <nz-tag nzMode="closeable" (nzOnClose)="clearFilter()" *ngIf="filter">Clear search</nz-tag>
         <nz-button-group>
           <button nz-button nzType="default" (click)="openEditor({}, 'create')">
             <i nz-icon nzType="plus"></i>Add

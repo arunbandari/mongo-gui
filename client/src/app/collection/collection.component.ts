@@ -77,6 +77,13 @@ export class CollectionComponent implements OnInit {
       if (this.searchObj.type === 'ObjectId') value = { "$oid": value };
       if (this.searchObj.type === 'Date') value = { "$date": value };
       if (this.searchObj.type === 'Number') value = { "$numberInt": value };
+      if (this.searchObj.type === 'Boolean') {
+        if (value === 'true') value = true;
+        else {
+          value = false;
+          this.searchObj.value = "false";
+        }
+      }
       return JSON.stringify({ [key] : value });
     }
     else return this.filter;
@@ -84,11 +91,27 @@ export class CollectionComponent implements OnInit {
   uiQuery() {
     this.pageIndex = 1;
     this.filter = this.getQuery();
-    this.ejsonFilter = serialize(
-      EJSON.deserialize(JSON.parse(this.filter))
-    );
+    try {
+      this.ejsonFilter = serialize(
+        EJSON.deserialize(JSON.parse(this.filter))
+      );
+    } catch (err) {
+      alert('Invalid query');
+    }
     this.query();
   }
+
+  clearFilter() {
+    this.filter = '';
+    this.ejsonFilter = serialize(EJSON.deserialize({}));
+    this.searchObj = {
+      key: '',
+      value: '',
+      type: 'String'
+    };
+    this.query();
+  }
+
   deleteDocument(id) {
     this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
       () => {
