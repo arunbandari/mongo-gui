@@ -121,6 +121,7 @@ export class CollectionComponent implements OnInit {
                 this.data.count = deserialize(Buffer.from(res.data)).count;
                 if ((this.pageIndex * 10) >= this.data.count)
                   this.pageIndex = Math.ceil(this.data.count / 10);
+                if (this.data.count === 0) this.pageIndex = 1;
                 this.query();
             });
       } catch(err) {
