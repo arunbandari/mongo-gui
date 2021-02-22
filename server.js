@@ -9,6 +9,7 @@ const gzipProcessor = require('connect-gzip-static');
 
 const dataAccessAdapter = require('./src/db/dataAccessAdapter');
 const databasesRoute = require('./src/routes/database');
+const limit = process.env.LIMIT || '50mb';
 
 // notify users on new releases - https://github.com/arunbandari/mongo-gui/issues/5
 // const pkg = require('./package.json');
@@ -30,7 +31,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: limit }));
 
 // api routing
 app.use('/databases', databasesRoute);
