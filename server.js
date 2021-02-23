@@ -30,13 +30,13 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: process.env.BODY_SIZE || '50mb' }));
 
 // api routing
 app.use('/databases', databasesRoute);
 
 // serve home page
-app.get('/', (req, res) => res.sendFile(__dirname + '../public/index.html'));
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'));
 
 // connect to database
 dataAccessAdapter.InitDB(app);

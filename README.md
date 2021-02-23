@@ -7,7 +7,7 @@ A web-based MongoDB graphical user interface.
 ## Demo
 Read-only demo: https://mongo-gui.herokuapp.com/
 
-##  Features
+## Mongo GUI Features
  - Connect to local/remote mongodb instances
  - View/add/delete databases
  - View/add/delete collections
@@ -18,7 +18,7 @@ Read-only demo: https://mongo-gui.herokuapp.com/
  - Supports all BSON types in documents
  - Rich user interface
 
-## How to install and run
+## How to install and run MongoDB GUI
 The following are the different ways to install **mongo-gui**.
 ### From npm:
  - Install the module globally using the command ```npm install -g mongo-gui```
@@ -47,7 +47,7 @@ services:
       - MONGO_URL=mongodb://localhost:27017
 ```
 
-## Usage
+## Mongo GUI Usage
  The commands ```mongo-gui``` and ```npm start or node server.js``` start the application with the following configuaration:
 
  - URL (-u): ```mongodb://localhost:27017```
