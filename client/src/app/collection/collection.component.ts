@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { serialize, deserialize, EJSON } from 'bson';
+import {  EJSON } from 'bson';
 import { NzNotificationService } from 'ng-zorro-antd';
 
 interface simpleSearch {
@@ -56,12 +56,12 @@ export class CollectionComponent implements OnInit {
     this.API.filterDocumentsByQuery(
       this.database,
       this.collection,
-      this.ejsonFilter || serialize(EJSON.deserialize({})),
+      this.ejsonFilter || EJSON.serialize({}),
       this.pageIndex
     )
     .subscribe(
       (documents: any) => {
-        this.data = deserialize(Buffer.from(documents.data));
+        this.data = EJSON.deserialize(documents);
         if (this.searchMode === 'advanced') this.closeAdvancedSearchForm();
       }
     )
@@ -92,9 +92,7 @@ export class CollectionComponent implements OnInit {
     this.pageIndex = 1;
     this.filter = this.getQuery();
     try {
-      this.ejsonFilter = serialize(
-        EJSON.deserialize(JSON.parse(this.filter))
-      );
+      this.ejsonFilter = EJSON.serialize(JSON.parse(this.filter));
     } catch (err) {
       alert('Invalid query');
     }
@@ -103,7 +101,7 @@ export class CollectionComponent implements OnInit {
 
   clearFilter() {
     this.filter = '';
-    this.ejsonFilter = serialize(EJSON.deserialize({}));
+    this.ejsonFilter = EJSON.serialize({});
     this.searchObj = {
       key: '',
       value: '',
@@ -118,7 +116,7 @@ export class CollectionComponent implements OnInit {
         try{
             this.API.getDocumentCount(this.database, this.collection, (this.filter ? JSON.parse(this.filter) : {})).subscribe((res: any) => {
                 this.message.info('Deleted!');
-                this.data.count = deserialize(Buffer.from(res.data)).count;
+                this.data = EJSON.deserialize(res);
                 if ((this.pageIndex * 10) >= this.data.count)
                   this.pageIndex = Math.ceil(this.data.count / 10);
                 if (this.data.count === 0) this.pageIndex = 1;
@@ -136,22 +134,21 @@ export class CollectionComponent implements OnInit {
     try {
       this.error.status = false;
       this.error.desc = '';
-      const orignalDocument = serialize(
-        EJSON.deserialize(JSON.parse(this.documentBeingEdited))
-      );
+      const originalDocument = EJSON.serialize(JSON.parse(this.documentBeingEdited));
       // const method = this.documentEditorMode === 'create' ? this.API.createDocument : this.API.updateDocument
       if (this.documentEditorMode === 'create') {
         this.API.createDocument(
           this.database,
           this.collection,
-          orignalDocument
+          originalDocument
         ).subscribe(
           (response) => {
             try{
               this.API.getDocumentCount(this.database, this.collection, (this.filter ? JSON.parse(this.filter) : {})).subscribe((res: any) => {
                 this.closeEditor();
                 this.message.success('A new document has been added');
-                this.pageIndex = Math.ceil((deserialize(Buffer.from(res.data)).count) / 10);
+                this.data = EJSON.deserialize(res);
+                this.pageIndex = Math.ceil(this.data.count / 10);
                 this.query();
               });
             } catch(err) {
@@ -164,7 +161,7 @@ export class CollectionComponent implements OnInit {
         this.API.updateDocument(
           this.database,
           this.collection,
-          orignalDocument
+          originalDocument
         ).subscribe(
           (response) => {
             this.closeEditor();
