@@ -1,6 +1,6 @@
-const ObjectID = require("mongodb").ObjectID;
-const EJSON = require("bson").EJSON;
-const Model = require("../models");
+const ObjectID = require('mongodb').ObjectID;
+const EJSON = require('bson').EJSON;
+const Model = require('../models');
 
 const getModel = (req) => {
   const dbName = req.params.dbName;
@@ -11,7 +11,7 @@ const getModel = (req) => {
 const sendResponse = (dbOperation, req, res, next) => {
   dbOperation
     .then((data) => {
-      if (req.query.ContentType === "ejson")
+      if (req.query.ContentType === 'ejson')
         data = JSON.stringify(EJSON.serialize(data));
       res.send(data);
     })
@@ -20,16 +20,16 @@ const sendResponse = (dbOperation, req, res, next) => {
 
 function middleware(req, res, next) {
   req.body =
-    req.query.incomingType === "ejson" ? EJSON.deserialize(req.body) : req.body;
+    req.query.incomingType === 'ejson' ? EJSON.deserialize(req.body) : req.body;
   if (req.body instanceof Array) req.body = Object.assign({}, req.body);
   const params = req.params;
   let documentId = req.body._id || params.documentId;
-  if (documentId && documentId !== "filter") {
+  if (documentId && documentId !== 'filter') {
     if (ObjectID.isValid(documentId)) documentId = ObjectID(documentId);
     req.documentId = documentId;
     delete req.body._id;
   } else {
-    req.documentId = "";
+    req.documentId = '';
   }
   next();
 }
@@ -94,7 +94,7 @@ function filter(req, res, next) {
         from: skip + 1,
         to: skip + documents.length,
       };
-      if (req.query.ContentType === "ejson")
+      if (req.query.ContentType === 'ejson')
         data = JSON.stringify(EJSON.serialize(data));
       res.send(data);
     })
@@ -114,8 +114,8 @@ function count(req, res, next) {
   const dbOperation = model.countDocuments(query, options);
   dbOperation
     .then((data) => {
-      data = JSON.parse('{"count" : ' + data + " }");
-      if (req.query.ContentType === "ejson")
+      data = JSON.parse('{"count" : ' + data + ' }');
+      if (req.query.ContentType === 'ejson')
         data = JSON.stringify(EJSON.serialize(data));
       res.send(data);
     })
