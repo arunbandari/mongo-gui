@@ -21,15 +21,12 @@ const sendResponse = (dbOperation, req, res, next) => {
 function middleware(req, res, next) {
   req.body =
     req.query.incomingType === 'ejson' ? EJSON.deserialize(req.body) : req.body;
-  if (req.body instanceof Array) req.body = Object.assign({}, req.body);
-  const params = req.params;
-  let documentId = req.body._id || params.documentId;
-  if (documentId && documentId !== 'filter') {
-    if (ObjectID.isValid(documentId)) documentId = ObjectID(documentId);
-    req.documentId = documentId;
-    delete req.body._id;
-  } else {
-    req.documentId = '';
+  if (!(req.body instanceof Array)) {
+    req.documentId =
+      req.body._id === null
+        ? null
+        : req.body._id || req.params.documentId || ObjectID();
+    if (req.documentId === 'filter') req.documentId = '';
   }
   next();
 }
@@ -49,10 +46,26 @@ function findOne(req, res, next) {
   sendResponse(dbOperation, req, res, next);
 }
 
-function insertOne(req, res, next) {
-  const body = req.body;
+function bulkWrite(req, res, next) {
+  const body = Array.isArray(req.body) ? req.body : [req.body];
+  const operations = [];
+  body.forEach((document) => {
+    document._id =
+      document._id === null
+        ? null
+        : document._id || req.documentId || ObjectID();
+    operations.push({
+      replaceOne: {
+        filter: {
+          _id: document._id,
+        },
+        replacement: document,
+        upsert: true,
+      },
+    });
+  });
   const model = getModel(req);
-  const dbOperation = model.insertOne(body);
+  const dbOperation = model.bulkWrite(operations);
   sendResponse(dbOperation, req, res, next);
 }
 
@@ -127,7 +140,7 @@ module.exports = {
   find,
   findOne,
   filter,
-  insertOne,
+  bulkWrite,
   updateOne,
   replaceOne,
   deleteOne,
