@@ -17,11 +17,14 @@ router.post('/filter', documentCtrl.filter);
 // count
 router.post('/count', documentCtrl.count);
 
+// createOne
+// router.post('/', documentCtrl.insertOne);
+
 // createMany
 router.post('/', documentCtrl.bulkWrite);
 
 // updateOne
-router.patch('/(:documentId)?', documentCtrl.updateOne);
+// router.patch('/(:documentId)?', documentCtrl.updateOne);
 
 // replaceOne
 router.put('/(:documentId)?', documentCtrl.replaceOne);
