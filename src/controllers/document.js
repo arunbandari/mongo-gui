@@ -46,13 +46,6 @@ function findOne(req, res, next) {
   sendResponse(dbOperation, req, res, next);
 }
 
-// function insertOne (req, res, next) {
-//   const body = req.body;
-//   const model = getModel(req);
-//   const dbOperation = model.insertOne(body);
-//   sendResponse(dbOperation, req, res, next);
-// }
-
 function bulkWrite(req, res, next) {
   const body = Array.isArray(req.body) ? req.body : [req.body];
   const operations = [];
@@ -62,11 +55,13 @@ function bulkWrite(req, res, next) {
         ? null
         : document._id || req.documentId || ObjectID();
     operations.push({
-      replaceOne: {
+      updateOne: {
         filter: {
           _id: document._id,
         },
-        replacement: document,
+        update: {
+          $set: document,
+        },
         upsert: true,
       },
     });
@@ -76,12 +71,12 @@ function bulkWrite(req, res, next) {
   sendResponse(dbOperation, req, res, next);
 }
 
-// function updateOne(req, res, next) {
-//   const model = getModel(req);
-//   const documentId = req.documentId;
-//   const dbOperation = model.updateOne({ _id: documentId }, { $set: req.body });
-//   sendResponse(dbOperation, req, res, next);
-// }
+function updateOne(req, res, next) {
+  const model = getModel(req);
+  const documentId = req.documentId;
+  const dbOperation = model.updateOne({ _id: documentId }, { $set: req.body });
+  sendResponse(dbOperation, req, res, next);
+}
 
 function replaceOne(req, res, next) {
   const model = getModel(req);
@@ -147,9 +142,9 @@ module.exports = {
   find,
   findOne,
   filter,
-  // insertOne,
+  //insertOne
   bulkWrite,
-  // updateOne,
+  updateOne,
   replaceOne,
   deleteOne,
   stats,
