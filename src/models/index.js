@@ -24,6 +24,10 @@ class Model {
     return this.collection.insertOne(data);
   }
 
+  bulkWrite(data) {
+    return this.collection.bulkWrite(data);
+  }
+
   updateOne(query, data) {
     return this.collection.updateOne(query, data);
   }

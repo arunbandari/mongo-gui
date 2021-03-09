@@ -35,9 +35,10 @@ export class ApiService {
       query
     );
   }
-  deleteDocumentById(dbName, collectionName, id) {
-    return this.http.delete(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/${id}`
+  deleteDocumentById(dbName, collectionName, document) {
+    return this.http.post(
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/delete?incomingType=ejson`,
+      document
     );
   }
   updateDocument(dbName, collectionName, document) {
@@ -46,7 +47,7 @@ export class ApiService {
       document
     );
   }
-  createDocument(dbName, collectionName, document) {
+  createDocuments(dbName, collectionName, document) {
     return this.http.post(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
       document

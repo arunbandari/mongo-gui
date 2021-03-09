@@ -3,7 +3,7 @@ import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import {  EJSON } from 'bson';
 import { NzNotificationService } from 'ng-zorro-antd';
-
+import * as _ from 'lodash'; 
 interface simpleSearch {
   key: any,
   value: any,
@@ -110,8 +110,8 @@ export class CollectionComponent implements OnInit {
     this.query();
   }
 
-  deleteDocument(id) {
-    this.API.deleteDocumentById(this.database, this.collection, id).subscribe(
+  deleteDocument(doc) {
+    this.API.deleteDocumentById(this.database, this.collection, EJSON.serialize(_.pick(doc, '_id'))).subscribe(
       () => {
         try{
             this.API.getDocumentCount(this.database, this.collection, (this.filter ? JSON.parse(this.filter) : {})).subscribe((res: any) => {
@@ -137,7 +137,7 @@ export class CollectionComponent implements OnInit {
       const originalDocument = EJSON.serialize(JSON.parse(this.documentBeingEdited));
       // const method = this.documentEditorMode === 'create' ? this.API.createDocument : this.API.updateDocument
       if (this.documentEditorMode === 'create') {
-        this.API.createDocument(
+        this.API.createDocuments(
           this.database,
           this.collection,
           originalDocument
