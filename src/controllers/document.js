@@ -55,11 +55,13 @@ function bulkWrite(req, res, next) {
         ? null
         : document._id || req.documentId || ObjectID();
     operations.push({
-      replaceOne: {
+      updateOne: {
         filter: {
           _id: document._id,
         },
-        replacement: document,
+        update: {
+          $set: document,
+        },
         upsert: true,
       },
     });
