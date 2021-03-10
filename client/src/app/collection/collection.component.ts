@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { EJSON } from 'bson';
+import { EJSON, ObjectId } from 'bson';
 import { NzNotificationService } from 'ng-zorro-antd';
 import * as _ from 'lodash';
 interface simpleSearch {
@@ -76,7 +76,7 @@ export class CollectionComponent implements OnInit {
       if (!this.searchObj.key) return '{}';
       let key = this.searchObj.key;
       let value = this.searchObj.value;
-      if (this.searchObj.type === 'ObjectId') value = { $oid: value };
+      if (this.searchObj.type === 'ObjectId' && ObjectId.isValid(value)) value = { $oid: value };
       if (this.searchObj.type === 'Date') value = { $date: value };
       if (this.searchObj.type === 'Number') value = { $numberInt: value };
       if (this.searchObj.type === 'Boolean') {
@@ -150,41 +150,32 @@ export class CollectionComponent implements OnInit {
         this.collection,
         originalDocument
       ).subscribe((response) => {
-        if (this.documentEditorMode === 'create') {
-          try {
-            this.API.getDocumentCount(
-              this.database,
-              this.collection,
-              this.filter ? JSON.parse(this.filter) : {}
-            ).subscribe((res: any) => {
-              this.closeEditor();
-              if (response['nUpserted'])
-                this.message.success(
-                  `${response['nUpserted']} document(s) are added!`
-                );
-              if (response['nMatched'])
-                this.message.success(
-                  `${response['nMatched']} document(s) are modified!`
-                );
-              this.data = EJSON.deserialize(res);
-              this.pageIndex = Math.ceil(this.data.count / 10);
-              this.query();
-            });
-          } catch (err) {
-            alert('Invalid JSON query!!');
-            this.loading = false;
+        try {
+          if (!response['nUpserted'])
+          {
+            this.closeEditor();
+            this.message.success(
+              'Success!'
+            );
+            this.query();
+            return;
           }
-        } else {
-          this.closeEditor();
-          if (response['nUpserted'])
+          this.API.getDocumentCount(
+            this.database,
+            this.collection,
+            this.filter ? JSON.parse(this.filter) : {}
+          ).subscribe((res: any) => {
+            this.closeEditor();
             this.message.success(
-              `${response['nUpserted']} document(s) are added!`
+                'Success!'
             );
-          if (response['nMatched'])
-            this.message.success(
-              `${response['nMatched']} document(s) are modified!`
-            );
-          this.query();
+            this.data = EJSON.deserialize(res);
+            this.pageIndex = Math.ceil(this.data.count / 10);
+            this.query();
+          });
+        } catch (err) {
+          alert('Invalid JSON query!!');
+          this.loading = false;
         }
       });
     } catch (err) {
