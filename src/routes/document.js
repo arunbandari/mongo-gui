@@ -18,15 +18,18 @@ router.post('/filter', documentCtrl.filter);
 router.post('/count', documentCtrl.count);
 
 // createOne
-router.post('/', documentCtrl.insertOne);
+// router.post('/', documentCtrl.insertOne);
+
+// createMany
+router.post('/', documentCtrl.bulkWrite);
 
 // updateOne
-router.patch('/(:documentId)?', documentCtrl.updateOne);
+// router.patch('/(:documentId)?', documentCtrl.updateOne);
 
 // replaceOne
 router.put('/(:documentId)?', documentCtrl.replaceOne);
 
 // deleteOne
-router.delete('/(:documentId)?', documentCtrl.deleteOne);
+router.post('/delete', documentCtrl.deleteOne);
 
 module.exports = router;

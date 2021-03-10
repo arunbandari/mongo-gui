@@ -6,49 +6,56 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   apiRoot = environment.apiRoot;
   BASE_URL = `${this.apiRoot}/databases`;
 
   getDbs() {
-    return this.http.get(
-      `${this.BASE_URL}?includeCollections=true`
-    );
+    return this.http.get(`${this.BASE_URL}?includeCollections=true`);
   }
   getDocumentsByCollection(dbName, collectionName) {
     return this.http.get(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?limit=10&ContentType=bson`
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?limit=10&ContentType=ejson`
     );
   }
   filterDocumentsByQuery(dbName, collectionName, query, pageIndex = 1) {
     return this.http.post(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/filter?limit=10&skip=${
-      (pageIndex - 1) * 10
-      }&ContentType=bson&incomingType=bson`,
+      `${
+        this.BASE_URL
+      }/${dbName}/collections/${collectionName}/documents/filter?limit=10&skip=${
+        (pageIndex - 1) * 10
+      }&ContentType=ejson&incomingType=ejson`,
       query
     );
   }
   getDocumentCount(dbName, collectionName, query) {
     return this.http.post(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/count?ContentType=bson`,
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/count?ContentType=ejson`,
       query
     );
   }
-  deleteDocumentById(dbName, collectionName, id) {
-    return this.http.delete(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/${id}`
-    );
-  }
-  updateDocument(dbName, collectionName, document) {
-    return this.http.put(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=bson`,
+  deleteDocumentById(dbName, collectionName, document) {
+    return this.http.post(
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/delete?incomingType=ejson`,
       document
     );
   }
-  createDocument(dbName, collectionName, document) {
+  // updateDocument(dbName, collectionName, document) {
+  //   return this.http.put(
+  //     `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
+  //     document
+  //   );
+  // }
+  // createDocument(dbName, collectionName, document) {
+  //   return this.http.post(
+  //     `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
+  //     document
+  //   );
+  // }
+  createDocuments(dbName, collectionName, document) {
     return this.http.post(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=bson`,
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
       document
     );
   }
@@ -63,7 +70,6 @@ export class ApiService {
       `${this.BASE_URL}/${body.database}/collections/${body.collection}`
     );
   }
-
   dropDB(body) {
     return this.http.delete(`${this.BASE_URL}/${body.database}`);
   }
