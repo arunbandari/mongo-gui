@@ -6,15 +6,13 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   apiRoot = environment.apiRoot;
   BASE_URL = `${this.apiRoot}/databases`;
 
   getDbs() {
-    return this.http.get(
-      `${this.BASE_URL}?includeCollections=true`
-    );
+    return this.http.get(`${this.BASE_URL}?includeCollections=true`);
   }
   getDocumentsByCollection(dbName, collectionName) {
     return this.http.get(
@@ -23,8 +21,10 @@ export class ApiService {
   }
   filterDocumentsByQuery(dbName, collectionName, query, pageIndex = 1) {
     return this.http.post(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/filter?limit=10&skip=${
-      (pageIndex - 1) * 10
+      `${
+        this.BASE_URL
+      }/${dbName}/collections/${collectionName}/documents/filter?limit=10&skip=${
+        (pageIndex - 1) * 10
       }&ContentType=ejson&incomingType=ejson`,
       query
     );
@@ -41,12 +41,18 @@ export class ApiService {
       document
     );
   }
-  updateDocument(dbName, collectionName, document) {
-    return this.http.put(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
-      document
-    );
-  }
+  // updateDocument(dbName, collectionName, document) {
+  //   return this.http.put(
+  //     `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
+  //     document
+  //   );
+  // }
+  // createDocument(dbName, collectionName, document) {
+  //   return this.http.post(
+  //     `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
+  //     document
+  //   );
+  // }
   createDocuments(dbName, collectionName, document) {
     return this.http.post(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?incomingType=ejson`,
@@ -64,7 +70,6 @@ export class ApiService {
       `${this.BASE_URL}/${body.database}/collections/${body.collection}`
     );
   }
-
   dropDB(body) {
     return this.http.delete(`${this.BASE_URL}/${body.database}`);
   }
