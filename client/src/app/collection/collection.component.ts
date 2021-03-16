@@ -2,8 +2,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { EJSON, ObjectId } from 'bson';
-import { NzNotificationService } from 'ng-zorro-antd';
+import {
+  NzNotificationService,
+  NzTreeHigherOrderServiceToken,
+} from 'ng-zorro-antd';
 import * as _ from 'lodash';
+
+const Papa = require('papaparse');
+
 interface simpleSearch {
   key: any;
   value: any;
@@ -51,6 +57,14 @@ export class CollectionComponent implements OnInit {
     renderLineHighlight: 'none',
   };
   code: string = '{}';
+  uploadButton = false;
+  importError: any;
+  file = '';
+  rowData: any;
+  importing = false;
+  attributes = [];
+  isVisible = false;
+  ignore = false;
   ngOnInit() {
     this.query();
   }
@@ -76,7 +90,8 @@ export class CollectionComponent implements OnInit {
       if (!this.searchObj.key) return '{}';
       let key = this.searchObj.key;
       let value = this.searchObj.value;
-      if (this.searchObj.type === 'ObjectId' && ObjectId.isValid(value)) value = { $oid: value };
+      if (this.searchObj.type === 'ObjectId' && ObjectId.isValid(value))
+        value = { $oid: value };
       if (this.searchObj.type === 'Date') value = { $date: value };
       if (this.searchObj.type === 'Number') value = { $numberInt: value };
       if (this.searchObj.type === 'Boolean') {
@@ -151,12 +166,9 @@ export class CollectionComponent implements OnInit {
         originalDocument
       ).subscribe((response) => {
         try {
-          if (!response['nUpserted'])
-          {
+          if (!response['nUpserted']) {
             this.closeEditor();
-            this.message.success(
-              'Success!'
-            );
+            this.message.success('Success!');
             this.query();
             return;
           }
@@ -166,9 +178,7 @@ export class CollectionComponent implements OnInit {
             this.filter ? JSON.parse(this.filter) : {}
           ).subscribe((res: any) => {
             this.closeEditor();
-            this.message.success(
-                'Success!'
-            );
+            this.message.success('Success!');
             this.data = EJSON.deserialize(res);
             this.pageIndex = Math.ceil(this.data.count / 10);
             this.query();
@@ -221,5 +231,171 @@ export class CollectionComponent implements OnInit {
       }
     } catch (err) {}
     document.body.removeChild(txtArea);
+  }
+
+  beforeUpload = (file: any): boolean => {
+    this.importError = '';
+    this.attributes = [];
+    this.rowData = [];
+    this.uploadButton = false;
+    if (file.type !== 'text/csv' && file.type !== 'application/json') {
+      this.message.error('You can only upload either JSON or CSV files!');
+      this.importing = false;
+      this.file = '';
+      return false;
+    }
+    this.file = file.name;
+    try {
+      if (file.type === 'text/csv') {
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (result) => {
+            if (!result.errors[0]) {
+              const keys = _.take(_.keys(result.data[0]), 1500);
+              this.attributes = _.map(keys, (key) => ({
+                include: true,
+                label: key,
+                type: 'String',
+              }));
+              // for (let [index, attribute] of keys.entries()) {
+              //   if (index >= 1500) break;
+              //   this.attributes.push({
+              //     include: true,
+              //     label: attribute,
+              //     type: 'String',
+              //   });
+              // };
+              this.rowData = result.data;
+              this.uploadButton = true;
+            } else {
+              this.importError = result.errors[0];
+              this.rowData = [];
+              this.uploadButton = false;
+            }
+          },
+        });
+      } else {
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = (e) => {
+          this.rowData = reader.result;
+          this.uploadButton = true;
+        };
+        reader.onerror = (e) => {
+          this.importError = reader.error;
+          this.rowData = [];
+          this.uploadButton = false;
+        };
+      }
+    } catch (err) {
+      this.importError = err.message;
+      this.rowData = [];
+      this.uploadButton = false;
+    }
+    return false;
+  };
+
+  showModal(): void {
+    this.isVisible = true;
+    this.file = '';
+    this.rowData = [];
+    this.importError = '';
+    this.uploadButton = false;
+    this.importing = false;
+  }
+
+  importRecords(): void {
+    let records: any = [];
+    try {
+      if (this.attributes[0]) {
+        this.importError = '';
+        this.importing = true;   
+        this.uploadButton = false; 
+        for (let row of this.rowData) {
+          let record = {};
+          for (let attribute of this.attributes) {
+            if (attribute.include) {
+              if (row[attribute.label]) {
+                switch (attribute.type) {
+                  case 'ObjectId':
+                    row[attribute.label] = new ObjectId(row[attribute.label]);
+                    break;
+
+                  case 'Boolean':
+                    row[attribute.label] = Boolean(row[attribute.label]);
+                    break;
+
+                  case 'Date':
+                    row[attribute.label] = { $date: row[attribute.label] };
+                    break;
+
+                  case 'Number':
+                    row[attribute.label] = {
+                      $numberInt: row[attribute.label],
+                    };
+                    break;
+
+                  default:
+                    row[attribute.label] = String(row[attribute.label]);
+                    break;
+                }
+                record[attribute.label] = row[attribute.label];
+              }
+            } 
+          }
+          if (this.importing) {
+            records.push(record);
+            this.importError = '';
+          } else {
+            records = [];
+            break;
+          }
+        }
+      } else {
+        records = this.rowData;
+        this.importError = '';
+        this.importing = true;
+        this.uploadButton = false;
+      }
+      if (!this.importError) {
+        const originalDocument = EJSON.serialize(
+          typeof records === 'string' ? JSON.parse(records) : records
+        );
+        this.API.createDocuments(
+          this.database,
+          this.collection,
+          originalDocument
+        ).subscribe((response) => {
+          this.importing = false;
+          this.uploadButton = false;
+          if (!response['nUpserted']) {
+            this.message.success('Success!');
+            this.query();
+            this.handleCancel();
+            return;
+          }
+          this.API.getDocumentCount(
+            this.database,
+            this.collection,
+            this.filter ? JSON.parse(this.filter) : {}
+          ).subscribe((res: any) => {
+            this.message.success('Success!');
+            this.handleCancel();
+            this.data = EJSON.deserialize(res);
+            this.pageIndex = Math.ceil(this.data.count / 10);
+            this.query();
+          });
+        });
+      }
+    } catch (err) {
+      this.importError = err.message;
+      this.uploadButton = true;
+      this.importing = false;
+    }
+  }
+
+  handleCancel(): void {
+    this.isVisible = false;
   }
 }

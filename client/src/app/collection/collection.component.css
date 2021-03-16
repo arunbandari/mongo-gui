@@ -89,3 +89,17 @@
   text-align: right;
   float: right;
 }
+
+.attributes {
+  margin-top: 10px;
+  height: 225px;
+  overflow: auto;
+}
+
+.upload {
+  margin-top: 10px;;
+}
+
+.upload:hover {
+  background-color: rgb(240, 240, 240);
+}
