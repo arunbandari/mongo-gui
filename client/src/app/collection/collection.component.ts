@@ -208,12 +208,15 @@ export class CollectionComponent implements OnInit {
     this.showEditor = false;
     this.documentBeingEdited = '';
   }
+
   openAdvancedSearchForm() {
     this.showAdvancedSearchForm = true;
   }
+
   closeAdvancedSearchForm() {
     this.showAdvancedSearchForm = false;
   }
+  
   copyToClipboard(text: string) {
     text = JSON.stringify(text);
     const txtArea = document.createElement('textarea');
@@ -258,14 +261,6 @@ export class CollectionComponent implements OnInit {
                 label: key,
                 type: 'String',
               }));
-              // for (let [index, attribute] of keys.entries()) {
-              //   if (index >= 1500) break;
-              //   this.attributes.push({
-              //     include: true,
-              //     label: attribute,
-              //     type: 'String',
-              //   });
-              // };
               this.rowData = result.data;
               this.uploadButton = true;
             } else {
@@ -385,7 +380,13 @@ export class CollectionComponent implements OnInit {
             this.data = EJSON.deserialize(res);
             this.pageIndex = Math.ceil(this.data.count / 10);
             this.query();
+          }, (error) => {
+            this.uploadButton = true;
+            this.importing = false;
           });
+        }, (error) => {
+          this.uploadButton = true;
+          this.importing = false;
         });
       }
     } catch (err) {

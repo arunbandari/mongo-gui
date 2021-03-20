@@ -28,7 +28,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           } else {
             // server-side error
             name = error.error.name || error.name;
-            errorMessage = error.error.errmsg || error.message;
+            errorMessage =  error.error.errmsg || error.error || error.message;
           }
           this.notification.create(
             'error',
