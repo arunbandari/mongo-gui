@@ -118,13 +118,10 @@
           nzTooltipPlacement="top" nz-tooltip>
           <i nz-icon nzType="edit"></i>
         </button>
-        <div class="copy">
-          <button style="margin-bottom: 2px;" nz-button nzType="default" nzTooltipTitle="Copy as" nzTooltipPlacement="top" nz-tooltip><i nz-icon nzType="copy"></i></button>
-          <ul class="copy-as" style="list-style-type: none;">
-            <li (click)="copyToClipboard(doc, 'JSON')">JSON</li>
-            <li (click)="copyToClipboard(doc, 'BSON')">BSON</li>
-          </ul>
-        </div>
+        <button nz-button nzType="default" (click)="copyToClipboard(doc)" nzTooltipTitle="Copy" nzTooltipPlacement="top"
+          nz-tooltip>
+          <i nz-icon nzType="copy"></i>
+        </button>
         <button class="spl-button" nz-button nzType="default" nzTooltipTitle="Delete" nzTooltipPlacement="top"
           nz-tooltip nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this document?"
           (nzOnConfirm)="deleteDocument(doc)" nzPopconfirmPlacement="left">

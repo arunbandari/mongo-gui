@@ -103,39 +103,3 @@
 .upload:hover {
   background-color: rgb(240, 240, 240);
 }
-
-.copy {
-  position: relative;
-  display: inline-block;
-  height: 0px;
-}
-
-.copy-as {
-  display: none;
-  position: absolute;
-  border-radius: 5px;
-  padding: 0px;
-  border-top: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  box-shadow: 0px 5px 8px 0px rgba(0,0,0,0.3);
-  overflow-y: hidden;
-  overflow-x: hidden;
-}
-
-.copy:hover .copy-as {
-  display: block;
-  overflow-y: hidden;
-  overflow-x: hidden;
-}
-
-.copy-as li {
-  padding: 5px 10px;
-  text-decoration: none;
-  display: block;
-  cursor: pointer;
-}
-
-.copy-as li:hover {
-  background-color: rgba(24,144,255, 0.2);
-  overflow: hidden;
-}

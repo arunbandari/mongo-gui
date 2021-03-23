@@ -217,8 +217,8 @@ export class CollectionComponent implements OnInit {
     this.showAdvancedSearchForm = false;
   }
   
-  copyToClipboard(text: any, type: string) {
-    text = JSON.stringify((type === 'BSON') ? EJSON.serialize(text) : text);
+  copyToClipboard(text: string) {
+    text = JSON.stringify(text);
     const txtArea = document.createElement('textarea');
     txtArea.style.position = 'fixed';
     txtArea.style.top = '0';
@@ -381,12 +381,10 @@ export class CollectionComponent implements OnInit {
             this.pageIndex = Math.ceil(this.data.count / 10);
             this.query();
           }, (error) => {
-            this.importError = error;
             this.uploadButton = true;
             this.importing = false;
           });
         }, (error) => {
-          this.importError = error;
           this.uploadButton = true;
           this.importing = false;
         });
