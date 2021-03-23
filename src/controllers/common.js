@@ -18,7 +18,7 @@ function listDatabases (req, res, next) {
   
         Promise.all(promises)
           .then(() => res.send(data))
-          .catch(err => next(err));
+          .catch(err => res.status(400).send(err.toString()));
       })
       .catch(next);
 }
@@ -41,8 +41,8 @@ function createCollection(req, res, next) {
 }
 
 function dropCollection(req, res, next) {
-  const dbName = req.params.dbName;
-  const collectionName = req.params.collectionName;
+  const dbName = req.body.database;
+  const collectionName = req.body.collection;
   const db = dataAccessAdapter.ConnectToDb(dbName);
   db.collection(collectionName).drop()
     .then(() => res.send({ message:  'success' }))

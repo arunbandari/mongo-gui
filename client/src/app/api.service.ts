@@ -66,8 +66,9 @@ export class ApiService {
     );
   }
   dropCollection(body) {
-    return this.http.delete(
-      `${this.BASE_URL}/${body.database}/collections/${body.collection}`
+    return this.http.post(
+      `${this.BASE_URL}/${body.database}/collections/delete`,
+      body
     );
   }
   dropDB(body) {

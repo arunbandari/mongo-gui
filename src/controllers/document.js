@@ -15,20 +15,26 @@ const sendResponse = (dbOperation, req, res, next) => {
         data = JSON.stringify(EJSON.serialize(data));
       res.send(data);
     })
-    .catch((err) => next(err));
+    .catch((err) => res.status(400).send(err.toString()));
 };
 
 function middleware(req, res, next) {
-  req.body =
-    req.query.incomingType === 'ejson' ? EJSON.deserialize(req.body) : req.body;
-  if (!(req.body instanceof Array)) {
-    req.documentId =
-      req.body._id === null
-        ? null
-        : req.body._id || req.params.documentId || ObjectID();
-    if (req.documentId === 'filter') req.documentId = '';
+  try {
+    req.body =
+      req.query.incomingType === 'ejson'
+        ? EJSON.deserialize(req.body)
+        : req.body;
+    if (!(req.body instanceof Array)) {
+      req.documentId =
+        req.body._id === null
+          ? null
+          : req.body._id || req.params.documentId || ObjectID();
+      if (req.documentId === 'filter') req.documentId = '';
+    }
+    next();
+  } catch (err) {
+    res.status(400).send(err.toString());
   }
-  next();
 }
 
 function find(req, res, next) {
@@ -139,7 +145,7 @@ function count(req, res, next) {
         data = JSON.stringify(EJSON.serialize(data));
       res.send(data);
     })
-    .catch((err) => next(err));
+    .catch((err) => res.status(400).send(err.toString()));
 }
 
 module.exports = {
