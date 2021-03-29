@@ -130,7 +130,7 @@
 </nz-layout>
 
 <nz-modal [(nzVisible)]="addTable" (nzOnCancel)="closeModal('addTable')" nzTitle="Add new collection" [nzFooter]="null"
-  [nzBodyStyle]="{height: '210px'}">
+  [nzBodyStyle]="{height: '237px'}">
   <form nz-form [formGroup]="addTableForm">
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database">Database</nz-form-label>
@@ -146,20 +146,22 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
-        <button class="add" nz-button nzType="primary" [disabled]="!addTableForm.valid || addTableLoader"
-          (click)="createTable()">
-          {{ addTableLoader ? 'Adding ...' : 'Add' }}
-        </button>
-        <button class="cancel" nz-button nzType="default" (click)="closeModal('addTable')">
-          Cancel
-        </button>
+        <div class="addTableFooter">
+          <button class="add" nz-button nzType="primary" [disabled]="!addTableForm.valid || addTableLoader"
+            (click)="createTable()">
+            {{ addTableLoader ? 'Adding ...' : 'Add' }}
+          </button>
+          <button class="cancel" nz-button nzType="default" (click)="closeModal('addTable')">
+            Cancel
+          </button>
+        </div>
       </nz-form-control>
     </nz-form-item>
   </form>
 </nz-modal>
 
 <nz-modal [(nzVisible)]="dropTable" nzTitle="Drop collection" (nzOnCancel)="closeModal('dropTable')"
-  [nzBodyStyle]="{height: '275px'}" [nzFooter]="null">
+  [nzBodyStyle]="{height: '300px'}" [nzFooter]="null">
   <form nz-form [formGroup]="dropTableForm">
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="database">Database</nz-form-label>
@@ -182,19 +184,21 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
-        <button class="drop" nz-button nzType="danger" [disabled]="!dropTableForm.valid || dropTableLoader"
-          (click)="dropCollection()">
-          {{ dropTableLoader ? 'Dropping ...' : 'Drop' }}
-        </button>
-        <button class="cancel" nz-button nzType="default" (click)="closeModal('dropTable')">
-          Cancel
-        </button>
+        <div class="dropTableFooter">
+          <button class="drop" nz-button nzType="danger" [disabled]="!dropTableForm.valid || dropTableLoader"
+            (click)="dropCollection()">
+            {{ dropTableLoader ? 'Dropping ...' : 'Drop' }}
+          </button>
+          <button class="cancel" nz-button nzType="default" (click)="closeModal('dropTable')">
+            Cancel
+          </button>
+        </div>
       </nz-form-control>
     </nz-form-item>
   </form>
 </nz-modal>
 <nz-modal [(nzVisible)]="dropDataBase" nzTitle="Drop database" (nzOnCancel)="closeModal('dropDataBase')"
-  [nzBodyStyle]="{height: '210px'}" [nzFooter]="null">
+  [nzBodyStyle]="{height: '237px'}" [nzFooter]="null">
   <form nz-form [formGroup]="dropDataBaseForm">
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="database">
@@ -214,20 +218,21 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
-        <button class="drop" nz-button nzType="danger" [disabled]="!dropDataBaseForm.valid || dropDataBaseLoader"
-          (click)="dropDB()">
-          {{ dropDataBaseLoader ? 'Dropping ...' : 'Drop' }}
-        </button>
-        <button class="cancel" nz-button nzType="default" (click)="closeModal('dropDataBase')">
-          Cancel
-        </button>
+        <div class="dropDBFooter">
+          <button class="drop" nz-button nzType="danger" [disabled]="!dropDataBaseForm.valid || dropDataBaseLoader"
+            (click)="dropDB()">
+            {{ dropDataBaseLoader ? 'Dropping ...' : 'Drop' }}
+          </button>
+          <button class="cancel" nz-button nzType="default" (click)="closeModal('dropDataBase')">
+            Cancel
+          </button>
+        </div>
       </nz-form-control>
     </nz-form-item>
   </form>
 </nz-modal>
-
 <nz-modal [(nzVisible)]="addDB" nzTitle="Add Database" (nzOnCancel)="closeModal('addDB')"
-  [nzBodyStyle]="{height: '230px'}" [nzFooter]="null">
+  [nzBodyStyle]="{height: '257px'}" [nzFooter]="null">
   <form nz-form [formGroup]="addDBForm">
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database">Database</nz-form-label>
@@ -246,13 +251,15 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
-        <button class="add" nz-button nzType="primary" [disabled]="!addDBForm.valid || addDBLoader"
-          (click)="addDataBase()">
-          {{ addDBLoader ? 'Adding ...' : 'Add' }}
-        </button>
-        <button class="cancel" nz-button nzType="default" (click)="closeModal('addDB')">
-          Cancel
-        </button>
+        <div class="addDBFooter">
+          <button class="add" nz-button nzType="primary" [disabled]="!addDBForm.valid || addDBLoader"
+            (click)="addDataBase()">
+            {{ addDBLoader ? 'Adding ...' : 'Add' }}
+          </button>
+          <button class="cancel" nz-button nzType="default" (click)="closeModal('addDB')">
+            Cancel
+          </button>
+        </div>
       </nz-form-control>
     </nz-form-item>
   </form>

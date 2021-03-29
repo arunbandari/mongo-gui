@@ -158,14 +158,42 @@ nz-footer {
 }
 .add {
   float: right;
-  margin: -5px 5px 5px 5px;
+  margin-top: -12.5px;
 }
-
 .drop {
   float: right;
-  margin: -5px 5px 5px 5px;
+  margin-top: -12.5px;
 }
 .cancel {
   float: right;
-  margin: -5px  5px 5px 5px;
+  margin-top: -12.5px;
+  margin-right: 15px;
+}
+.addTableFooter {
+  width: 110.2%;
+  margin-left: -24px;
+  border: 1px solid #e8e8e8;
+  border-radius: 0px 0px 4px 4px;
+  padding: 30px;
+}
+.dropTableFooter {
+  width: 110.2%;
+  margin-left: -24px;
+  border: 1px solid #e8e8e8;
+  border-radius: 0px 0px 4px 4px;
+  padding: 30px;
+}
+.dropDBFooter {
+  width: 110.2%;
+  margin-left: -24px;
+  border: 1px solid #e8e8e8;
+  border-radius: 0px 0px 4px 4px;
+  padding: 30px;
+}
+.addDBFooter {
+  width: 110.2%;
+  margin-left: -24px;
+  border: 1px solid #e8e8e8;
+  border-radius: 0px 0px 4px 4px;
+  padding: 30px;
 }
