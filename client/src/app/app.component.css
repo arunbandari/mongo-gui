@@ -156,3 +156,16 @@ nz-footer {
 .reload-dbs-btn:hover {
   color: #c2c2c2;
 }
+.add {
+  float: right;
+  margin: -5px 5px 5px 5px;
+}
+
+.drop {
+  float: right;
+  margin: -5px 5px 5px 5px;
+}
+.cancel {
+  float: right;
+  margin: -5px  5px 5px 5px;
+}
