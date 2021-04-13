@@ -314,23 +314,23 @@ export class CollectionComponent implements OnInit {
               if (row[attribute.label]) {
                 switch (attribute.type) {
                   case 'ObjectId':
-                    _.set(row, attribute.label, new ObjectId(row[attribute.label]));
+                    row[attribute.label] = new ObjectId(row[attribute.label]);
                     break;
 
                   case 'Boolean':
-                    _.set(row, attribute.label, Boolean(row[attribute.label]));
+                    row[attribute.label] = Boolean(row[attribute.label]);
                     break;
 
                   case 'Date':
-                    _.set(row, attribute.label, { $date: row[attribute.label]});
+                    row[attribute.label] = { $date: row[attribute.label] };
                     break;
 
                   case 'Number':
-                    _.set(row, attribute.label, { $numberInt: row[attribute.label]});
+                    row[attribute.label] = { $numberInt: row[attribute.label] };
                     break;
 
                   default:
-                    _.set(row, attribute.label, String(row[attribute.label]));
+                    row[attribute.label] = String(row[attribute.label]);
                     break;
                 }
                 _.set(record, attribute.label, row[attribute.label]);
