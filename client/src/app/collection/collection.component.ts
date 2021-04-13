@@ -57,7 +57,7 @@ export class CollectionComponent implements OnInit {
     renderLineHighlight: 'none',
   };
   code: string = '{}';
-  uploadButton = false;
+  importButton = false;
   importError: any;
   file = '';
   rowData: any;
@@ -240,7 +240,7 @@ export class CollectionComponent implements OnInit {
     this.importError = '';
     this.attributes = [];
     this.rowData = [];
-    this.uploadButton = false;
+    this.importButton = false;
     if (file.type !== 'text/csv' && file.type !== 'application/json') {
       this.message.error('You can only upload either JSON or CSV files!');
       this.importing = false;
@@ -262,11 +262,11 @@ export class CollectionComponent implements OnInit {
                 type: 'String',
               }));
               this.rowData = result.data;
-              this.uploadButton = true;
+              this.importButton = true;
             } else {
-              this.importError = result.errors[0];
+              this.importError = result.errors[0].message;
               this.rowData = [];
-              this.uploadButton = false;
+              this.importButton = false;
             }
           },
         });
@@ -275,28 +275,28 @@ export class CollectionComponent implements OnInit {
         reader.readAsText(file);
         reader.onload = (e) => {
           this.rowData = reader.result;
-          this.uploadButton = true;
+          this.importButton = true;
         };
         reader.onerror = (e) => {
           this.importError = reader.error;
           this.rowData = [];
-          this.uploadButton = false;
+          this.importButton = false;
         };
       }
     } catch (err) {
       this.importError = err.message;
       this.rowData = [];
-      this.uploadButton = false;
+      this.importButton = false;
     }
     return false;
   };
 
-  showModal(): void {
+  showImportModal(): void {
     this.isVisible = true;
     this.file = '';
     this.rowData = [];
     this.importError = '';
-    this.uploadButton = false;
+    this.importButton = false;
     this.importing = false;
   }
 
@@ -306,7 +306,7 @@ export class CollectionComponent implements OnInit {
       if (this.attributes[0]) {
         this.importError = '';
         this.importing = true;   
-        this.uploadButton = false; 
+        this.importButton = false;
         for (let row of this.rowData) {
           let record = {};
           for (let attribute of this.attributes) {
@@ -326,16 +326,14 @@ export class CollectionComponent implements OnInit {
                     break;
 
                   case 'Number':
-                    row[attribute.label] = {
-                      $numberInt: row[attribute.label],
-                    };
+                    row[attribute.label] = { $numberInt: row[attribute.label] };
                     break;
 
                   default:
                     row[attribute.label] = String(row[attribute.label]);
                     break;
                 }
-                record[attribute.label] = row[attribute.label];
+                _.set(record, attribute.label, row[attribute.label]);
               }
             } 
           }
@@ -351,7 +349,7 @@ export class CollectionComponent implements OnInit {
         records = this.rowData;
         this.importError = '';
         this.importing = true;
-        this.uploadButton = false;
+        this.importButton = false;
       }
       if (!this.importError) {
         const originalDocument = EJSON.serialize(
@@ -363,11 +361,11 @@ export class CollectionComponent implements OnInit {
           originalDocument
         ).subscribe((response) => {
           this.importing = false;
-          this.uploadButton = false;
+          this.importButton = false;
           if (!response['nUpserted']) {
             this.message.success('Success!');
             this.query();
-            this.handleCancel();
+            this.closeImportModal();
             return;
           }
           this.API.getDocumentCount(
@@ -376,29 +374,29 @@ export class CollectionComponent implements OnInit {
             this.filter ? JSON.parse(this.filter) : {}
           ).subscribe((res: any) => {
             this.message.success('Success!');
-            this.handleCancel();
+            this.closeImportModal();
             this.data = EJSON.deserialize(res);
             this.pageIndex = Math.ceil(this.data.count / 10);
             this.query();
           }, (error) => {
             this.importError = error;
-            this.uploadButton = true;
+            this.importButton = true;
             this.importing = false;
           });
         }, (error) => {
           this.importError = error;
-          this.uploadButton = true;
+          this.importButton = true;
           this.importing = false;
         });
       }
     } catch (err) {
       this.importError = err.message;
-      this.uploadButton = true;
+      this.importButton = true;
       this.importing = false;
     }
   }
 
-  handleCancel(): void {
+  closeImportModal(): void {
     this.isVisible = false;
   }
 }

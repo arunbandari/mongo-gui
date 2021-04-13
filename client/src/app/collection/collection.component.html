@@ -36,10 +36,10 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
-              <li nz-menu-item (click)="showModal()">Import File</li>
+              <li nz-menu-item (click)="showImportModal()">Import File</li>
               <nz-modal nzMaskClosable="false" [(nzVisible)]="isVisible" nzKeyboard=false nzTitle="Import File"
-                nzWidth="650" nzClosable=false nzCentered (nzOnCancel)="handleCancel()" [nzContent]="modalContent">
-                <ng-template #modalContent>
+                nzWidth="650" nzClosable=false nzCentered (nzOnCancel)="closeImportModal()" [nzContent]="importModalContent">
+                <ng-template #importModalContent>
                   <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload"
                     nzAccept=".json, .csv" [nzDisabled]="importing">
                     <p class="ant-upload-drag-icon">
@@ -74,8 +74,8 @@
                   </div>
                 </ng-template>
                 <div *nzModalFooter>
-                  <button nz-button nzType="default" (click)="handleCancel()" [disabled]="importing">Close</button>
-                  <button nz-button nzType="primary" (click)="importRecords()" [disabled]="!uploadButton">{{importing ?
+                  <button nz-button nzType="default" (click)="closeImportModal()" [disabled]="importing">Close</button>
+                  <button nz-button nzType="primary" (click)="importRecords()" [disabled]="!importButton">{{importing ?
                     'Importing...' : 'Import'}}</button>
                 </div>
               </nz-modal>
