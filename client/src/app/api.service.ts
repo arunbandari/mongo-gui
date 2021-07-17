@@ -31,7 +31,7 @@ export class ApiService {
   }
   getDocumentCount(dbName, collectionName, query) {
     return this.http.post(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/count?ContentType=ejson`,
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/count?incomingType=ejson&ContentType=ejson`,
       query
     );
   }
