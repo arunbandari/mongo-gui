@@ -121,7 +121,7 @@ function filter(req, res, next) {
         to: skip + documents.length,
       };
       if (req.query.ContentType === 'ejson')
-        data = JSON.stringify(EJSON.serialize(data));
+        data = EJSON.stringify(data, { relaxed: false });
       res.send(data);
     })
     .catch((err) => next(err));
