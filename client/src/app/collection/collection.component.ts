@@ -181,6 +181,7 @@ export class CollectionComponent implements OnInit {
             this.message.success('Success!');
             this.data = EJSON.deserialize(res);
             this.pageIndex = Math.ceil(this.data.count / 10);
+            if (this.data.count === 0) this.pageIndex = 1;
             this.query();
           });
         } catch (err) {
