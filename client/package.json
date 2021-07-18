@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "clean": "rm -rf dist && rm -rf ../public",
-    "compress": "npx gzipper --verbose ./dist ../public",
+    "compress": "npx gzipper compress ./dist ../public",
     "build:prod": "ng build --prod",
     "clean-build-compress": "npm run clean && npm run build:prod && npm run compress"
   },
