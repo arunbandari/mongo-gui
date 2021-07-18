@@ -74,4 +74,10 @@ export class ApiService {
   dropDB(body) {
     return this.http.delete(`${this.BASE_URL}/${body.database}`);
   }
+  aggregate(dbName, collectionName, query) {
+    return this.http.post(
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/aggregate?ContentType=ejson&incomingType=ejson`,
+      query
+    );
+  }
 }

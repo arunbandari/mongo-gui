@@ -35,6 +35,10 @@ class Model {
   //   return this.collection.updateOne(query, data);
   // }
 
+  aggregate(query) {
+    return this.collection.aggregate(query);
+  }
+
   replaceOne(query, data) {
     return this.collection.replaceOne(query, data);
   }

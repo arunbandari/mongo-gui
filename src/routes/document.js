@@ -32,4 +32,7 @@ router.put('/(:documentId)?', documentCtrl.replaceOne);
 // deleteOne
 router.post('/delete', documentCtrl.deleteOne);
 
+// aggregations
+router.post('/aggregate', documentCtrl.aggregate);
+
 module.exports = router;

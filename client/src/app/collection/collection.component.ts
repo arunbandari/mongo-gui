@@ -44,7 +44,7 @@ export class CollectionComponent implements OnInit {
     private API: ApiService,
     private message: NzMessageService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   editorOptions = {
     theme: 'vs',
@@ -63,8 +63,15 @@ export class CollectionComponent implements OnInit {
   rowData: any;
   importing = false;
   attributes = [];
-  isVisible = false;
+  isImportVisible = false;
   ignore = false;
+  isExportVisible = false;
+  exportButton = true;
+  exporting = false;
+  exportAs = 'json';
+  exportData: any;
+  exportError: any;
+  count = 0;
   ngOnInit() {
     this.query();
   }
@@ -79,6 +86,7 @@ export class CollectionComponent implements OnInit {
     )
       .subscribe((documents: any) => {
         this.data = EJSON.deserialize(documents);
+        this.count = this.data.count;      
         if (this.searchMode === 'advanced') this.closeAdvancedSearchForm();
       })
       .add(() => {
@@ -217,7 +225,7 @@ export class CollectionComponent implements OnInit {
   closeAdvancedSearchForm() {
     this.showAdvancedSearchForm = false;
   }
-  
+
   copyToClipboard(text: any, type: string) {
     text = JSON.stringify((type === 'BSON') ? EJSON.serialize(text) : text);
     const txtArea = document.createElement('textarea');
@@ -233,7 +241,7 @@ export class CollectionComponent implements OnInit {
       if (result) {
         this.message.success('Copied!');
       }
-    } catch (err) {}
+    } catch (err) { }
     document.body.removeChild(txtArea);
   }
 
@@ -293,7 +301,7 @@ export class CollectionComponent implements OnInit {
   };
 
   showImportModal(): void {
-    this.isVisible = true;
+    this.isImportVisible = true;
     this.file = '';
     this.rowData = [];
     this.importError = '';
@@ -306,13 +314,13 @@ export class CollectionComponent implements OnInit {
     try {
       if (this.attributes[0]) {
         this.importError = '';
-        this.importing = true;   
+        this.importing = true;
         this.importButton = false;
         for (let row of this.rowData) {
           let record = {};
           for (let attribute of this.attributes) {
             if (attribute.include) {
-              if (row[attribute.label]) {
+              if (_.get(row, attribute.label)) {
                 switch (attribute.type) {
                   case 'ObjectId':
                     row[attribute.label] = new ObjectId(row[attribute.label]);
@@ -336,7 +344,7 @@ export class CollectionComponent implements OnInit {
                 }
                 _.set(record, attribute.label, row[attribute.label]);
               }
-            } 
+            }
           }
           if (this.importing) {
             records.push(record);
@@ -398,6 +406,90 @@ export class CollectionComponent implements OnInit {
   }
 
   closeImportModal(): void {
-    this.isVisible = false;
+    this.isImportVisible = false;
+    this.importing = false;
+  }
+
+  getExportAttributes(): void {
+    this.attributes = [];
+    this.API.aggregate(
+      this.database,
+      this.collection,
+      [
+        { $match: this.ejsonFilter || EJSON.serialize({}) },
+        { $project: { arrayofkeyvalue: { $objectToArray: '$$ROOT' } } },
+        { $unwind: '$arrayofkeyvalue' },
+        { $group: { _id: null, allkeys: { $addToSet: '$arrayofkeyvalue.k' } } }
+      ]
+    ).subscribe((documents: any) => {
+      const keys = new Set(documents[0].allkeys.sort());
+      for (const key of keys) {
+        this.attributes.push({
+          include: true,
+          label: key,
+        });
+      }
+    });
+  }
+
+  showExportModal(): void {
+    this.isExportVisible = true;
+    this.exporting = false;
+    this.exportAs = 'json';
+    this.exportButton = true;
+    this.getExportAttributes();
+  }
+
+  closeExportModal(): void {
+    this.isExportVisible = false;
+    this.exporting = false;
+    this.attributes = [];
+    this.exportAs = 'json';
+    this.exportButton = true;
+  }
+
+  exportCollection(): void {
+    this.exporting = true;
+    this.exportButton = false;
+    let excludedAttributes = [], includedAttributes = [];
+    for (let attribute of this.attributes) {
+      if (!attribute.include)
+        excludedAttributes.push(attribute.label);
+      else
+        includedAttributes.push(attribute.label)
+    }
+    const query = [
+      { $match: this.ejsonFilter || EJSON.serialize({}) },
+      { $unset: excludedAttributes }
+    ];
+    if (!excludedAttributes[0] || this.exportAs !== 'csv') query.pop();
+    this.API.aggregate(
+      this.database,
+      this.collection,
+      query
+    )
+      .subscribe((documents: any) => {
+        documents = EJSON.parse(JSON.stringify(documents));
+        if (this.exportAs === 'csv') {
+          for (let row of documents) {
+            for (let attribute of this.attributes) {
+              let rowLabel = _.get(row, attribute.label);
+              if (rowLabel && (typeof rowLabel === 'object')) _.set(row, attribute.label, JSON.stringify(rowLabel));
+            }
+          }
+          if (includedAttributes[0])
+            documents = Papa.unparse(documents, { columns: includedAttributes });
+          else documents = Papa.unparse(documents);
+        }
+        else documents = JSON.stringify(documents, null, 2);
+        var blob = new Blob([documents], { type: 'application/octet-stream' });
+        var url = window.URL.createObjectURL(blob);
+        var anchor = document.createElement('a');
+        anchor.download = `${this.collection}.${this.exportAs}`;
+        anchor.href = url;
+        anchor.click();
+        this.exportButton = true;
+        this.exporting = false;
+      });
   }
 }
