@@ -38,9 +38,10 @@ function middleware(req, res, next) {
 }
 
 function find(req, res, next) {
-  const filter = req.query;
   const model = getModel(req);
-  const dbOperation = model.find({}, filter).toArray();
+  const filter = req.body || {};
+  const options = req.query || {};
+  const dbOperation = model.find(filter, options).toArray();
   sendResponse(dbOperation, req, res, next);
 }
 
@@ -148,6 +149,13 @@ function count(req, res, next) {
     .catch((err) => res.status(400).send(err.toString()));
 }
 
+function aggregate(req, res, next) {
+  const model = getModel(req);
+  const query = req.body || [];
+  const dbOperation = model.aggregate(query).toArray();
+  sendResponse(dbOperation, req, res, next);
+}
+
 module.exports = {
   middleware,
   find,
@@ -160,4 +168,5 @@ module.exports = {
   deleteOne,
   stats,
   count,
+  aggregate,
 };
