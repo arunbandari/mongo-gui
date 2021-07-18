@@ -472,9 +472,9 @@ export class CollectionComponent implements OnInit {
         documents = EJSON.parse(JSON.stringify(documents));
         if (this.exportAs === 'csv') {
           for (let row of documents) {
-            for (let attribute of this.attributes) {
-              let rowLabel = _.get(row, attribute.label);
-              if (rowLabel && (typeof rowLabel === 'object')) _.set(row, attribute.label, JSON.stringify(rowLabel));
+            for (let attribute of includedAttributes) {
+              let rowLabel = _.get(row, attribute);
+              if (typeof rowLabel === 'object') _.set(row, attribute, JSON.stringify(rowLabel));
             }
           }
           if (includedAttributes[0])
