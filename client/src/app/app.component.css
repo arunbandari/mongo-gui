@@ -128,6 +128,11 @@ nz-footer {
   padding-bottom: 0px;
 }
 
+.collection-stats {
+  padding: 15px;
+  padding-bottom: 0px;
+}
+
 /* search box */
 .search {
   height: 28px;
@@ -196,4 +201,12 @@ nz-footer {
   border: 1px solid #e8e8e8;
   border-radius: 0px 0px 4px 4px;
   padding: 30px;
+}
+
+.drop-db, .drop-table {
+  visibility: hidden;
+}
+
+tr:hover .drop-db, tr:hover .drop-table {
+  visibility: visible;
 }
