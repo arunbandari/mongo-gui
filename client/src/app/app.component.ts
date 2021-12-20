@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, includes } from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -50,6 +50,8 @@ export class AppComponent implements OnInit {
   addTable = false;
   dropTable = false;
   dropDataBase = false;
+  active = 'databases';
+  db: any;
 
   /* side-nav */
   getDatabases() {
@@ -129,9 +131,12 @@ export class AppComponent implements OnInit {
     this.initForms();
   }
 
-  expand(e) {
+  expand(e, database) {
+    if (includes(e.target.classList, 'collection_item')) return;
+    this.closeAllTabs();
     e.stopPropagation();
     e.target.classList.toggle('open');
+    this.showCollections(database);
   }
 
   filter() {
@@ -168,14 +173,16 @@ export class AppComponent implements OnInit {
     this.activateTab(this.tabs.length - 1);
   }
   closeTab(id) {
+    this.active = 'databases';
     const idx = this.tabs.findIndex((tab) => tab.id === id);
     this.tabs.splice(idx, 1);
     if (this.tabs.length) {
       this.activeTabIndex = this.tabs.length - 1;
     }
   }
-  openFirstTable(database) {
-    this.openTab(database.name, database.collections[0]);
+  showCollections(database) {
+    this.active = 'collections';
+    this.db = database;
   }
   closeTabsByDataBase(database) {
     this.tabs = this.tabs.filter((tab) => tab.database !== database);
@@ -184,6 +191,7 @@ export class AppComponent implements OnInit {
     this.tabs = [];
   }
   openDashBoard() {
+    this.active = 'databases';
     this.closeAllTabs();
   }
   createTable() {
