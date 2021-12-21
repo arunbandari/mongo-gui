@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { cloneDeep, includes } from 'lodash';
+import { cloneDeep, includes, set } from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -62,6 +62,7 @@ export class AppComponent implements OnInit {
           this.dbs = res;
           this.computeStats();
           this.filter();
+          if (this.active === 'collections') this.showCollections(this.db);
         }
       )
       .add(() => {
@@ -181,8 +182,14 @@ export class AppComponent implements OnInit {
     }
   }
   showCollections(database) {
-    this.active = 'collections';
-    this.db = database;
+    this.Api.getCollections(database.name)
+      .subscribe((res:any) => {
+        console.log('collections', res);
+        set(database, 'collections', res);
+        console.log('database', database);
+        this.db = database;
+        this.active = 'collections';
+      });
   }
   closeTabsByDataBase(database) {
     this.tabs = this.tabs.filter((tab) => tab.database !== database);
