@@ -14,6 +14,9 @@ export class ApiService {
   getDbs() {
     return this.http.get(`${this.BASE_URL}?includeCollections=true`);
   }
+  getCollections(dbName) {
+    return this.http.get(`${this.BASE_URL}/${dbName}/collections`);
+  }
   getDocumentsByCollection(dbName, collectionName) {
     return this.http.get(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?limit=10&ContentType=ejson`

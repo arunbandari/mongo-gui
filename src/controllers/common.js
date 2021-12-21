@@ -6,36 +6,14 @@ function listDatabases(req, res, next) {
     .then(data => {
       if (!req.query.includeCollections) return res.send(data);
       const promises = data.databases.map(db => new Promise((resolve, reject) => {
-        const database = dataAccessAdapter.ConnectToDb(db.name);
-        database.listCollections({ name: { $not: { $regex: /system.+$/ } } }).toArray()
-          .then(collections => {
-            let proms = [];
-            collections.forEach(collection => {
-              proms.push(dataAccessAdapter.ConnectToCollection(
-                db.name,
-                collection.name
-              ).stats()
-                .then((stats) => {
-                  collection.stats = {
-                    count: stats.count,
-                    size: stats.size
-                  };
-                }));
-            });
-            Promise.all(proms)
-              .then(() => {
-                db.collections = collections.map(collection => { 
-                  return { name: collection.name, stats: collection.stats }
-                }).sort(function(fir, sec) {
-                  if (fir.name < sec.name) return -1;
-                  if (fir.name > sec.name) return 1;
-                  return 0;
-                });
-                resolve();
-              })
-              .catch(err => reject(err));
-          })
-          .catch(reject);
+      const database = dataAccessAdapter.ConnectToDb(db.name);
+      database.listCollections({ name: { $not: { $regex: /system.+$/ } } }).toArray()
+        .then(collections => {
+          collections = collections.map(col => col.name).sort();
+          db.collections = collections;
+          resolve();
+        })
+        .catch(reject);
       }));
 
       Promise.all(promises)
@@ -48,8 +26,34 @@ function listDatabases(req, res, next) {
 function listCollections(req, res, next) {
   const dbName = req.params.dbName;
   const db = dataAccessAdapter.ConnectToDb(dbName);
-  db.listCollections().toArray()
-    .then(res.send)
+  db.listCollections({ name: { $not: { $regex: /system.+$/ } } }).toArray()
+    .then((collections) => {
+      let proms = [];
+      collections.forEach(collection => {
+        proms.push(dataAccessAdapter.ConnectToCollection(
+          dbName,
+          collection.name
+        ).stats()
+          .then((stats) => {
+            collection.stats = {
+              count: stats.count,
+              size: stats.totalSize
+            };
+          }));
+      });
+      Promise.all(proms)
+        .then(() => {
+          db.collections = collections.map(collection => {
+            return { name: collection.name, stats: collection.stats }
+          }).sort(function(fir, sec) {
+            if (fir.name < sec.name) return -1;
+            if (fir.name > sec.name) return 1;
+            return 0;
+          });
+          return res.send(db.collections);
+        })
+        .catch(err => res.status(400).send(err.toString()));
+    })
     .catch(next);
 }
 
