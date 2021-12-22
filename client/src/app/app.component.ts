@@ -184,9 +184,7 @@ export class AppComponent implements OnInit {
   showCollections(database) {
     this.Api.getCollections(database.name)
       .subscribe((res:any) => {
-        console.log('collections', res);
         set(database, 'collections', res);
-        console.log('database', database);
         this.db = database;
         this.active = 'collections';
       });
