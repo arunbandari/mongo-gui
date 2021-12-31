@@ -150,7 +150,7 @@ export class AppComponent implements OnInit {
     const pattern = new RegExp(`.*${this.searchText}.*`, 'i');
     this.menuData = this.menuData
       .map((db) => {
-        db.collections = db.collections.filter((col) => pattern.test(col));
+        db.collections = db.collections.filter((col) => pattern.test(col.name));
         return db;
       })
       .filter((db) => db.collections.length);
