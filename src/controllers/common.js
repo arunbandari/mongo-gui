@@ -7,8 +7,9 @@ function listDatabases(req, res, next) {
       if (!req.query.includeCollections) return res.send(data);
       const promises = data.databases.map(db => new Promise((resolve, reject) => {
         const database = dataAccessAdapter.ConnectToDb(db.name);
-        database.listCollections({ name: { $not: { $regex: /system.+$/ } } }).toArray()
+        database.listCollections().toArray()
           .then(collections => {
+            collections = collections.filter(collection => !collection.name.startsWith('system.'));
             let proms = [];
             collections.forEach(collection => {
               proms.push(dataAccessAdapter.ConnectToCollection(
@@ -48,8 +49,9 @@ function listDatabases(req, res, next) {
 function listCollections(req, res, next) {
   const dbName = req.params.dbName;
   const db = dataAccessAdapter.ConnectToDb(dbName);
-  db.listCollections({ name: { $not: { $regex: /system.+$/ } } }).toArray()
+  db.listCollections().toArray()
     .then((collections) => {
+      collections = collections.filter(collection => !collection.name.startsWith('system.'));
       let proms = [];
       collections.forEach(collection => {
         proms.push(dataAccessAdapter.ConnectToCollection(
