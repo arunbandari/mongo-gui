@@ -12,7 +12,7 @@ class DataBase {
   }
 
   static InitDB(app) {
-    const url = argv.u || process.env.URL || 'mongodb://localhost:27017';
+    const url = argv.u || process.env.URL || 'mongodb://127.0.0.1:27017';
 
     console.log(`> Connecting to mongoDB @ ${url}`);
     mongoClient.connect(url, { useUnifiedTopology: true })

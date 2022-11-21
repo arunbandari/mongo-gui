@@ -17,6 +17,12 @@ export class ApiService {
   getCollections(dbName) {
     return this.http.get(`${this.BASE_URL}/${dbName}/collections`);
   }
+
+  getIndexes(dbName, collectionName) {
+    return this.http.get(
+      `${this.BASE_URL}/${dbName}/collections/${collectionName}/indexes?ContentType=ejson`);
+  }
+
   getDocumentsByCollection(dbName, collectionName) {
     return this.http.get(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?limit=10&ContentType=ejson`
@@ -62,21 +68,25 @@ export class ApiService {
       document
     );
   }
+
   createCollection(body) {
     return this.http.post(
       `${this.BASE_URL}/${body.database}/collections`,
       body
     );
   }
+
   dropCollection(body) {
     return this.http.post(
       `${this.BASE_URL}/${body.database}/collections/delete`,
       body
     );
   }
+
   dropDB(body) {
     return this.http.delete(`${this.BASE_URL}/${body.database}`);
   }
+
   aggregate(dbName, collectionName, query) {
     return this.http.post(
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/aggregate?ContentType=ejson&incomingType=ejson`,

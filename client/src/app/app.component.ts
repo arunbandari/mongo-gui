@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
     collections: 0,
     size: 0,
   };
+  indexes: any;
   /* Forms related stuff */
   // Forms
   addDBForm!: FormGroup;
@@ -173,6 +174,7 @@ export class AppComponent implements OnInit {
     });
     this.activateTab(this.tabs.length - 1);
   }
+
   closeTab(id) {
     this.active = 'databases';
     const idx = this.tabs.findIndex((tab) => tab.id === id);
@@ -189,6 +191,7 @@ export class AppComponent implements OnInit {
         this.active = 'collections';
       });
   }
+
   closeTabsByDataBase(database) {
     this.tabs = this.tabs.filter((tab) => tab.database !== database);
   }
@@ -199,6 +202,7 @@ export class AppComponent implements OnInit {
     this.active = 'databases';
     this.closeAllTabs();
   }
+
   createTable() {
     if (!this.addTableForm.valid) { return; }
 
@@ -215,6 +219,7 @@ export class AppComponent implements OnInit {
         this.addTableLoader = false;
       });
   }
+
   dropCollection() {
     if (!this.dropTableForm.valid) { return; }
 

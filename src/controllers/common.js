@@ -19,13 +19,14 @@ function listDatabases(req, res, next) {
                 .then((stats) => {
                   collection.stats = {
                     count: stats.count,
-                    size: stats.totalSize
+                    size: stats.totalSize,
+                    nindexes: stats.nindexes
                   };
                 }));
             });
             Promise.all(proms)
               .then(() => {
-                db.collections = collections.map(collection => { 
+                db.collections = collections.map(collection => {
                   return { name: collection.name, stats: collection.stats }
                 }).sort(function(fir, sec) {
                   if (fir.name < sec.name) return -1;
@@ -61,7 +62,8 @@ function listCollections(req, res, next) {
           .then((stats) => {
             collection.stats = {
               count: stats.count,
-              size: stats.totalSize
+              size: stats.totalSize,
+              nindexes: stats.nindexes
             };
           }));
       });
@@ -107,10 +109,20 @@ function dropDB(req, res, next) {
     .catch(next);
 }
 
+function getIndexes(req, res, next) {
+  const dbName = req.params.dbName;
+  const collectionName = req.params.collectionName;
+  const db = dataAccessAdapter.ConnectToDb(dbName);
+  db.collection(collectionName).indexes()
+  .then(data => { return res.send(data) })
+  .catch(next);
+}
+
 module.exports = {
   listDatabases,
   listCollections,
   createCollection,
   dropCollection,
-  dropDB
+  dropDB,
+  getIndexes
 }

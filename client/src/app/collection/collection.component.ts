@@ -2,12 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { EJSON, ObjectId } from 'bson';
-import {
-  NzNotificationService,
-  NzTreeHigherOrderServiceToken,
-} from 'ng-zorro-antd';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import * as _ from 'lodash';
-
 const Papa = require('papaparse');
 
 interface simpleSearch {
@@ -24,6 +21,7 @@ interface simpleSearch {
 export class CollectionComponent implements OnInit {
   @Input() database: any;
   @Input() collection: any;
+
   data: any;
   filter = '';
   ejsonFilter: any;
@@ -46,7 +44,7 @@ export class CollectionComponent implements OnInit {
     private notification: NzNotificationService
   ) { }
 
-  editorOptions = {
+  defaultEditorOption = {
     theme: 'vs',
     language: 'json',
     suggest: {
@@ -86,7 +84,7 @@ export class CollectionComponent implements OnInit {
     )
       .subscribe((documents: any) => {
         this.data = EJSON.deserialize(documents);
-        this.count = this.data.count;      
+        this.count = this.data.count;
         if (this.searchMode === 'advanced') this.closeAdvancedSearchForm();
       })
       .add(() => {
@@ -447,6 +445,12 @@ export class CollectionComponent implements OnInit {
     this.exportAs = 'json';
     this.exportButton = true;
   }
+
+  showIndexes(): void {
+    this.API.getIndexes(this.database, this.collection)
+      .subscribe((response) => {
+        this.openEditor(response, 'update')});
+   }
 
   exportCollection(): void {
     this.exporting = true;

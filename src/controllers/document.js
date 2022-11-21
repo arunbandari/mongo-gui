@@ -53,12 +53,12 @@ function findOne(req, res, next) {
   sendResponse(dbOperation, req, res, next);
 }
 
-// function insertOne(req, res, next) {
-//   const body = req.body;
-//   const model = getModel(req);
-//   const dbOperation = model.insertOne(body);
-//   sendResponse(dbOperation, req, res, next);
-// }
+//function insertOne(req, res, next) {
+//  const body = req.body;
+//  const model = getModel(req);
+//  const dbOperation = model.insertOne(body);
+//  sendResponse(dbOperation, req, res, next);
+//}
 
 function bulkWrite(req, res, next) {
   const body = Array.isArray(req.body) ? req.body : [req.body];
@@ -83,12 +83,12 @@ function bulkWrite(req, res, next) {
   sendResponse(dbOperation, req, res, next);
 }
 
-// function updateOne(req, res, next) {
-//   const model = getModel(req);
-//   const documentId = req.documentId;
-//   const dbOperation = model.updateOne({ _id: documentId }, { $set: req.body });
-//   sendResponse(dbOperation, req, res, next);
-// }
+//function updateOne(req, res, next) {
+//  const model = getModel(req);
+//  const documentId = req.documentId;
+//  const dbOperation = model.updateOne({ _id: documentId }, { $set: req.body });
+//  sendResponse(dbOperation, req, res, next);
+//}
 
 function replaceOne(req, res, next) {
   const model = getModel(req);

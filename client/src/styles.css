@@ -1,3 +1,5 @@
+@import "~ng-zorro-antd/ng-zorro-antd.min.css";
+
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Mukta+Vaani&display=swap');
 * {
@@ -41,6 +43,7 @@ body {
   top: 17px;
   right: 30px;
 }
+
 .spl-button {
   display: inline-block;
   padding: 2px 5px;
