@@ -53,7 +53,13 @@ export class CollectionComponent implements OnInit {
     contextmenu: false,
     codeLens: false,
     renderLineHighlight: 'none',
+    readOnly: false
   };
+
+  defaultEditorOptionIndex = {
+    readOnly: true
+  };
+
   code: string = '{}';
   importButton = false;
   importError: any;
@@ -449,7 +455,7 @@ export class CollectionComponent implements OnInit {
   showIndexes(): void {
     this.API.getIndexes(this.database, this.collection)
       .subscribe((response) => {
-        this.openEditor(response, 'update')});
+        this.openEditor(response, 'index')});
    }
 
   exportCollection(): void {

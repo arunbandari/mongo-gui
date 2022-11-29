@@ -1,25 +1,15 @@
-version: '3'
-
+version: '1'
 services:
   mongo-gui:
-    container_name: "mongo-gui"
+    container_name: "mongogui"
     build:
-      context: ./client
-    deploy:
-      resources:
-        limits:
-          cpus: '0.4'
-          memory: 400m
-        reservations:
-          cpus: '0.1'
-          memory: 200m
+      context: .
     ports:
       - "4321:4321"
     environment:
       - MONGO_URL=mongodb://mongodb.local:27017
     depends_on:
       - mongodb
-
   mongodb:
     container_name: mongodb.local
     ports:
@@ -27,8 +17,3 @@ services:
     image: mongo:latest
     environment:
       MONGO_INITDB_DATABASE: mongodb
-
-networks:
-  default:
-    name: guinet
-    external: true

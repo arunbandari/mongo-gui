@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "build-ui": "cd client && npm run clean-build-compress"
+    "build-ui": "cd client && npm install && npm run clean-build-compress"
   },
   "dependencies": {
     "body-parser": "^1.20.1",

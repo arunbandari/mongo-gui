@@ -3,3 +3,4 @@ node_modules
 client/node_modules/
 client/dist
 launch.json
+public/
