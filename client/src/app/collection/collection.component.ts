@@ -57,6 +57,8 @@ export class CollectionComponent implements OnInit {
   };
 
   defaultEditorOptionIndex = {
+    theme: 'vs',
+    language: 'json',
     readOnly: true
   };
 
@@ -125,6 +127,21 @@ export class CollectionComponent implements OnInit {
       alert('Invalid query');
     }
     this.query();
+  }
+
+  getEditorMode() {
+    if (this.documentEditorMode === 'index')
+      return this.defaultEditorOptionIndex;
+    else
+      return this.defaultEditorOption;
+  }
+
+  getEditorTitle() {
+   switch(this.documentEditorMode) {
+     case 'create': return 'Add new document';
+     case 'index': return 'Indexes';
+     default: return 'Edit Document'
+   }
   }
 
   clearFilter() {

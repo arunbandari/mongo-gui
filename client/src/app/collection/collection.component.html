@@ -180,17 +180,16 @@
     height: 'calc(100% - 55px)',
     overflow: 'auto',
     'padding-bottom': '53px'
-  }" [nzMaskClosable]="true" [nzWidth]="1000" [nzVisible]="showEditor" [nzTitle]="
-    documentEditorMode === 'create' ? 'Add new document' : 'index' ? 'Indexes' : 'Edit document'
-  " (nzOnClose)="closeEditor()">
+  }" [nzMaskClosable]="true" [nzWidth]="1000" [nzVisible]="showEditor" [nzTitle]="getEditorTitle()"
+    (nzOnClose)="closeEditor()">
   <ng-container *nzDrawerContent>
-  <nz-code-editor *ngIf="showEditor" class="document-editor" [nzEditorOption]="documentEditorMode === 'index' ? defaultEditorOptionIndex : defaultEditorOption"
+  <nz-code-editor *ngIf="showEditor" class="document-editor" [nzEditorOption]="getEditorMode()"
                      [(ngModel)]="documentBeingEdited"></nz-code-editor>
   <div class="footer">
     <button type="button" (click)="closeEditor()" class="ant-btn" style="margin-right: 8px;">
       <span>Cancel</span>
     </button>
-    <button type="button" disabled="documentEditorMode === 'index'" (click)="updateDocument()" class="ant-btn ant-btn-primary">
+    <button type="button" [disabled]="documentEditorMode === 'index'" (click)="updateDocument()" class="ant-btn ant-btn-primary">
       <span>{{ documentEditorMode === 'create' ? 'Add' : 'Save' }}</span>
     </button>
   </div>
