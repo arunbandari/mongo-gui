@@ -54,6 +54,10 @@ class Model {
   stats() {
     return this.collection.stats();
   }
+
+  getIndexes() {
+      return this.collection.getIndexes();
+  }
 }
 
 module.exports = Model;

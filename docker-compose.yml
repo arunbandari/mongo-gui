@@ -1,11 +1,19 @@
-version: '3'
-
+version: '1'
 services:
   mongo-gui:
-    container_name: "mongo-gui"
-    image: ugleiton/mongo-gui
-    restart: always
+    container_name: "mongogui"
+    build:
+      context: .
     ports:
       - "4321:4321"
     environment:
-      - MONGO_URL=mongodb://localhost:27017
+      - MONGO_URL=mongodb://mongodb.local:27017
+    depends_on:
+      - mongodb
+  mongodb:
+    container_name: mongodb.local
+    ports:
+      - "27017:27017"
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: mongodb

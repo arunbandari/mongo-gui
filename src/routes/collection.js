@@ -7,6 +7,9 @@ const documentsRoute = require('./document');
 
 router.get('/:collectionName/stats', documentCtrl.stats);
 
+// returns all indexes of collection
+router.get('/:collectionName/indexes', commonCtrl.getIndexes);
+
 // document middleware
 router.use('/:collectionName/documents', documentsRoute);
 

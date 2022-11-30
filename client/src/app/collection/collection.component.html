@@ -8,14 +8,14 @@
             <nz-option nzLabel="Advanced" nzValue="advanced"></nz-option>
           </nz-select>
           <input type="text" nz-input placeholder="Query documents..." style="width:70%;"
-            *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter"
-            spellcheck="false" />
+                 *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter"
+                 spellcheck="false" />
           <input type="text" nz-input placeholder="Key" style="width:25%;" *ngIf="searchMode === 'simple'"
-            [(ngModel)]="searchObj.key" spellcheck="false" />
+                 [(ngModel)]="searchObj.key" spellcheck="false" />
           <input type="text" disabled nz-input placeholder=":" style="width: 4%; pointer-events: none;"
-            *ngIf="searchMode === 'simple'" />
+                 *ngIf="searchMode === 'simple'" />
           <input type="text" nz-input placeholder="Value" style="width:25%;" *ngIf="searchMode === 'simple'"
-            [(ngModel)]="searchObj.value" spellcheck="false" />
+                 [(ngModel)]="searchObj.value" spellcheck="false" />
           <nz-select [(ngModel)]="searchObj.type" style="width:16%" *ngIf="searchMode === 'simple'">
             <nz-option nzLabel="ObjectId" nzValue="ObjectId"></nz-option>
             <nz-option nzLabel="String" nzValue="String"></nz-option>
@@ -30,18 +30,20 @@
       </div>
       <div>
         <nz-tag nzMode="closeable" (nzOnClose)="clearFilter()" *ngIf="filter">Clear search</nz-tag>
+
         <nz-button-group>
           <button nz-button nz-dropdown [nzDropdownMenu]="menu">
             <i nz-icon nzType="download"></i>Add
           </button>
+
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
               <li nz-menu-item (click)="showImportModal()">Import File</li>
               <nz-modal nzMaskClosable="false" [(nzVisible)]="isImportVisible" nzKeyboard=false nzTitle="Import File"
-                nzWidth="650" nzClosable=false nzCentered (nzOnCancel)="closeImportModal()" [nzContent]="importModalContent">
-                <ng-template #importModalContent>
+                        nzWidth="650" nzClosable=false nzCentered (nzOnCancel)="closeImportModal()" [nzContent]="importModalContent">
+                  <ng-template #importModalContent>
                   <nz-upload nzType="drag" [nzBeforeUpload]="beforeUpload"
-                    nzAccept=".json, .csv" [nzDisabled]="importing">
+                             nzAccept=".json, .csv" [nzDisabled]="importing">
                     <p class="ant-upload-drag-icon">
                       <i nz-icon nzType="inbox"></i>
                     </p>
@@ -79,14 +81,15 @@
                     'Importing...' : 'Import'}}</button>
                 </div>
               </nz-modal>
+
               <li nz-menu-item (click)="openEditor({}, 'create')">Insert Document</li>
-            </ul>
+             </ul>
           </nz-dropdown-menu>
           <button nz-button nzType="default" (click)="showExportModal()" [disabled]="!count">
             <i nz-icon nzType="upload" nzTheme="outline"></i>Export
           </button>
           <nz-modal nzMaskClosable="false" [(nzVisible)]="isExportVisible" nzKeyboard=false nzTitle="Export Collection"
-            nzWidth="650" nzClosable=false nzCentered (nzOnCancel)="closeExportModal()" [nzContent]="exportContent">
+                    nzWidth="650" nzClosable=false nzCentered (nzOnCancel)="closeExportModal()" [nzContent]="exportContent">
             <ng-template #exportContent>
               <div style="margin-top: 5px; margin-bottom: 5px;">Export as:</div>
               <nz-radio-group [(ngModel)]="exportAs" nzName="radiogroup">
@@ -113,6 +116,9 @@
           <button nz-button nzType="default" (click)="query()">
             <i nz-icon nzType="reload"></i>{{ loading ? 'Loading...' : 'Reload' }}
           </button>
+          <button nz-button nzType="default" (click)="showIndexes()" class="collection">
+            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>Indexes
+          </button>
         </nz-button-group>
       </div>
     </div>
@@ -127,7 +133,7 @@
     </div>
     <div class="right-child">
       <nz-pagination [(nzPageIndex)]="pageIndex" [nzTotal]="data?.count" [nzSize]="'small'" [nzPageSize]="10"
-        (nzPageIndexChange)="query()" nzShowQuickJumper="true" [nzShowTotal]="renderItemTemplate"></nz-pagination>
+                     (nzPageIndexChange)="query()" nzShowQuickJumper="true" [nzShowTotal]="renderItemTemplate"></nz-pagination>
       <ng-template #renderItemTemplate let-total let-range="range">
         Displaying {{ range[0] }} - {{ range[1] }} of {{ total }} documents
       </ng-template>
@@ -143,7 +149,7 @@
       </div>
       <div class="right">
         <button nz-button nzType="default" (click)="openEditor(doc, 'update')" nzTooltipTitle="Edit"
-          nzTooltipPlacement="top" nz-tooltip>
+                nzTooltipPlacement="top" nz-tooltip>
           <i nz-icon nzType="edit"></i>
         </button>
         <div class="copy">
@@ -153,17 +159,17 @@
             <li (click)="copyToClipboard(doc, 'BSON')">BSON</li>
           </ul>
         </div>
-        <button class="spl-button" nz-button nzType="default" nzTooltipTitle="Delete" nzTooltipPlacement="top"
-          nz-tooltip nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this document?"
-          (nzOnConfirm)="deleteDocument(doc)" nzPopconfirmPlacement="left">
+        <<button class="spl-button" nz-button nzType="default" nzTooltipTitle="Delete" nzTooltipPlacement="top"
+                nz-tooltip nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this document?"
+                (nzOnConfirm)="deleteDocument(doc)" nzPopconfirmPlacement="left">
           <i nz-icon nzType="delete"></i>
         </button>
       </div>
     </div>
 
     <nz-empty *ngIf="!loading && (!data || !data.documents.length)"
-      nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-      [nzNotFoundContent]="contentTpl">
+              nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              [nzNotFoundContent]="contentTpl">
       <ng-template #contentTpl>
         <span> This collection doesn't have any documents </span>
       </ng-template>
@@ -174,24 +180,27 @@
     height: 'calc(100% - 55px)',
     overflow: 'auto',
     'padding-bottom': '53px'
-  }" [nzMaskClosable]="true" [nzWidth]="1000" [nzVisible]="showEditor" [nzTitle]="
-    documentEditorMode === 'create' ? 'Add new document' : 'Edit document'
-  " (nzOnClose)="closeEditor()">
-  <ngx-monaco-editor *ngIf="showEditor" class="document-editor" [options]="editorOptions"
-    [(ngModel)]="documentBeingEdited"></ngx-monaco-editor>
+  }" [nzMaskClosable]="true" [nzWidth]="1000" [nzVisible]="showEditor" [nzTitle]="getEditorTitle()"
+    (nzOnClose)="closeEditor()">
+  <ng-container *nzDrawerContent>
+  <nz-code-editor *ngIf="showEditor" class="document-editor" [nzEditorOption]="getEditorMode()"
+                     [(ngModel)]="documentBeingEdited"></nz-code-editor>
   <div class="footer">
     <button type="button" (click)="closeEditor()" class="ant-btn" style="margin-right: 8px;">
       <span>Cancel</span>
     </button>
-    <button type="button" (click)="updateDocument()" class="ant-btn ant-btn-primary">
+    <button type="button" [disabled]="documentEditorMode === 'index'" (click)="updateDocument()" class="ant-btn ant-btn-primary">
       <span>{{ documentEditorMode === 'create' ? 'Add' : 'Save' }}</span>
     </button>
   </div>
+  </ng-container>
 </nz-drawer>
 
 <nz-modal [(nzVisible)]="showAdvancedSearchForm" nzTitle="Query" (nzOnOk)="uiQuery()"
-  (nzOnCancel)="closeAdvancedSearchForm()" [nzOkLoading]="loading">
-  <ngx-monaco-editor *ngIf="showAdvancedSearchForm" [options]="editorOptions" [(ngModel)]="filter"></ngx-monaco-editor>
-  <a href="https://docs.mongodb.com/manual/reference/mongodb-extended-json/index.html#example" target="_blank">Learn
+          (nzOnCancel)="closeAdvancedSearchForm()" [nzOkLoading]="loading">
+  <ng-container *nzModalContent>
+    <nz-code-editor *ngIf="showAdvancedSearchForm" [nzEditorOption]="defaultEditorOption" [(ngModel)]="filter"></nz-code-editor>
+      <a href="https://docs.mongodb.com/manual/reference/mongodb-extended-json/index.html#example" target="_blank">Learn
     more about querying against ObjectId, Date and other types of fields</a>
+  </ng-container>
 </nz-modal>

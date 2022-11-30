@@ -11,11 +11,9 @@
       <div class="search-box">
         <nz-input-group [nzPrefix]="reloadIcon" [nzSuffix]="searchIcon">
           <input type="text" nz-input placeholder="Search for collections" class="search" [(ngModel)]="searchText"
-            (keyup)="filter()" autocomplete="off" spellcheck="false" />
+                 (keyup)="filter()" autocomplete="off" spellcheck="false" />
         </nz-input-group>
-        <ng-template #reloadIcon><i nz-icon nzType="reload" class="reload-dbs-btn"
-            [nzTooltipTitle]="isLoadingDbs ? 'Loading...' : 'Reload'" (click)="reloadSideNav()" nzTooltipPlacement="top"
-            nz-tooltip></i></ng-template>
+        <ng-template #reloadIcon><i nz-icon nzType="reload" class="reload-dbs-btn" [nzTooltipTitle]="isLoadingDbs ? 'Loading...' : 'Reload'" (click)="reloadSideNav()" nzTooltipPlacement="top" nz-tooltip></i></ng-template>
         <ng-template #searchIcon><i nz-icon nzType="search" style="color: #c4c4c4;"></i></ng-template>
       </div>
       <div class="side_explorer">
@@ -25,11 +23,12 @@
                 isInSearchMode ? 'db_item nav_item open' : 'db_item nav_item'
               }}">
               {{ db.name
-              }}<span class="action"><span><i nz-icon nzType="plus-circle" nzTheme="outline"
-                    nzTooltipTitle="Add new collection" nzTooltipPlacement="top" nz-tooltip
-                    (click)="openModal('addTable', { database: db.name })"></i></span>
+              }}
+              <span class="action"><span><i nz-icon nzType="plus-circle" nzTheme="outline"
+                                              nzTooltipTitle="Add new collection" nzTooltipPlacement="top" nz-tooltip
+                                              (click)="openModal('addTable', { database: db.name })"></i></span>
                 <span><i nz-icon nzType="delete" nzTheme="fill" nzTooltipTitle="Drop database" nzTooltipPlacement="top"
-                    nz-tooltip (click)="openModal('dropDataBase', { database: db.name })"></i></span>
+                         nz-tooltip (click)="openModal('dropDataBase', { database: db.name })"></i></span>
               </span>
             </div>
             <ul>
@@ -38,13 +37,13 @@
                   {{collection.name}}&nbsp;
                   <span class="action">
                     <span><i nz-icon nzType="delete" nzTheme="fill" nzTooltipTitle="Drop collection"
-                        nzTooltipPlacement="top" nz-tooltip (click)="
+                             nzTooltipPlacement="top" nz-tooltip (click)="
                           openModal('dropTable', {
                             database: db.name,
                             collection: collection.name
                           })
                         "></i></span>
-                  </span>
+                    </span>
                 </div>
               </li>
             </ul>
@@ -88,27 +87,28 @@
         </nz-descriptions>
       </div>
       <nz-table *ngIf="(!tabs || tabs.length == 0) && active == 'databases'" #basicTable [nzData]="dbs.databases"
-        nzBordered="true" class="table_home">
+                nzBordered="true" class="table_home">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Size</th>
-            <th>Collections</th>
-          </tr>
+        <tr>
+          <th>Name</th>
+          <th>Size</th>
+          <th>Collections</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td>
-              <a href="javascript:void(0)" (click)="showCollections(data)">{{
-                data.name
-                }}</a>
-            </td>
-            <td>{{ data.sizeOnDisk | fileSize: 2 }}</td>
-            <td>{{ data.collections.length }}
-              <span class="drop-db" style="float: right; cursor: pointer;"><i nz-icon nzType="delete" nzTooltipTitle="Drop database" nzTooltipPlacement="top"
-                nz-tooltip (click)="openModal('dropDataBase', { database: data.name })"></i></span>
-            </td>
-          </tr>
+        <tr *ngFor="let data of basicTable.data">
+          <td>
+            <a href="javascript:void(0)" (click)="showCollections(data)">{{
+              data.name
+              }}</a>
+          </td>
+          <td>{{ data.sizeOnDisk | fileSize: 2 }}</td>
+          <td>{{ data.collections.length }}
+            <span class="drop-db" style="float: right; cursor: pointer;">
+              <i nz-icon nzType="delete" nzTooltipTitle="Drop database" nzTooltipPlacement="top"
+                 nz-tooltip (click)="openModal('dropDataBase', { database: data.name })"></i></span>
+          </td>
+        </tr>
         </tbody>
       </nz-table>
 
@@ -140,40 +140,44 @@
         </nz-descriptions>
       </div>
       <nz-table *ngIf="(!tabs || tabs.length == 0) && active == 'collections'" #basicTable [nzData]="db.collections"
-        nzBordered="true" class="table_home">
+                nzBordered="true" class="table_home">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Size</th>
-            <th>Documents</th>
-          </tr>
+        <tr>
+          <th>Name</th>
+          <th>Size</th>
+          <th>Documents</th>
+          <th>Indexes</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let collection of basicTable.data">
-            <td>
-              <a href="javascript:void(0)" (click)="openTab(db.name, collection.name)">{{
-                collection.name
-                }}</a>
-            </td>
-            <td>{{ collection.stats.size | fileSize: 2 }}</td>
-            <td>{{ collection.stats.count }}
-              <span class="drop-table" style="float: right; cursor: pointer;">
+        <tr *ngFor="let collection of basicTable.data">
+          <td>
+            <a href="javascript:void(0)" (click)="openTab(db.name, collection.name)">{{
+              collection.name
+              }}</a>
+          </td>
+          <td>{{ collection.stats.size | fileSize: 2 }}</td>
+          <td>{{ collection.stats.count }}
+            <span class="drop-table" style="float: right; cursor: pointer;">
                 <i nz-icon nzType="delete" nzTooltipTitle="Drop collection" nzTooltipPlacement="top" nz-tooltip (click)="
                 openModal('dropTable', {
                   database: db.name,
                   collection: collection.name
                 })
               "></i></span></td>
-          </tr>
+          <td>
+            {{ collection.stats.nindexes }}
+          </td>
+        </tr>
         </tbody>
       </nz-table>
       <router-outlet></router-outlet>
     </nz-content>
   </nz-layout>
 </nz-layout>
-
 <nz-modal nzMaskClosable="false" [(nzVisible)]="addTable" (nzOnCancel)="closeModal('addTable')" nzTitle="Add new collection" [nzFooter]="null"
-  [nzBodyStyle]="{height: '237px'}">
+          [nzBodyStyle]="{height: '237px'}">
+  <ng-container *nzModalContent>
   <form nz-form [formGroup]="addTableForm">
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database">Database</nz-form-label>
@@ -190,8 +194,8 @@
     <nz-form-item>
       <nz-form-control>
         <div class="addTableFooter">
-          <button class="add" nz-button nzType="primary" [disabled]="!addTableForm.valid || addTableLoader"
-            (click)="createTable()">
+           <button class="add" nz-button nzType="primary" [disabled]="!addTableForm.valid || addTableLoader"
+                  (click)="createTable()">
             {{ addTableLoader ? 'Adding ...' : 'Add' }}
           </button>
           <button class="cancel" nz-button nzType="default" (click)="closeModal('addTable')">
@@ -201,10 +205,12 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+  </ng-container>
 </nz-modal>
 
 <nz-modal nzMaskClosable="false" [(nzVisible)]="dropTable" nzTitle="Drop collection" (nzOnCancel)="closeModal('dropTable')"
-  [nzBodyStyle]="{height: '300px'}" [nzFooter]="null">
+          [nzBodyStyle]="{height: '300px'}" [nzFooter]="null">
+  <ng-container *nzModalContent>
   <form nz-form [formGroup]="dropTableForm">
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="database">Database</nz-form-label>
@@ -222,14 +228,14 @@
       <nz-form-label [nzSm]="7" [nzXs]="24" nzFor="confirmCollection" nzRequired>Confirm collection</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24" nzExtra="Please type the collection name to confirm.">
         <input nz-input id="confirmCollection" formControlName="confirmCollection" autocomplete="off"
-          spellcheck="false" />
+               spellcheck="false" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
         <div class="dropTableFooter">
           <button class="drop" nz-button nzType="danger" [disabled]="!dropTableForm.valid || dropTableLoader"
-            (click)="dropCollection()">
+                  (click)="dropCollection()">
             {{ dropTableLoader ? 'Dropping ...' : 'Drop' }}
           </button>
           <button class="cancel" nz-button nzType="default" (click)="closeModal('dropTable')">
@@ -239,9 +245,11 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+  </ng-container>
 </nz-modal>
 <nz-modal nzMaskClosable="false" [(nzVisible)]="dropDataBase" nzTitle="Drop database" (nzOnCancel)="closeModal('dropDataBase')"
-  [nzBodyStyle]="{height: '237px'}" [nzFooter]="null">
+          [nzBodyStyle]="{height: '237px'}" [nzFooter]="null">
+  <ng-container *nzModalContent>
   <form nz-form [formGroup]="dropDataBaseForm">
     <nz-form-item>
       <nz-form-label [nzSm]="7" [nzXs]="24" nzRequired nzFor="database">
@@ -263,7 +271,7 @@
       <nz-form-control>
         <div class="dropDBFooter">
           <button class="drop" nz-button nzType="danger" [disabled]="!dropDataBaseForm.valid || dropDataBaseLoader"
-            (click)="dropDB()">
+                  (click)="dropDB()">
             {{ dropDataBaseLoader ? 'Dropping ...' : 'Drop' }}
           </button>
           <button class="cancel" nz-button nzType="default" (click)="closeModal('dropDataBase')">
@@ -273,30 +281,32 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+  </ng-container>
 </nz-modal>
 <nz-modal nzMaskClosable="false" [(nzVisible)]="addDB" nzTitle="Add Database" (nzOnCancel)="closeModal('addDB')"
-  [nzBodyStyle]="{height: '257px'}" [nzFooter]="null">
+          [nzBodyStyle]="{height: '257px'}" [nzFooter]="null">
+  <ng-container *nzModalContent>
   <form nz-form [formGroup]="addDBForm">
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="database">Database</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <input nz-input formControlName="database" id="database" placeholder="Enter a name for the new database"
-          autocomplete="off" spellcheck="false" />
+               autocomplete="off" spellcheck="false" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="collection" nzRequired>Collection</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24"
-        nzExtra="You need to add at least one collection inorder to work with the new database">
+                       nzExtra="You need to add at least one collection inorder to work with the new database">
         <input nz-input id="collection" formControlName="collection" autocomplete="off"
-          placeholder="Enter a name for the new collection" spellcheck="false" />
+               placeholder="Enter a name for the new collection" spellcheck="false" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-control>
         <div class="addDBFooter">
           <button class="add" nz-button nzType="primary" [disabled]="!addDBForm.valid || addDBLoader"
-            (click)="addDataBase()">
+                  (click)="addDataBase()">
             {{ addDBLoader ? 'Adding ...' : 'Add' }}
           </button>
           <button class="cancel" nz-button nzType="default" (click)="closeModal('addDB')">
@@ -306,4 +316,5 @@
       </nz-form-control>
     </nz-form-item>
   </form>
+  </ng-container>
 </nz-modal>

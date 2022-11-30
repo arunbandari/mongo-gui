@@ -2,12 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from '../api.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { EJSON, ObjectId } from 'bson';
-import {
-  NzNotificationService,
-  NzTreeHigherOrderServiceToken,
-} from 'ng-zorro-antd';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import * as _ from 'lodash';
-
 const Papa = require('papaparse');
 
 interface simpleSearch {
@@ -24,6 +21,7 @@ interface simpleSearch {
 export class CollectionComponent implements OnInit {
   @Input() database: any;
   @Input() collection: any;
+
   data: any;
   filter = '';
   ejsonFilter: any;
@@ -46,7 +44,7 @@ export class CollectionComponent implements OnInit {
     private notification: NzNotificationService
   ) { }
 
-  editorOptions = {
+  defaultEditorOption = {
     theme: 'vs',
     language: 'json',
     suggest: {
@@ -55,7 +53,15 @@ export class CollectionComponent implements OnInit {
     contextmenu: false,
     codeLens: false,
     renderLineHighlight: 'none',
+    readOnly: false
   };
+
+  defaultEditorOptionIndex = {
+    theme: 'vs',
+    language: 'json',
+    readOnly: true
+  };
+
   code: string = '{}';
   importButton = false;
   importError: any;
@@ -86,7 +92,7 @@ export class CollectionComponent implements OnInit {
     )
       .subscribe((documents: any) => {
         this.data = EJSON.deserialize(documents);
-        this.count = this.data.count;      
+        this.count = this.data.count;
         if (this.searchMode === 'advanced') this.closeAdvancedSearchForm();
       })
       .add(() => {
@@ -121,6 +127,21 @@ export class CollectionComponent implements OnInit {
       alert('Invalid query');
     }
     this.query();
+  }
+
+  getEditorMode() {
+    if (this.documentEditorMode === 'index')
+      return this.defaultEditorOptionIndex;
+    else
+      return this.defaultEditorOption;
+  }
+
+  getEditorTitle() {
+   switch(this.documentEditorMode) {
+     case 'create': return 'Add new document';
+     case 'index': return 'Indexes';
+     default: return 'Edit Document'
+   }
   }
 
   clearFilter() {
@@ -447,6 +468,12 @@ export class CollectionComponent implements OnInit {
     this.exportAs = 'json';
     this.exportButton = true;
   }
+
+  showIndexes(): void {
+    this.API.getIndexes(this.database, this.collection)
+      .subscribe((response) => {
+        this.openEditor(response, 'index')});
+   }
 
   exportCollection(): void {
     this.exporting = true;
