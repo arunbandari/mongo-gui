@@ -11,18 +11,18 @@ function listDatabases(req, res, next) {
           .then(collections => {
             collections = collections.filter(collection => !collection.name.startsWith('system.'));
             let proms = [];
-            collections.forEach(collection => {
-              proms.push(dataAccessAdapter.ConnectToCollection(
-                db.name,
-                collection.name
-              ).stats()
-                .then((stats) => {
-                  collection.stats = {
-                    count: stats.count,
-                    size: stats.totalSize
-                  };
-                }));
-            });
+            // collections.forEach(collection => {
+            //   proms.push(dataAccessAdapter.ConnectToCollection(
+            //     db.name,
+            //     collection.name
+            //   ).stats()
+            //     .then((stats) => {
+            //       collection.stats = {
+            //         count: stats.count,
+            //         size: stats.totalSize
+            //       };
+            //     }));
+            // });
             Promise.all(proms)
               .then(() => {
                 db.collections = collections.map(collection => { 
