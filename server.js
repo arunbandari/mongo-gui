@@ -9,6 +9,7 @@ const gzipProcessor = require('connect-gzip-static');
 
 const dataAccessAdapter = require('./src/db/dataAccessAdapter');
 const databasesRoute = require('./src/routes/database');
+const authMiddleware = require('./src/controllers/auth');
 
 // notify users on new releases - https://github.com/arunbandari/mongo-gui/issues/5
 // const pkg = require('./package.json');
@@ -16,6 +17,9 @@ const databasesRoute = require('./src/routes/database');
 
 // initialize app
 const app = express();
+
+// middleware for simple authorization.
+app.use(authMiddleware.auth);
 
 // serve static files form public
 app.use(express.static('public'));
@@ -54,7 +58,7 @@ app.use((err, req, res, next) => {
   console.log(err);
   const error = {
     errmsg: err.errmsg,
-    name: err.name
+    name: err.name,
   };
   return res.status(500).send(error);
 });
