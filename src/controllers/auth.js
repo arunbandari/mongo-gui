@@ -11,13 +11,18 @@ function auth(req, res, next) {
   const [username, password] = _decodeCredentials(
     req.headers.authorization || ''
   );
-
-  if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+  if (process.env.USERNAME == undefined && process.env.PASSWORD == undefined) {
     return next();
+  } else {
+    if (
+      username === process.env.USERNAME &&
+      password === process.env.PASSWORD
+    ) {
+      return next();
+    }
+    res.set('WWW-Authenticate', 'Basic realm="user_pages"');
+    res.status(401).send('Authentication required!');
   }
-
-  res.set('WWW-Authenticate', 'Basic realm="user_pages"');
-  res.status(401).send('Authentication required!');
 }
 
 module.exports = {
