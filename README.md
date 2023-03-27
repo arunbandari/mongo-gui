@@ -20,6 +20,7 @@ Read-only demo: http://20.169.156.177:4321
  - Rich user interface
  - Import CSV or JSON files
  - Export collection to CSV or JSON files
+ - Authentication
 
 ## How to install and run MongoDB GUI
 The following are the different ways to install **mongo-gui**.
@@ -69,6 +70,18 @@ Available options:
 - -u: url, **mongo-gui** tries to connect to this mongodb instance
 - -p: port, mongo-gui listens on this port
 
+## Authentication in Mongo GUI
+When you want to use the interface on a remote server, you need to protect your data. Mongo-gui provides you with a simple authentication facility for this. This is completely optional, if you don't want authorization you don't use it. To use authorization, follow these steps:
+- Create a ```.env ``` file in the main directory.
+- In this file, create ```USERNAME=<your_username>``` variable for your username and ```PASSWORD="<your_password>"``` variable for your password.
+- Restart your server.
+
+That's it. If you are working on your own computer, or if you do not need security, you can turn off the variables you have defined in the ```.env ``` file by putting a comment before them, e.g.
+- ```#USERNAME=<your_username>```
+
+Or you can delete your ```.env ``` file.
+
+So mongo-gui will now continue to run without asking for authorization. Don't forget to restart your server after these actions!
 
  ## Screenshots
  ### Controls:
