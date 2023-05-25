@@ -11,12 +11,12 @@ function auth(req, res, next) {
   const [username, password] = _decodeCredentials(
     req.headers.authorization || ''
   );
-  if (process.env.USERNAME == undefined && process.env.PASSWORD == undefined) {
+  if (process.env.MONGOGUI_USERNAME == undefined && process.env.MONGOGUI_PASSWORD == undefined) {
     return next();
   } else {
     if (
-      username === process.env.USERNAME &&
-      password === process.env.PASSWORD
+      username === process.env.MONGOGUI_USERNAME &&
+      password === process.env.MONGOGUI_PASSWORD
     ) {
       return next();
     }
