@@ -6,6 +6,7 @@
           <nz-select [(ngModel)]="searchMode" style="width:15%">
             <nz-option nzLabel="Simple" nzValue="simple"></nz-option>
             <nz-option nzLabel="Advanced" nzValue="advanced"></nz-option>
+            <nz-option nzLabel="Prompt" nzValue="prompt"></nz-option>
           </nz-select>
           <input type="text" nz-input placeholder="Query documents..." style="width:70%;"
             *ngIf="searchMode === 'advanced'" (click)="openAdvancedSearchForm()" [(ngModel)]="filter"
@@ -23,6 +24,7 @@
             <nz-option nzLabel="Number" nzValue="Number"></nz-option>
             <nz-option nzLabel="Boolean" nzValue="Boolean"></nz-option>
           </nz-select>
+          <input type="text" style="width:70%;" nz-input *ngIf="searchMode === 'prompt'" [(ngModel)]="prompt">
           <button nz-button nzType="primary" nzSize="medium" (click)="uiQuery()" style="width:15%">
             Find
           </button>

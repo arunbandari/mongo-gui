@@ -83,6 +83,30 @@ Or you can delete your ```.env ``` file.
 
 So mongo-gui will now continue to run without asking for authorization. Don't forget to restart your server after these actions!
 
+## Setting Up the OpenAI Prompt Query
+
+To enable the OpenAI-powered prompt querying in [Your GUI Client Name], you'll need to obtain an API key from OpenAI and add it to your project. Here's a step-by-step guide:
+
+1. **Obtain an OpenAI API Key**:
+   - Visit [OpenAI's platform](https://platform.openai.com/)
+   - Sign up or log in, and navigate to the API section to generate your unique API key.
+
+2. **Add the API Key to Your Project**:
+   - In the root directory of your project, look for a `.env` file (or create one if it doesn't exist).
+   - Add the following line to the `.env` file:
+     ```
+     OPENAI_API_KEY=YOUR_API_KEY_HERE
+     ```
+     Replace `YOUR_API_KEY_HERE` with the API key you obtained from OpenAI.
+
+3. Save the `.env` file and restart [Your GUI Client Name] if it's currently running. With this, the AI-powered prompt querying should be activated!
+
+🔐 **Security Note**: Remember to keep your `.env` file confidential. Never push it to public repositories or share it. It contains sensitive information.
+
+---
+
+This setup guide should provide your users with all they need to integrate the OpenAI prompt query into the tool. Adjust as needed to fit your specific application and user needs.
+
  ## Screenshots
  ### Controls:
  ![mongo-gui-controls-v2](https://user-images.githubusercontent.com/36033761/85231098-143a5680-b412-11ea-8fe2-1b628d70cc49.png)

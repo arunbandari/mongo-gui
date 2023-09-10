@@ -1,6 +1,8 @@
 const ObjectID = require('mongodb').ObjectID;
 const EJSON = require('bson').EJSON;
+const openai = require('../services/openai');  
 const Model = require('../models');
+
 
 const getModel = (req) => {
   const dbName = req.params.dbName;
@@ -21,14 +23,14 @@ const sendResponse = (dbOperation, req, res, next) => {
 function middleware(req, res, next) {
   try {
     req.body =
-      req.query.incomingType === 'ejson'
-        ? EJSON.deserialize(req.body)
-        : req.body;
+      req.query.incomingType === 'ejson' ?
+        EJSON.deserialize(req.body) :
+        req.body;
     if (!(req.body instanceof Array)) {
       req.documentId =
-        req.body._id === null
-          ? null
-          : req.body._id || req.params.documentId || ObjectID();
+        req.body._id === null ?
+          null :
+          req.body._id || req.params.documentId || ObjectID();
       if (req.documentId === 'filter') req.documentId = '';
     }
     next();
@@ -48,7 +50,7 @@ function find(req, res, next) {
 function findOne(req, res, next) {
   const model = getModel(req);
   const documentId = req.documentId;
-  const query = documentId ? { _id: documentId } : {};
+  const query = documentId ? {_id: documentId} : {};
   const dbOperation = model.findOne(query);
   sendResponse(dbOperation, req, res, next);
 }
@@ -65,9 +67,9 @@ function bulkWrite(req, res, next) {
   const operations = [];
   body.forEach((document) => {
     document._id =
-      document._id === null
-        ? null
-        : document._id || req.documentId || ObjectID();
+      document._id === null ?
+        null :
+        document._id || req.documentId || ObjectID();
     operations.push({
       replaceOne: {
         filter: {
@@ -93,39 +95,85 @@ function bulkWrite(req, res, next) {
 function replaceOne(req, res, next) {
   const model = getModel(req);
   const documentId = req.documentId;
-  const dbOperation = model.replaceOne({ _id: documentId }, req.body);
+  const dbOperation = model.replaceOne({_id: documentId}, req.body);
   sendResponse(dbOperation, req, res, next);
 }
 
 function deleteOne(req, res, next) {
   const model = getModel(req);
   const documentId = req.documentId;
-  const dbOperation = model.deleteOne({ _id: documentId });
+  const dbOperation = model.deleteOne({_id: documentId});
   sendResponse(dbOperation, req, res, next);
 }
 
-function filter(req, res, next) {
-  const model = getModel(req);
-  const query = req.body || {};
-  const options = req.query || {};
-  const skip = Number(options.skip) || 0;
-  const documentId = req.documentId;
-  if (documentId) query._id = documentId;
-  const getDocuments = model.find(query, options).toArray();
-  const getCount = model.countDocuments(query, options);
-  Promise.all([getDocuments, getCount])
-    .then(([documents, count]) => {
-      let data = {
-        documents,
-        count,
-        from: skip + 1,
-        to: skip + documents.length,
-      };
-      if (req.query.ContentType === 'ejson')
-        data = EJSON.stringify(data, { relaxed: false });
-      res.send(data);
-    })
-    .catch((err) => next(err));
+const getQueryFromPrompt = async (req) => {
+  try {
+    if (req.query.queryType !== 'prompt' || !req.query.prompt) return null;
+    const model = getModel(req);
+    const data = await model.aggregate([
+      {
+          $project: {
+              arrayOfKeyValues: {$objectToArray: "$$ROOT"}
+          }
+      },
+      {
+          $unwind: "$arrayOfKeyValues"
+      },
+      {
+          $group: {
+              _id: {
+                  key: "$arrayOfKeyValues.k",
+                  type: {$type: "$arrayOfKeyValues.v"}
+              }
+          }
+      },
+      {
+          $group: {
+              _id: null,
+              allKeysAndTypes: {
+                  $addToSet: {
+                      key: "$_id.key",
+                      type: "$_id.type"
+                  }
+              }
+          }
+      }
+    ]).toArray();
+    const query = await openai.getQuery(data[0].allKeysAndTypes, req.query.prompt);
+    console.log(query);
+    return query;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+const filter = async (req, res, next) => {
+  let query = {};
+  try {
+    const model = getModel(req);
+    query = await getQueryFromPrompt(req) || req.body || {};
+    const options = req.query || {};
+    const skip = Number(options.skip) || 0;
+    const documentId = req.documentId;
+    if (documentId) query._id = documentId;
+    const documents = await model.find(query, options).toArray();
+    const count = await model.countDocuments(query, options);
+    // const [documents, count] = await Promise.all([getDocuments, getCount])
+    let data = {
+      documents,
+      count,
+      from: skip + 1,
+      to: skip + documents.length,
+      query,
+    };
+    if (req.query.ContentType === 'ejson')
+    data = EJSON.stringify(data, {relaxed: false});
+    res.send(data);
+  } catch (err) {
+    if (req.query.queryType === 'prompt') err.message = 'Please improve the prompt';
+    return next(err);
+  }
 }
 
 function stats(req, res, next) {
@@ -161,9 +209,9 @@ module.exports = {
   find,
   findOne,
   filter,
-  //insertOne,
+  // insertOne,
   bulkWrite,
-  //updateOne,
+  // updateOne,
   replaceOne,
   deleteOne,
   stats,

@@ -38,6 +38,7 @@ export class CollectionComponent implements OnInit {
     value: '',
     type: 'String',
   };
+  prompt: string = '';
   showAdvancedSearchForm = false;
   error: { status: boolean; desc: string } = { status: false, desc: '' };
   constructor(
@@ -82,12 +83,20 @@ export class CollectionComponent implements OnInit {
       this.database,
       this.collection,
       this.ejsonFilter || EJSON.serialize({}),
-      this.pageIndex
+      this.pageIndex,
+      this.searchMode,
+      this.prompt,
     )
       .subscribe((documents: any) => {
         this.data = EJSON.deserialize(documents);
         this.count = this.data.count;      
         if (this.searchMode === 'advanced') this.closeAdvancedSearchForm();
+        if (this.searchMode === 'prompt' && this.prompt) {
+          this.filter = JSON.stringify(this.data.query);
+          this.showAdvancedSearchForm = !this.showAdvancedSearchForm;
+        }
+      }, (err) => {
+        console.log(err);
       })
       .add(() => {
         this.loading = false;
@@ -114,7 +123,7 @@ export class CollectionComponent implements OnInit {
   }
   uiQuery() {
     this.pageIndex = 1;
-    this.filter = this.getQuery();
+    this.filter = this.getQuery() || '{}';
     try {
       this.ejsonFilter = EJSON.serialize(JSON.parse(this.filter));
     } catch (err) {
@@ -131,6 +140,7 @@ export class CollectionComponent implements OnInit {
       value: '',
       type: 'String',
     };
+    this.prompt = '';
     this.query();
   }
 

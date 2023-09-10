@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-
+// eslint-disable-next-line strict
+require('dotenv').config();
 const cors = require('cors');
 const argv = require('minimist')(process.argv.slice(2));
 const express = require('express');

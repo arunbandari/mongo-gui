@@ -22,13 +22,13 @@ export class ApiService {
       `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents?limit=10&ContentType=ejson`
     );
   }
-  filterDocumentsByQuery(dbName, collectionName, query, pageIndex = 1) {
+  filterDocumentsByQuery(dbName, collectionName, query, pageIndex = 1, queryType = 'raw', prompt) {
     return this.http.post(
       `${
         this.BASE_URL
       }/${dbName}/collections/${collectionName}/documents/filter?limit=10&skip=${
         (pageIndex - 1) * 10
-      }&ContentType=ejson&incomingType=ejson`,
+      }&ContentType=ejson&incomingType=ejson&queryType=${queryType}&prompt=${prompt}`,
       query
     );
   }
