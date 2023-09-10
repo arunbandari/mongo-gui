@@ -21,6 +21,7 @@ Read-only demo: http://20.169.156.177:4321
  - Import CSV or JSON files
  - Export collection to CSV or JSON files
  - Authentication
+ - **"Natural Language Querying" or "AI-Powered Querying".**
 
 ## How to install and run MongoDB GUI
 The following are the different ways to install **mongo-gui**.
