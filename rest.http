@@ -35,3 +35,11 @@ DELETE http://localhost:3000/databases/quiz/collections/result
 
 ###
 http://localhost:4321/databases/ApplaudCloud/collections/Form/documents/
+###
+
+POST http://localhost:4321/databases/curie_dev_db/collections/app_stats/documents/generate-query
+Content-Type: application/json
+
+{
+    "prompt": "file format is glb"
+}

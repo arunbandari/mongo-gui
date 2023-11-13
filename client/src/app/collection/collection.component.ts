@@ -121,7 +121,27 @@ export class CollectionComponent implements OnInit {
       return JSON.stringify({ [key]: value });
     } else return this.filter;
   }
+
+  async handlePromptQuery() {
+    if (!this.prompt) return;
+    try {
+      this.loading = true;
+      this.API.getQueryFromPrompt(this.database, this.collection, this.prompt).subscribe((query:string) => {
+        this.filter = JSON.stringify(query);
+        this.searchMode = 'advanced';
+        this.openAdvancedSearchForm();
+        this.loading = false;
+      });
+    } catch {
+      this.loading = false;
+    }
+  }
+
   uiQuery() {
+    if (this.searchMode === 'prompt') {
+      this.handlePromptQuery();
+      return;
+    }
     this.pageIndex = 1;
     this.filter = this.getQuery() || '{}';
     try {
