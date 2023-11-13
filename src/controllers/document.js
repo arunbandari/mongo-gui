@@ -108,7 +108,7 @@ function deleteOne(req, res, next) {
 
 const getQueryFromPrompt = async (req) => {
   try {
-    // if (req.query.queryType !== 'prompt' || !req.query.prompt) return null;
+    if (req.query.queryType !== 'prompt' || !req.query.prompt) return null;
     const model = getModel(req);
     const data = await model.aggregate([
       {
@@ -139,7 +139,7 @@ const getQueryFromPrompt = async (req) => {
           }
       }
     ]).toArray();
-    const query = await openai.getQuery(data[0].allKeysAndTypes, req.body.prompt);
+    const query = await openai.getQuery(data[0].allKeysAndTypes, req.query.prompt);
     console.log(query);
     return query;
   } catch (err) {
@@ -152,7 +152,7 @@ const filter = async (req, res, next) => {
   let query = {};
   try {
     const model = getModel(req);
-    query = req.body || {};
+    query = await getQueryFromPrompt(req) || req.body || {};
     const options = req.query || {};
     const skip = Number(options.skip) || 0;
     const documentId = req.documentId;
@@ -204,11 +204,6 @@ function aggregate(req, res, next) {
   sendResponse(dbOperation, req, res, next);
 }
 
-async function generateQuery(req, res, next) {
-  const query = await getQueryFromPrompt(req);
-  res.send(query);
-}
-
 module.exports = {
   middleware,
   find,
@@ -222,5 +217,4 @@ module.exports = {
   stats,
   count,
   aggregate,
-  generateQuery,
 };

@@ -83,11 +83,4 @@ export class ApiService {
       query
     );
   }
-
-  getQueryFromPrompt(dbName, collectionName, prompt) {
-    return this.http.post(
-      `${this.BASE_URL}/${dbName}/collections/${collectionName}/documents/generate-query`,
-      { prompt }
-    );
-  }
 }

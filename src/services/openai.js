@@ -4,22 +4,12 @@ const openai = new OpenAI();
 
 const getQuery = async (meta, prompt) => {
   const systemPrompt = `
-  Given a MongoDB collection with the following fields and their respective data types:
+  Return a stringified JSON query that can be used with the find method of a MongoDB collection. Below are the fields of the collection with their data types
+    ${JSON.stringify(meta)}
 
-  ${JSON.stringify(meta)}
-
-  Please produce a query string that would correctly represent a 'find' operation on this collection. The string should be valid JSON format (i.e., be able to be parsed using 'JSON.parse'). Use placeholders for the actual values of the fields.
-
-  The output format should look like:
-
-  "{\"field\": \"value\"}"
-
-  Keep in mind the special MongoDB syntax for fields like "date" and "objectId". For example, if you're representing a date, it might look something like this: "{\"createdAt\": {\"$date\": \"date-value\"}}".
-
-  The output should not have any explanation
-
+    Return just the json
   `;
-
+  console.log(systemPrompt)
   const completion = await openai.chat.completions.create({
     messages: [
         { role: 'system', content: systemPrompt },
@@ -29,6 +19,7 @@ const getQuery = async (meta, prompt) => {
     temperature: 0
   });
 
+  console.log(typeof completion.choices[0].message.content);
   return JSON.parse(completion.choices[0].message.content);
 }
 
