@@ -13,7 +13,7 @@
     "ui",
     "user-interface"
   ],
-  "homepage": "https://mongo-gui.herokuapp.com/",
+  "homepage": "http://20.169.156.177:4321/",
   "bugs": {
     "url": "https://github.com/arunbandari/mongo-gui/issues",
     "email": "arunbandari2@gmail.com"
