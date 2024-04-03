@@ -6,7 +6,7 @@
 A web-based MongoDB graphical user interface.
 
 ## Demo
-Read-only demo: http://20.169.156.177:4321
+Read-only demo: http://20.106.238.56:4321/
 
 ## Mongo GUI Features
  - Connect to local/remote mongodb instances
