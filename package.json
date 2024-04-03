@@ -13,7 +13,7 @@
     "ui",
     "user-interface"
   ],
-  "homepage": "http://20.169.156.177:4321/",
+  "homepage": "http://20.106.238.56:4321/",
   "bugs": {
     "url": "https://github.com/arunbandari/mongo-gui/issues",
     "email": "arunbandari2@gmail.com"
@@ -36,7 +36,7 @@
     "express": "^4.17.1",
     "minimist": "^1.2.5",
     "mongodb": "^3.6.4",
-    "openai": "^4.6.0"
+    "openai": "^4.24.1"
   },
   "bin": {
     "mongo-gui": "./server.js"
