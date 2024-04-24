@@ -6,6 +6,7 @@ class Model {
       dbName,
       collectionName
     );
+    this.modelArgs = [dbName, collectionName];
   }
 
   find(query, filter = {}) {
@@ -52,7 +53,8 @@ class Model {
   }
 
   stats() {
-    return this.collection.stats();
+    const [dbName, colName] = this.modelArgs;
+    return dataAccessAdapter.ConnectToDb(dbName).command({ collStats: colName });
   }
 }
 
