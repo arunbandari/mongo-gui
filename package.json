@@ -35,7 +35,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "minimist": "^1.2.5",
-    "mongodb": "^3.6.4",
+    "mongodb": "^6.5.0",
     "openai": "^4.24.1"
   },
   "bin": {
